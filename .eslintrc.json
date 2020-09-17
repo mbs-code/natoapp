@@ -1,0 +1,35 @@
+{
+  "env": {
+    "es6": true,
+    "commonjs": true,
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "vue",
+    "prettier"
+  ],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    // Resolve conflicts with prettier
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/no-v-html": "off",
+    "vue/max-attributes-per-line": [
+      2,
+      {
+        "singleline": 5,
+        "multiline": {
+          "max": 1,
+          "allowFirstLine": false
+        }
+      }
+    ]
+  }
+}
