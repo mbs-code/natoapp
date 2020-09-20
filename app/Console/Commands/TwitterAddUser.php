@@ -10,21 +10,21 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
 
-class TwitterTest extends Command
+class TwitterAddUser extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twitter:test {names*}';
+    protected $signature = 'twitter:add {names*}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'twitter test
+    protected $description = 'add twitter user
         {names* : twitter screen name (@xxx)}';
 
     /**
@@ -49,7 +49,6 @@ class TwitterTest extends Command
         // ref: https://github.com/atymic/twitter
         $users = TwitterAPI::getUsersLookup(['screen_name' => implode(',', $names), 'format' => 'object']);
 
-        $res = [];
         foreach ($users as $user) {
             $user_id = $user->id_str;
 
