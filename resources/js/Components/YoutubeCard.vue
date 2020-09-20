@@ -10,9 +10,11 @@
           <a class="normal-link" :href="youtube.key | toYoutubeChannelLink">channel/{{ youtube.key }}</a>
         </v-list-item-subtitle>
         <v-row class="mx-0" align="center">
-          <v-icon class="mr-1">mdi-account-arrow-right</v-icon>
+          <v-icon class="mr-1">mdi-account</v-icon>
           <span class="subheading mr-2">{{ youtube.subscribers | numberDigit }}</span>
-          <v-icon class="mr-1">mdi-account-arrow-left</v-icon>
+          <v-icon class="mr-1">mdi-play</v-icon>
+          <span class="subheading mr-2">{{ youtube.views | numberDigit }}</span>
+          <v-icon class="mr-1">mdi-video</v-icon>
           <span class="subheading">{{ youtube.videos | numberDigit }}</span>
         </v-row>
       </v-list-item-content>
