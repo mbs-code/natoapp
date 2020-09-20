@@ -58,7 +58,10 @@ class YoutubeAddChannel extends Command
             $c->key = $chid;
             $c->name = data_get($item, 'snippet.title');
             $c->description = data_get($item, 'snippet.description');
-            $c->playlist = data_get($item, 'contentDefails.relatedPlaylists.uploads');
+            $c->playlist = data_get($item, 'contentDetails.relatedPlaylists.uploads');
+            $c->thumbnail_url = $this->chooseYoutubeThumbnail(data_get($item, 'snippet.thumbnails'));
+            $c->banner_url = data_get($item, 'brandingSettings.image.bannerTvHighImageUrl');
+
             $c->published_at = Util::UTCToLocalCarbon(data_get($item, 'snippet.publishedAt'));
 
             $c->views = data_get($item, 'statistics.viewCount');
@@ -71,5 +74,17 @@ class YoutubeAddChannel extends Command
         }
 
         return 0;
+    }
+
+    private function chooseYoutubeThumbnail(object $snippet_thumbnail)
+    {
+        $keys = ['maxers', 'standard', 'high', 'medium', 'default'];
+        foreach ($keys as $key) {
+            $url = data_get($snippet_thumbnail, $key.'.url');
+            if ($url) {
+                return $url;
+            }
+        }
+        return null;
     }
 }
