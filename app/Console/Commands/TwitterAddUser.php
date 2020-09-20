@@ -2,13 +2,10 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
+use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
 use App\Models\Twitter;
 use App\lib\Util;
-use DateTime;
-use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
-use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
 
 class TwitterAddUser extends Command
 {
@@ -24,7 +21,7 @@ class TwitterAddUser extends Command
      *
      * @var string
      */
-    protected $description = 'add twitter user
+    protected $description = 'add twitter item$item
         {names* : twitter screen name (@xxx)}';
 
     /**
@@ -46,30 +43,35 @@ class TwitterAddUser extends Command
     {
         $names = $this->argument('names');
 
-        // ref: https://github.com/atymic/twitter
-        $users = TwitterAPI::getUsersLookup(['screen_name' => implode(',', $names), 'format' => 'object']);
+        // doc: https://github.com/atymic/twitter
+        // api ref: https://developer.twitter.com/en/docs/twitter-api
+        $params = [
+            'screen_name' => implode(',', $names), // max: 100
+            'format' => 'object'
+        ];
+        $items = TwitterAPI::getUsersLookup($params);
 
-        foreach ($users as $user) {
-            $user_id = $user->id_str;
+        foreach ($items as $item) {
+            $twid = $item->id_str;
 
-            $twitter = Twitter::firstOrNew(['twitter_id' => $user_id]);
-            $twitter->twitter_id = $user->id_str;
-            $twitter->name = $user->name;
-            $twitter->screen_name = $user->screen_name;
-            $twitter->location = $user->location;
-            $twitter->description = $user->description;
-            $twitter->url = $user->url;
-            $twitter->profile_image_url = str_replace('_normal.jpg', '.jpg', $user->profile_image_url_https);
-            $twitter->profile_banner_url = str_replace('_normal.jpg', '.jpg', $user->profile_banner_url);
+            $twitter = Twitter::firstOrNew(['twitter_id' => $twid]);
+            $twitter->key = $twid;
+            $twitter->name = $item->name;
+            $twitter->screen_name = $item->screen_name;
+            $twitter->location = $item->location;
+            $twitter->description = $item->description;
+            $twitter->url = $item->url;
+            $twitter->thumbnail_url = str_replace('_normal.jpg', '.jpg', $item->profile_image_url_https);
+            $twitter->banner_url = str_replace('_normal.jpg', '.jpg', $item->profile_banner_url);
 
-            $twitter->protected = $user->protected;
-            $twitter->published_at = Util::UTCToLocalCarbon($user->created_at);
+            $twitter->protected = $item->protected;
+            $twitter->published_at = Util::UTCToLocalCarbon($item->created_at);
 
-            $twitter->followers = $user->followers_count;
-            $twitter->friends = $user->friends_count;
-            $twitter->listed = $user->listed_count;
-            $twitter->favourites = $user->favourites_count;
-            $twitter->statuses = $user->statuses_count;
+            $twitter->followers = $item->followers_count;
+            $twitter->friends = $item->friends_count;
+            $twitter->listed = $item->listed_count;
+            $twitter->favourites = $item->favourites_count;
+            $twitter->statuses = $item->statuses_count;
 
             $twitter->save();
             echo($twitter->screen_name.' => ['.$twitter->id.']'.$twitter->name.' '.PHP_EOL);

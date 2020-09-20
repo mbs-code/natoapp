@@ -15,14 +15,14 @@ class CreateTwitterTable extends Migration
     {
         Schema::create('twitters', function (Blueprint $table) {
             $table->id();
-            $table->string('twitter_id', 32)->unique();
+            $table->string('key', 32)->unique();
             $table->string('name', 255);
-            $table->string('screen_name', 255);
+            $table->string('screen_name', 255); // @xxx
             $table->string('location', 255)->nullable();
             $table->string('description')->nullable();
             $table->string('url', 255)->nullable();
-            $table->string('profile_image_url', 255)->nullable();
-            $table->string('profile_banner_url', 255)->nullable();
+            $table->string('thumbnail_url', 255)->nullable();
+            $table->string('banner_url', 255)->nullable();
 
             $table->boolean('protected'); // 鍵の有無
             $table->datetime('published_at'); // 作成日時 (api の created_at)
