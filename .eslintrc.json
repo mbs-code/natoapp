@@ -19,6 +19,7 @@
   "rules": {
     "prettier/prettier": "error",
     // Resolve conflicts with prettier
+    "vue/html-self-closing": "off",
     "vue/singleline-html-element-content-newline": "off",
     "vue/no-v-html": "off",
     "vue/max-attributes-per-line": [

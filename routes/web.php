@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Twitter;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return Inertia\Inertia::render('Home');
     // return view('welcome');
+});
+
+Route::get('/Twitter', function () {
+    $twitters = Twitter::all();
+    return Inertia\Inertia::render('Twitter/Index', ['twitters' => $twitters]);
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
