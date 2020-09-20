@@ -1,0 +1,12 @@
+// @import 'tailwindcss/base';
+// @import 'tailwindcss/components';
+// @import 'tailwindcss/utilities';
+
+// @import 'vuetify/dist/vuetify.min.css';
+
+a.normal-link {
+  color: -webkit-link;
+  &:hover {
+    text-decoration: underline;
+  }
+}

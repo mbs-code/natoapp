@@ -21,13 +21,14 @@
 </template>
 
 <script>
+import StringFormatter from '@/Mixins/StringFormatter'
+
 export default {
+  mixins: [StringFormatter],
+
   filters: {
     toTwitterUserLink: (userName) => {
       return 'https://twitter.com/' + userName
-    },
-    numberDigit: (num) => {
-      return Number(num).toLocaleString()
     },
   },
 
@@ -39,12 +40,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-a.normal-link {
-  color: -webkit-link;
-  &:hover {
-    text-decoration: underline;
-  }
-}
-</style>
