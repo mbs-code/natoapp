@@ -4,7 +4,11 @@
     <v-navigation-drawer v-model="drawer" app clipped mobile-breakpoint="640">
       <v-list dense>
         <!-- aリンクを無効にしてclickでinertiaイベントを呼び出す -->
-        <v-list-item v-for="link in links" :key="link.icon" link
+        <v-list-item
+          v-for="link in links"
+          :key="link.icon"
+          link
+          :class="{ 'v-list-item--active': route().current() === link.route }"
           :href="route(link.route)"
           @click.stop.prevent="$inertia.visit(route(link.route))"
         >
@@ -42,6 +46,6 @@ export default {
       { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
       { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
     ],
-  })
+  }),
 }
 </script>
