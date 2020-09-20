@@ -1,7 +1,9 @@
 <?php
 
-use App\Models\Twitter;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use App\Models\Channel;
+use App\Models\Twitter;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,18 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// !!! call "php artisan ziggy:generate" !!!
-
 Route::get('/', function () {
-    return Inertia\Inertia::render('Home');
-    // return view('welcome');
+    return Inertia::render('Home');
 })->name('home');
 
 Route::get('/twitter', function () {
     $twitters = Twitter::all();
-    return Inertia\Inertia::render('Twitter/Index', ['twitters' => $twitters]);
+    return Inertia::render('Twitter/Index', ['twitters' => $twitters]);
 })->name('twitter');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return Inertia\Inertia::render('Dashboard');
-})->name('dashboard');
+Route::get('/youtube', function () {
+    $youtubes = Channel::all();
+    return Inertia::render('Youtube/Index', ['youtubes' => $youtubes]);
+})->name('youtube');
+
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->name('dashboard');

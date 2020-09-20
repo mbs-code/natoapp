@@ -40,6 +40,7 @@ export default {
     links: [
       { icon: 'mdi-home', text: 'Home', route: 'home' },
       { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
+      { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
     ],
   })
 }
