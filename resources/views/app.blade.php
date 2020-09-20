@@ -18,6 +18,8 @@
         <!-- Scripts -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
         <script src="{{ asset('js/app.js').'?t='.now()->timestamp }}" defer></script>
+
+        @routes
     </head>
     <body class="font-sans antialiased">
         @inertia

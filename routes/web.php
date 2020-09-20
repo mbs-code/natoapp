@@ -14,15 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// !!! call "php artisan ziggy:generate" !!!
+
 Route::get('/', function () {
     return Inertia\Inertia::render('Home');
     // return view('welcome');
-});
+})->name('home');
 
-Route::get('/Twitter', function () {
+Route::get('/twitter', function () {
     $twitters = Twitter::all();
     return Inertia\Inertia::render('Twitter/Index', ['twitters' => $twitters]);
-});
+})->name('twitter');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia\Inertia::render('Dashboard');

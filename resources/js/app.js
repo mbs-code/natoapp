@@ -12,6 +12,9 @@ Vue.use(InertiaApp)
 Vue.use(InertiaForm)
 Vue.use(PortalVue)
 
+// inject ziggy
+Vue.mixin({ methods: { route: window.route } })
+
 const app = document.getElementById('app')
 
 new Vue({

@@ -3,7 +3,11 @@
     <!-- Left Sidebar -->
     <v-navigation-drawer v-model="drawer" app clipped mobile-breakpoint="640">
       <v-list dense>
-        <v-list-item v-for="link in links" :key="link.icon" link inertia-link :href="link.href">
+        <!-- aリンクを無効にしてclickでinertiaイベントを呼び出す -->
+        <v-list-item v-for="link in links" :key="link.icon" link
+          :href="route(link.route)"
+          @click.stop.prevent="$inertia.visit(route(link.route))"
+        >
           <v-list-item-action>
             <v-icon>{{ link.icon }}</v-icon>
           </v-list-item-action>
@@ -34,9 +38,9 @@ export default {
   data: () => ({
     drawer: true,
     links: [
-      { icon: 'mdi-home', text: 'Home', href: '/' },
-      { icon: 'mdi-twitter', text: 'Twitter', href: '/Twitter' },
+      { icon: 'mdi-home', text: 'Home', route: 'home' },
+      { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
     ],
-  }),
+  })
 }
 </script>
