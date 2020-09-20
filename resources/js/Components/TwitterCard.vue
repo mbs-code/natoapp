@@ -2,7 +2,7 @@
   <v-card class="mx-auto" width="640">
     <v-list-item>
       <v-list-item-avatar color="grey" size="64">
-        <img :src="twitter.profile_image_url" alt="profile" />
+        <img :src="twitter.thumbnail_url" alt="profile" />
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{ twitter.name }}</v-list-item-title>
