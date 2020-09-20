@@ -54,7 +54,7 @@ class TwitterAddUser extends Command
         foreach ($items as $item) {
             $twid = $item->id_str;
 
-            $twitter = Twitter::firstOrNew(['twitter_id' => $twid]);
+            $twitter = Twitter::firstOrNew(['key' => $twid]);
             $twitter->key = $twid;
             $twitter->name = $item->name;
             $twitter->screen_name = $item->screen_name;
@@ -76,6 +76,7 @@ class TwitterAddUser extends Command
             $twitter->save();
             echo($twitter->screen_name.' => ['.$twitter->id.']'.$twitter->name.' '.PHP_EOL);
         }
+
         return 0;
     }
 }

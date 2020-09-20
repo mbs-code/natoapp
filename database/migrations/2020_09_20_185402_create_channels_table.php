@@ -19,7 +19,7 @@ class CreateChannelsTable extends Migration
             $table->string('name', 255);
             $table->text('description')->nullable();
             $table->string('playlist', 255)->nullable(); // UUxxx
-            $table->string('thumbnail_url, 255')->nullable();
+            $table->string('thumbnail_url', 255)->nullable();
             $table->string('banner_url', 255)->nullable();
 
             $table->datetime('published_at'); // 作成日時
