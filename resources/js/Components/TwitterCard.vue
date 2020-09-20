@@ -40,11 +40,11 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 a.normal-link {
   color: -webkit-link;
-}
-a.normal-link:hover {
-  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 </style>
