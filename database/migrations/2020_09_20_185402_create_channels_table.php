@@ -29,7 +29,8 @@ class CreateChannelsTable extends Migration
             $table->integer('subscribers')->unsigned(); // 登録者数
             $table->integer('videos')->unsigned(); // 動画数
 
-            $table->timestamps();
+            $table->datetime('created_at')->nullable(); // system
+            $table->datetime('updated_at')->nullable(); // system
         });
     }
 

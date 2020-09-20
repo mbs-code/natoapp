@@ -34,7 +34,9 @@ class CreateTwittersTable extends Migration
             $table->integer('statuses')->unsigned(); // ツイート数
 
             $table->string('last_tweet_id', 32)->nullable(); // 最後に処理したツイートID
-            $table->timestamps();
+
+            $table->datetime('created_at')->nullable(); // system
+            $table->datetime('updated_at')->nullable(); // system
         });
     }
 
