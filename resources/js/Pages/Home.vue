@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import DefaultLayout from '../Layouts/DefaultLayout'
+import DefaultLayout from '@/Layouts/DefaultLayout'
 
 export default {
   layout: DefaultLayout,

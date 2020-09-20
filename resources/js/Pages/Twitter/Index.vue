@@ -7,8 +7,8 @@
 </template>
 
 <script>
-import DefaultLayout from '../../Layouts/DefaultLayout'
-import TwitterCard from '../../Components/TwitterCard'
+import DefaultLayout from '@/Layouts/DefaultLayout'
+import TwitterCard from '@/Components/TwitterCard'
 
 export default {
   layout: DefaultLayout,

@@ -33,6 +33,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "laravel-mix-alias": "^1.0.2",
         "vuetify": "^2.3.10"
     }
 }
