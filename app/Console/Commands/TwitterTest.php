@@ -60,8 +60,8 @@ class TwitterTest extends Command
             $twitter->location = $user->location;
             $twitter->description = $user->description;
             $twitter->url = $user->url;
-            $twitter->profile_image_url = $user->profile_image_url_https;
-            $twitter->profile_banner_url = $user->profile_banner_url;
+            $twitter->profile_image_url = str_replace('_normal.jpg', '.jpg', $user->profile_image_url_https);
+            $twitter->profile_banner_url = str_replace('_normal.jpg', '.jpg', $user->profile_banner_url);
 
             $twitter->protected = $user->protected;
             $twitter->published_at = Util::UTCToLocalCarbon($user->created_at);
