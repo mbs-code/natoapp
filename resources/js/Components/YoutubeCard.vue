@@ -7,7 +7,9 @@
       <v-list-item-content>
         <v-list-item-title class="headline">{{ youtube.name }}</v-list-item-title>
         <v-list-item-subtitle>
-          <a class="normal-link" :href="youtube.key | toYoutubeChannelLink">channel/{{ youtube.key }}</a>
+          <a class="normal-link" :href="youtube.code | toYoutubeChannelLink" target="_blank">
+            channel/{{ youtube.code }}
+          </a>
         </v-list-item-subtitle>
         <v-row class="mx-0" align="center">
           <v-icon class="mr-1">mdi-account</v-icon>

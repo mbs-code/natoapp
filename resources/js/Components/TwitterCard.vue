@@ -7,7 +7,9 @@
       <v-list-item-content>
         <v-list-item-title class="headline">{{ twitter.name }}</v-list-item-title>
         <v-list-item-subtitle>
-          <a class="normal-link" :href="twitter.screen_name | toTwitterUserLink">@{{ twitter.screen_name }}</a>
+          <a class="normal-link" :href="twitter.screen_name | toTwitterUserLink" target="_blank">
+            @{{ twitter.screen_name }}
+          </a>
         </v-list-item-subtitle>
         <v-row class="mx-0" align="center">
           <v-icon class="mr-1">mdi-account-arrow-right</v-icon>
