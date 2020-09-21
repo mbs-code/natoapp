@@ -24,13 +24,13 @@
 import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
-  mixins: [StringFormatter],
-
   filters: {
     toTwitterUserLink: (userName) => {
       return 'https://twitter.com/' + userName
     },
   },
+
+  mixins: [StringFormatter],
 
   props: {
     twitter: {

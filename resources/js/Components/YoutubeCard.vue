@@ -26,13 +26,13 @@
 import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
-  mixins: [StringFormatter],
-
   filters: {
     toYoutubeChannelLink: (channelId) => {
       return 'https://www.youtube.com/channel/' + channelId
     },
   },
+
+  mixins: [StringFormatter],
 
   props: {
     youtube: {
