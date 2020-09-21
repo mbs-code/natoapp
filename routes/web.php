@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Models\Channel;
+use App\Models\Profile;
 use App\Models\Twitter;
+use App\Models\Channel;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,11 @@ use App\Models\Twitter;
 Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
+
+Route::get('/profile', function () {
+    $profiles = Profile::with(['twitters', 'channels'])->get();
+    return Inertia::render('Profile/Index', ['profiles' => $profiles]);
+})->name('profile');
 
 Route::get('/twitter', function () {
     $twitters = Twitter::all();
