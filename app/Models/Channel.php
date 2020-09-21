@@ -19,4 +19,9 @@ class Channel extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public function profiles()
+    {
+        return $this->morphToMany('App\Models\Profile', 'profilable');
+    }
 }
