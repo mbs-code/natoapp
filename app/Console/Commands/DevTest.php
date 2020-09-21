@@ -61,6 +61,7 @@ class DevTest extends Command
                 $profn = Profile::firstOrNew(['name' => '八重沢なとり']);
                 $profn->name = '八重沢なとり';
                 $profn->description = 'アイドル部';
+                $profn->thumbnail_url = $ytn->thumbnail_url ?? $twn->thumbnail_url; // youtube 優先
                 $profn->save();
 
                 $profn->twitters()->syncWithoutDetaching($twn); // 存在してないなら追加
@@ -74,6 +75,7 @@ class DevTest extends Command
                 $profa = Profile::firstOrNew(['name' => '湊あくあ']);
                 $profa->name = '湊あくあ';
                 $profa->description = 'アイドル部';
+                $profa->thumbnail_url = $yta->thumbnail_url ?? $twa->thumbnail_url; // youtube 優先
                 $profa->save();
 
                 $profa->twitters()->syncWithoutDetaching($twa); // 存在してないなら追加
