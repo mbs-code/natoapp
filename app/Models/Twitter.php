@@ -9,7 +9,7 @@ class Twitter extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['key', 'name', 'screen_name', 'location', 'description',
+    protected $fillable = ['code', 'name', 'screen_name', 'location', 'description',
         'url', 'thumbnail_url', 'banner_url', 'protected', 'published_at',
         'followers', 'friends', 'listed', 'favourites', 'statuses', 'last_tweet_id'];
 

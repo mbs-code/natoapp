@@ -9,7 +9,7 @@ class Channel extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['key', 'name', 'description', 'playlist',
+    protected $fillable = ['code', 'name', 'description', 'playlist',
         'thumbnail_url', 'banner_url', 'published_at',
         'views', 'comments', 'subscribers', 'videos'];
 

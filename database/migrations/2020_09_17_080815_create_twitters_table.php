@@ -15,7 +15,7 @@ class CreateTwittersTable extends Migration
     {
         Schema::create('twitters', function (Blueprint $table) {
             $table->id();
-            $table->string('key', 32)->unique();
+            $table->string('code', 32)->unique();
             $table->string('name', 255);
             $table->string('screen_name', 255); // @xxx
             $table->string('location', 255)->nullable();

@@ -15,7 +15,7 @@ class CreateChannelsTable extends Migration
     {
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
-            $table->string('key', 32)->unique(); // UCxxx
+            $table->string('code', 32)->unique(); // UCxxx
             $table->string('name', 255);
             $table->text('description')->nullable();
             $table->string('playlist', 255)->nullable(); // UUxxx

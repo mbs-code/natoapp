@@ -52,10 +52,10 @@ class YoutubeAddChannel extends Command
         $items = YoutubeAPI::getChannelById($ids, $params);
 
         foreach ($items as $item) {
-            $chid = data_get($item, 'id');
+            $code = data_get($item, 'id');
 
-            $c = Channel::firstOrNew(['key' => $chid]);
-            $c->key = $chid;
+            $c = Channel::firstOrNew(['code' => $code]);
+            $c->code = $code;
             $c->name = data_get($item, 'snippet.title');
             $c->description = data_get($item, 'snippet.description');
             $c->playlist = data_get($item, 'contentDetails.relatedPlaylists.uploads');
@@ -70,7 +70,7 @@ class YoutubeAddChannel extends Command
             $c->videos = data_get($item, 'statistics.videoCount');
 
             $c->save();
-            echo($c->key.' => ['.$c->id.']'.$c->name.' '.PHP_EOL);
+            echo($c->code.' => ['.$c->id.']'.$c->name.' '.PHP_EOL);
         }
 
         return 0;

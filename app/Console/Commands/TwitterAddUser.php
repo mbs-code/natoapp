@@ -52,10 +52,10 @@ class TwitterAddUser extends Command
         $items = TwitterAPI::getUsersLookup($params);
 
         foreach ($items as $item) {
-            $twid = $item->id_str;
+            $code = $item->id_str;
 
-            $twitter = Twitter::firstOrNew(['key' => $twid]);
-            $twitter->key = $twid;
+            $twitter = Twitter::firstOrNew(['code' => $code]);
+            $twitter->code = $code;
             $twitter->name = $item->name;
             $twitter->screen_name = $item->screen_name;
             $twitter->location = $item->location;
