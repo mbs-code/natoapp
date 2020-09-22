@@ -9,7 +9,7 @@ class ProfileTag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'color'];
 
     protected $dates = [
         'created_at',

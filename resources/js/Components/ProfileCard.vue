@@ -14,7 +14,7 @@
             outlined
             label
             small
-            color="primary"
+            :color="tag.color"
           >
             {{ tag.name }}
           </v-chip>
