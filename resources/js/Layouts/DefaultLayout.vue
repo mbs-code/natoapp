@@ -23,7 +23,13 @@
     </v-navigation-drawer>
 
     <!-- Top Appbar -->
-    <v-app-bar app color="green" clipped-left dense dark>
+    <v-app-bar
+      app
+      color="green"
+      clipped-left
+      dense
+      dark
+    >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>natoapp</v-toolbar-title>
     </v-app-bar>
