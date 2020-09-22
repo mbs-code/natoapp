@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProfilablesTable extends Migration
+class CreateTagProfileTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateProfilablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('profilables', function (Blueprint $table) {
+        Schema::create('tag_profile', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
-            $table->morphs('profilable');
+            $table->unsignedBigInteger('profile_tag_id');
 
             $table->datetime('created_at')->nullable(); // system
             // $table->datetime('updated_at')->nullable(); // system
@@ -30,6 +30,6 @@ class CreateProfilablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profilables');
+        Schema::dropIfExists('tag_profile');
     }
 }

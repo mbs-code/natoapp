@@ -9,7 +9,7 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'thumbnail_url'];
+    protected $fillable = ['name', 'description', 'thumbnail_url', 'tags'];
 
     protected $dates = [
         'published_at',
@@ -20,11 +20,19 @@ class Profile extends Model
 
     public function twitters()
     {
-        return $this->morphedByMany('App\Models\Twitter', 'profilable')->withPivot('created_at');
+        return $this->morphedByMany('App\Models\Twitter', 'profilable')
+            ->withPivot('created_at');
     }
 
     public function channels()
     {
-        return $this->morphedByMany('App\Models\Channel', 'profilable')->withPivot('created_at');
+        return $this->morphedByMany('App\Models\Channel', 'profilable')
+            ->withPivot('created_at');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\ProfileTag', 'tag_profile')
+            ->withPivot('created_at');
     }
 }

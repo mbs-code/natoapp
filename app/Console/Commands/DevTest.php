@@ -6,6 +6,7 @@ use App\Models\Channel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use App\Models\Profile;
+use App\Models\ProfileTag;
 use App\Models\Twitter;
 use Illuminate\Support\Facades\DB;
 
@@ -80,6 +81,13 @@ class DevTest extends Command
 
                 $profa->twitters()->syncWithoutDetaching($twa); // 存在してないなら追加
                 $profa->channels()->syncWithoutDetaching($yta);
+
+
+                $tagi = ProfileTag::firstOrCreate(['name' => 'アイドル部']);
+                $tagh = ProfileTag::firstOrCreate(['name' => 'ホロライブ']);
+                $tag3 = ProfileTag::firstOrCreate(['name' => '3D']);
+                $profn->tags()->syncWithoutDetaching([$tagi->id, $tag3->id]);
+                $profa->tags()->syncWithoutDetaching([$tagh->id, $tag3->id]);
             });
         }
 
