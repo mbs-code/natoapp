@@ -7,8 +7,17 @@
       <v-list-item-content>
         <v-list-item-title class="headline">{{ profile.name }}</v-list-item-title>
         <v-list-item-subtitle>
-          text line
-          <!-- <a class="normal-link" :href="twitter.screen_name | toTwitterUserLink">@{{ twitter.screen_name }}</a> -->
+          <v-chip
+            v-for="tag in profile.tags"
+            :key="tag.id"
+            class="ma-2"
+            outlined
+            label
+            small
+            color="primary"
+          >
+            {{ tag.name }}
+          </v-chip>
         </v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>

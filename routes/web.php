@@ -22,7 +22,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/profile', function () {
-    $profiles = Profile::with(['twitters', 'channels'])->get();
+    $profiles = Profile::with(['twitters', 'channels', 'tags'])->get();
     return Inertia::render('Profile/Index', ['profiles' => $profiles]);
 })->name('profile');
 
