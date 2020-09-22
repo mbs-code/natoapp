@@ -68,6 +68,10 @@ class DevTest extends Command
                 $profn->twitters()->syncWithoutDetaching($twn); // 存在してないなら追加
                 $profn->channels()->syncWithoutDetaching($ytn);
 
+                $tagi = ProfileTag::firstOrCreate(['name' => 'アイドル部']);
+                $tag3 = ProfileTag::firstOrCreate(['name' => '3D']);
+                $profn->tags()->syncWithoutDetaching([$tagi->id, $tag3->id]);
+
                 ///
 
                 $twa = Twitter::where(['screen_name' => 'minatoaqua'])->first();
@@ -82,11 +86,7 @@ class DevTest extends Command
                 $profa->twitters()->syncWithoutDetaching($twa); // 存在してないなら追加
                 $profa->channels()->syncWithoutDetaching($yta);
 
-
-                $tagi = ProfileTag::firstOrCreate(['name' => 'アイドル部']);
                 $tagh = ProfileTag::firstOrCreate(['name' => 'ホロライブ']);
-                $tag3 = ProfileTag::firstOrCreate(['name' => '3D']);
-                $profn->tags()->syncWithoutDetaching([$tagi->id, $tag3->id]);
                 $profa->tags()->syncWithoutDetaching([$tagh->id, $tag3->id]);
             });
         }

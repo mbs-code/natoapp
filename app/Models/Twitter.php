@@ -20,6 +20,10 @@ class Twitter extends Model
         'deleted_at'
     ];
 
+    protected $dasts = [
+        'protected' => 'boolean',
+    ];
+
     public function profiles()
     {
         return $this->morphToMany('App\Models\Profile', 'profilable');
