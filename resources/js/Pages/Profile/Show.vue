@@ -1,10 +1,9 @@
 <template>
   <v-row justify="start">
-    <v-col cols="auto">
+    <v-col cols="12">
       <ProfileCard :profile="profile" />
     </v-col>
-    <v-col cols="4">pad</v-col>
-    <v-col cols="auto">
+    <v-col cols="12">
       <v-card>
         <v-tabs v-model="showTabKey" class="pa-2">
           <template v-for="tab of tabs">
@@ -23,7 +22,11 @@
               transition="fade-transition"
               reverse-transition="fade-transition"
             >
-              {{ tab.value }}
+              <TwitterTab v-if="tab.type === 'twitter'" :twitter="tab.item" />
+              <YoutubeTab v-else-if="tab.type === 'youtube'" :youtube="tab.item" />
+              <div v-else>
+                {{ tab.item }} <!-- !!! error !!! -->
+              </div>
             </v-tab-item>
           </template>
         </v-tabs>
@@ -35,11 +38,13 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ProfileCard from '@/Components/ProfileCard'
+import TwitterTab from '@/Components/ProfileTabs/TwitterTab'
+import YoutubeTab from '@/Components/ProfileTabs/YoutubeTab'
 
 export default {
   layout: DefaultLayout,
 
-  components: { ProfileCard },
+  components: { ProfileCard, TwitterTab, YoutubeTab },
 
   props: {
     profile: {
@@ -67,7 +72,7 @@ export default {
           key: 'twitter-' + (i + 1),
           icon: 'mdi-twitter',
           name: '@' + twitter.screen_name,
-          value: twitter,
+          item: twitter,
         })
       }
 
@@ -79,7 +84,7 @@ export default {
           key: 'youtube-' + (i + 1),
           icon: 'mdi-youtube',
           name: youtube.name,
-          value: youtube,
+          item: youtube,
         })
       }
       return tabs
