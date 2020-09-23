@@ -6,14 +6,24 @@
     <v-col cols="4">pad</v-col>
     <v-col cols="auto">
       <v-card>
-        <v-tabs v-model="tab" class="pa-2">
-          <template v-for="profileTab of profileTabs">
-            <v-tab :key="profileTab.key" :href="'#' + profileTab.key">
-              <v-icon left>{{ profileTab.icon }}</v-icon>
-              {{ profileTab.name }}
+        <v-tabs v-model="showTabKey" class="pa-2">
+          <template v-for="tab of tabs">
+            <v-tab
+              :key="tab.key"
+              :href="'#' + tab.key"
+              class="text-capitalize"
+            >
+              <v-icon left>{{ tab.icon }}</v-icon>
+              {{ tab.name }}
             </v-tab>
-            <v-tab-item :key="profileTab.key" :value="profileTab.key" class="pa-2">
-              {{ profileTab.value }}
+            <v-tab-item
+              :key="tab.key"
+              :value="tab.key"
+              class="pa-2"
+              transition="fade-transition"
+              reverse-transition="fade-transition"
+            >
+              {{ tab.value }}
             </v-tab-item>
           </template>
         </v-tabs>
@@ -40,12 +50,12 @@ export default {
 
   data: () => {
     return {
-      tab: null, // tab name
+      showTabKey: null, // tab name
     }
   },
 
   computed: {
-    profileTabs: function () {
+    tabs: function () {
       const tabs = []
       const profile = this.profile
 
@@ -56,7 +66,7 @@ export default {
           type: 'twitter',
           key: 'twitter-' + (i + 1),
           icon: 'mdi-twitter',
-          name: '@' + twitter.name,
+          name: '@' + twitter.screen_name,
           value: twitter,
         })
       }
@@ -68,7 +78,7 @@ export default {
           type: 'youtube',
           key: 'youtube-' + (i + 1),
           icon: 'mdi-youtube',
-          name: '@' + youtube.name,
+          name: youtube.name,
           value: youtube,
         })
       }
@@ -77,3 +87,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.v-tabs-bar__content {
+  border-bottom: solid 1px lightgrey;
+}
+</style>
