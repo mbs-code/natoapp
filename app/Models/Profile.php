@@ -24,9 +24,9 @@ class Profile extends Model
             ->withPivot('created_at');
     }
 
-    public function channels()
+    public function youtubes()
     {
-        return $this->morphedByMany('App\Models\Channel', 'profilable')
+        return $this->morphedByMany('App\Models\Youtube', 'profilable')
             ->withPivot('created_at');
     }
 

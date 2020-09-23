@@ -15,7 +15,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $profiles = Profile::with(['twitters', 'channels', 'tags'])->get();
+        $profiles = Profile::with(['twitters', 'youtubes', 'tags'])->get();
         return Inertia::render('Profile/Index', ['profiles' => $profiles]);
     }
 
@@ -27,7 +27,7 @@ class ProfileController extends Controller
      */
     public function show(Profile $profile)
     {
-        $profile->load(['twitters', 'channels', 'tags']);
+        $profile->load(['twitters', 'youtubes', 'tags']);
         return Inertia::render('Profile/Show', ['profile' => $profile]);
     }
 

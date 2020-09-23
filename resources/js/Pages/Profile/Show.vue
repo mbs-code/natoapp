@@ -61,9 +61,9 @@ export default {
         })
       }
 
-      const channels = profile.channels || []
-      for (let i = 0; i < channels.length; i++) {
-        const youtube = channels[i]
+      const youtubes = profile.youtubes || []
+      for (let i = 0; i < youtubes.length; i++) {
+        const youtube = youtubes[i]
         tabs.push({
           type: 'youtube',
           key: 'youtube-' + (i + 1),

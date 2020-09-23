@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChannelsTable extends Migration
+class CreateYoutubesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateChannelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('channels', function (Blueprint $table) {
+        Schema::create('youtubes', function (Blueprint $table) {
             $table->id();
             $table->string('code', 32)->unique(); // UCxxx
             $table->string('name', 255);
@@ -42,5 +42,6 @@ class CreateChannelsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('channels');
+        Schema::dropIfExists('youtubes');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
-use App\Models\Channel;
+use App\Models\Youtube;
 use App\lib\Util;
 
 class YoutubeAddChannel extends Command
@@ -54,23 +54,23 @@ class YoutubeAddChannel extends Command
         foreach ($items as $item) {
             $code = data_get($item, 'id');
 
-            $c = Channel::firstOrNew(['code' => $code]);
-            $c->code = $code;
-            $c->name = data_get($item, 'snippet.title');
-            $c->description = data_get($item, 'snippet.description');
-            $c->playlist = data_get($item, 'contentDetails.relatedPlaylists.uploads');
-            $c->thumbnail_url = $this->chooseYoutubeThumbnail(data_get($item, 'snippet.thumbnails'));
-            $c->banner_url = data_get($item, 'brandingSettings.image.bannerTvHighImageUrl');
+            $y = Youtube::firstOrNew(['code' => $code]);
+            $y->code = $code;
+            $y->name = data_get($item, 'snippet.title');
+            $y->description = data_get($item, 'snippet.description');
+            $y->playlist = data_get($item, 'contentDetails.relatedPlaylists.uploads');
+            $y->thumbnail_url = $this->chooseYoutubeThumbnail(data_get($item, 'snippet.thumbnails'));
+            $y->banner_url = data_get($item, 'brandingSettings.image.bannerTvHighImageUrl');
 
-            $c->published_at = Util::UTCToLocalCarbon(data_get($item, 'snippet.publishedAt'));
+            $y->published_at = Util::UTCToLocalCarbon(data_get($item, 'snippet.publishedAt'));
 
-            $c->views = data_get($item, 'statistics.viewCount');
-            $c->comments = data_get($item, 'statistics.commentCount');
-            $c->subscribers = data_get($item, 'statistics.subscriberCount');
-            $c->videos = data_get($item, 'statistics.videoCount');
+            $y->views = data_get($item, 'statistics.viewCount');
+            $y->comments = data_get($item, 'statistics.commentCount');
+            $y->subscribers = data_get($item, 'statistics.subscriberCount');
+            $y->videos = data_get($item, 'statistics.videoCount');
 
-            $c->save();
-            echo($c->code.' => ['.$c->id.']'.$c->name.' '.PHP_EOL);
+            $y->save();
+            echo($y->code.' => ['.$y->id.']'.$y->name.' '.PHP_EOL);
         }
 
         return 0;

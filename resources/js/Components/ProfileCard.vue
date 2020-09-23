@@ -62,7 +62,7 @@
           {{ twitter.followers | numberDigit }}
         </span>
       </v-row>
-      <v-row v-for="youtube in profile.channels" :key="youtube.id" class="mx-0" align="center">
+      <v-row v-for="youtube in profile.youtubes" :key="youtube.id" class="mx-0" align="center">
         <v-btn
           class="ma-2"
           outlined

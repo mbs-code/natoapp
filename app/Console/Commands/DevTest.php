@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Channel;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use App\Models\Profile;
 use App\Models\ProfileTag;
 use App\Models\Twitter;
-use Illuminate\Support\Facades\DB;
+use App\Models\Youtube;
 
 class DevTest extends Command
 {
@@ -57,7 +57,7 @@ class DevTest extends Command
 
             DB::transaction(function () {
                 $twn = Twitter::where(['screen_name' => 'YaezawaNatori'])->first();
-                $ytn = Channel::where(['code' => 'UC1519-d1jzGiL1MPTxEdtSA'])->first();
+                $ytn = Youtube::where(['code' => 'UC1519-d1jzGiL1MPTxEdtSA'])->first();
 
                 $profn = Profile::firstOrNew(['name' => '八重沢なとり']);
                 $profn->name = '八重沢なとり';
@@ -66,12 +66,12 @@ class DevTest extends Command
                 $profn->save();
 
                 $profn->twitters()->syncWithoutDetaching($twn); // 存在してないなら追加
-                $profn->channels()->syncWithoutDetaching($ytn);
+                $profn->youtubes()->syncWithoutDetaching($ytn);
 
                 ///
 
                 $twa = Twitter::where(['screen_name' => 'minatoaqua'])->first();
-                $yta = Channel::where(['code' => 'UC1opHUrw8rvnsadT-iGp7Cg'])->first();
+                $yta = Youtube::where(['code' => 'UC1opHUrw8rvnsadT-iGp7Cg'])->first();
 
                 $profa = Profile::firstOrNew(['name' => '湊あくあ']);
                 $profa->name = '湊あくあ';
@@ -80,7 +80,7 @@ class DevTest extends Command
                 $profa->save();
 
                 $profa->twitters()->syncWithoutDetaching($twa); // 存在してないなら追加
-                $profa->channels()->syncWithoutDetaching($yta);
+                $profa->youtubes()->syncWithoutDetaching($yta);
 
                 ///
 

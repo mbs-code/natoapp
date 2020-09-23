@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Models\Twitter;
-use App\Models\Channel;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Models\Twitter;
+use App\Models\Youtube;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ Route::get('/twitter', function () {
 })->name('twitter');
 
 Route::get('/youtube', function () {
-    $youtubes = Channel::all();
+    $youtubes = Youtube::all();
     return Inertia::render('Youtube/Index', ['youtubes' => $youtubes]);
 })->name('youtube');
 
