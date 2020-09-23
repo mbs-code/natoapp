@@ -1,12 +1,16 @@
 <template>
   <v-card>
-    <v-tabs v-model="showTabKey" class="pa-2">
+    <v-tabs
+      v-model="showTabKey"
+      class="pa-2"
+      :color="tabColor"
+      show-arrows
+    >
       <template v-for="tab of tabs">
         <v-tab
           :key="tab.key"
           :href="'#' + tab.key"
           class="text-capitalize"
-          color="red"
         >
           <v-icon left>{{ tab.icon }}</v-icon>
           {{ tab.name }}
@@ -20,9 +24,7 @@
         >
           <TwitterTab v-if="tab.type === 'twitter'" :twitter="tab.item" />
           <YoutubeTab v-else-if="tab.type === 'youtube'" :youtube="tab.item" />
-          <div v-else>
-            {{ tab.item }} <!-- !!! error !!! -->
-          </div>
+          <div v-else>no content</div>
         </v-tab-item>
       </template>
     </v-tabs>
@@ -50,6 +52,16 @@ export default {
   },
 
   computed: {
+    tabColor: function () {
+      const type = String(this.showTabKey)
+      if (type.startsWith('twitter')) {
+        return 'light-blue'
+      } else if (type.startsWith('youtube')) {
+        return 'red'
+      }
+      return 'grey'
+    },
+
     tabs: function () {
       const tabs = []
       const profile = this.profile
