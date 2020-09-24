@@ -97,10 +97,10 @@ import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
   filters: {
-    toTwitterUserLink: (userName) => {
+    toTwitterUserLink: function (userName) {
       return 'https://twitter.com/' + userName
     },
-    toYoutubeChannelLink: (channelId) => {
+    toYoutubeChannelLink: function (channelId) {
       return 'https://www.youtube.com/channel/' + channelId
     },
   },

@@ -47,14 +47,16 @@
 
 <script>
 export default {
-  data: () => ({
-    drawer: true,
-    links: [
-      { icon: 'mdi-home', text: 'Home', route: 'home' },
-      { icon: 'mdi-card-account-details', text: 'Profile', route: 'profiles.index' },
-      { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
-      { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
-    ],
-  }),
+  data: function () {
+    return {
+      drawer: true,
+      links: [
+        { icon: 'mdi-home', text: 'Home', route: 'home' },
+        { icon: 'mdi-card-account-details', text: 'Profile', route: 'profiles.index' },
+        { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
+        { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
+      ],
+    }
+  },
 }
 </script>

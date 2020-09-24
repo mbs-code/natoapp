@@ -45,7 +45,7 @@ export default {
     },
   },
 
-  data: () => {
+  data: function () {
     return {
       showTabKey: null, // tab name
     }

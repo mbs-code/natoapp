@@ -27,7 +27,7 @@ import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
   filters: {
-    toTwitterUserLink: (userName) => {
+    toTwitterUserLink: function (userName) {
       return 'https://twitter.com/' + userName
     },
   },

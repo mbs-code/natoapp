@@ -29,7 +29,7 @@ import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
   filters: {
-    toYoutubeChannelLink: (channelId) => {
+    toYoutubeChannelLink: function (channelId) {
       return 'https://www.youtube.com/channel/' + channelId
     },
   },
