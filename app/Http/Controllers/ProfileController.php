@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -60,7 +61,8 @@ class ProfileController extends Controller
      */
     public function edit(Profile $profile)
     {
-        //
+        $profile->load(['twitters', 'youtubes', 'tags']);
+        return Inertia::render('Profile/Edit', ['profile' => $profile]);
     }
 
     /**
@@ -72,7 +74,14 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Profile $profile)
     {
-        //
+        $profile->update(
+            Request::validate([
+                'name' => ['required', 'max:100'],
+            ])
+        );
+
+        session()->push('messages', 'Profiles updated.');
+        return Redirect::route('profiles.show', $profile);
     }
 
     /**
