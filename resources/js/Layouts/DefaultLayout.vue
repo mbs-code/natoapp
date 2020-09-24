@@ -56,6 +56,26 @@ export default {
         { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
         { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
       ],
+      snackbar: true,
+    }
+  },
+
+  updated: function () {
+    // message flash
+    // ref: https://readouble.com/laravel/8.x/ja/session.html
+    // 定義は App/Helpers/Helper::messageFlash()
+    const toasts = this.$page.flash.toasts
+    if (toasts) {
+      for (const item of toasts) {
+        const type = item.type || 'info'
+        const text = item.text || '!!! no-text !!!'
+
+        const toast = this.$toast[type]
+        if (!toast) {
+          throw new ReferenceError(`"${type}" toast is not defined.`)
+        }
+        toast(text)
+      }
     }
   },
 }

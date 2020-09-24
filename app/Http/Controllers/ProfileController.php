@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Profile;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Redirect;
+use App\Helpers\Helper;
+use App\Models\Profile;
 
 class ProfileController extends Controller
 {
@@ -80,7 +81,7 @@ class ProfileController extends Controller
             ])
         );
 
-        session()->push('messages', 'Profiles updated.');
+        Helper::messageFlash('profile updated', 'success');
         return Redirect::route('profiles.show', $profile);
     }
 

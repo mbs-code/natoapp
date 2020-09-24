@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { Inertia } from '@inertiajs/inertia'
 import DefaultLayout from '@/Layouts/DefaultLayout'
 
 export default {

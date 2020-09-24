@@ -1,5 +1,8 @@
+/* eslint-disable prettier-vue/prettier */
+
 const mix = require('laravel-mix')
 require('laravel-mix-alias')
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,6 +14,12 @@ require('laravel-mix-alias')
  | file for the application as well as bundling up all the JS files.
  |
  */
+
+mix.webpackConfig({
+  plugins: [
+    new VuetifyLoaderPlugin(),
+  ],
+});
 
 mix.alias({
   '@': '/resources/js',
