@@ -6,12 +6,14 @@ class Helper
 {
     /**
      * session に flash message を決まった形で追加する.
+     *
+     * vue への受け渡しは App/Providers/AppServideProvider
      */
-    public static function messageFlash(string $string, string $type)
+    public static function messageFlash(string $message, string $type)
     {
         $flash = array(
-            "type" => $type,
-            "text" => $string,
+            "type" => $type, // info, success, error
+            "message" => $message,
         );
         session()->push('toasts', $flash);
     }

@@ -37,8 +37,9 @@
     },
     "dependencies": {
         "date-fns": "^2.16.1",
+        "delay": "^4.4.0",
         "laravel-mix-alias": "^1.0.2",
-        "vuetify": "^2.3.10",
-        "vuetify-toast-snackbar-ng": "^0.7.3"
+        "v-snackbars": "^3.1.0",
+        "vuetify": "^2.3.10"
     }
 }

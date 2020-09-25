@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DebugController;
 use App\Models\Twitter;
 use App\Models\Youtube;
 
@@ -32,6 +33,8 @@ Route::get('/youtube', function () {
     $youtubes = Youtube::all();
     return Inertia::render('Youtube/Index', ['youtubes' => $youtubes]);
 })->name('youtube');
+
+Route::post('/debug/toast', [DebugController::class, 'toast'])->name('debug.toast');
 
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

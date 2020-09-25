@@ -38,6 +38,8 @@
 
     <!-- Page Content -->
     <v-main>
+      <FlashToast ref="toast" />
+
       <v-container fluid>
         <slot />
       </v-container>
@@ -46,7 +48,11 @@
 </template>
 
 <script>
+import FlashToast from '@/Layouts/Shares/FlashToast'
+
 export default {
+  components: { FlashToast },
+
   data: function () {
     return {
       drawer: true,
@@ -56,26 +62,16 @@ export default {
         { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
         { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
       ],
-      snackbar: true,
+      objects: [],
     }
   },
 
   updated: function () {
     // message flash
-    // ref: https://readouble.com/laravel/8.x/ja/session.html
     // 定義は App/Helpers/Helper::messageFlash()
-    const toasts = this.$page.flash.toasts
-    if (toasts) {
-      for (const item of toasts) {
-        const type = item.type || 'info'
-        const text = item.text || '!!! no-text !!!'
-
-        const toast = this.$toast[type]
-        if (!toast) {
-          throw new ReferenceError(`"${type}" toast is not defined.`)
-        }
-        toast(text)
-      }
+    const items = this.$page.flash.toasts
+    if (items) {
+      this.$refs.toast.appendToast(items)
     }
   },
 }
