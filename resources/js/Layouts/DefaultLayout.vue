@@ -38,11 +38,9 @@
 
     <!-- Page Content -->
     <v-main>
-      <FlashToast ref="toast" />
+      <FlashToast id="toast" ref="toast" />
 
-      <v-container fluid>
-        <slot />
-      </v-container>
+      <slot />
     </v-main>
   </v-app>
 </template>

@@ -8,10 +8,11 @@
 
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
+import ContainerLayout from '@/Layouts/ContainerLayout'
 import YoutubeCard from '@/Components/YoutubeCard'
 
 export default {
-  layout: DefaultLayout,
+  layout: [DefaultLayout, ContainerLayout],
 
   components: { YoutubeCard },
 

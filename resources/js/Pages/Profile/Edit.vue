@@ -13,9 +13,10 @@
 
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
+import ContainerLayout from '@/Layouts/ContainerLayout'
 
 export default {
-  layout: DefaultLayout,
+  layout: [DefaultLayout, ContainerLayout],
 
   props: {
     profile: {

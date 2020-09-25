@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col v-for="profile of profiles" :key="profile.id" cols="auto">
+    <v-col v-for="profile of profiles" :key="profile.id" cols="12">
       <ProfileCard :profile="profile" :has-link="true" />
     </v-col>
   </v-row>
@@ -8,12 +8,13 @@
 
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
+import ContainerLayout from '@/Layouts/ContainerLayout'
 import ProfileCard from '@/Components/ProfileCard'
 
 export default {
-  components: { ProfileCard },
+  layout: [DefaultLayout, ContainerLayout],
 
-  layout: DefaultLayout,
+  components: { ProfileCard },
 
   props: {
     profiles: {

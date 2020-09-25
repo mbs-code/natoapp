@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" width="640">
+  <v-card class="mx-auto">
     <v-list-item>
       <v-list-item-avatar color="grey" size="64">
         <img :src="profile.thumbnail_url" alt="profile">

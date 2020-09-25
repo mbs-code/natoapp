@@ -9,10 +9,11 @@
 
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
+import ContainerLayout from '@/Layouts/ContainerLayout'
 import ToastTestButton from '@/Components/Debugs/ToastTestButton'
 
 export default {
-  layout: DefaultLayout,
+  layout: [DefaultLayout, ContainerLayout],
 
   components: { ToastTestButton },
 }

@@ -8,10 +8,11 @@
 
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
+import ContainerLayout from '@/Layouts/ContainerLayout'
 import TwitterCard from '@/Components/TwitterCard'
 
 export default {
-  layout: DefaultLayout,
+  layout: [DefaultLayout, ContainerLayout],
 
   components: { TwitterCard },
 
