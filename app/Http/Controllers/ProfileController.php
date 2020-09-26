@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as FacadeRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
@@ -41,18 +41,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return Inertia::render('Profile/Edit');
     }
 
     /**
@@ -65,6 +54,24 @@ class ProfileController extends Controller
     {
         $profile->load(['twitters', 'youtubes', 'tags']);
         return Inertia::render('Profile/Edit', ['profile' => $profile]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $profile = Profile::create(
+            FacadeRequest::validate([
+                'name' => ['required', 'max:100'],
+                'description' => ['nullable', 'max:65535'],
+                'thumbnail_url' => ['nullable', 'max:255'],
+            ])
+        );
+        return Redirect::route('profiles.show', $profile);
     }
 
     /**

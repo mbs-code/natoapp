@@ -43,13 +43,16 @@ export default {
   },
 
   data: function () {
+    const profile = this.profile || {}
+    const id = profile.id
+
     return {
       form: this.$inertia.form(
         {
-          _method: 'PUT',
-          name: this.profile.name,
-          description: this.profile.description,
-          thumbnail_url: this.profile.thumbnail_url,
+          _method: id ? 'PUT' : 'POST',
+          name: profile.name,
+          description: profile.description,
+          thumbnail_url: profile.thumbnail_url,
         },
         {
           bag: 'onSubmit',
@@ -61,11 +64,13 @@ export default {
 
   computed: {
     imageUrls: function () {
+      const profile = this.profile || {}
+
       const urls = []
-      const twitters = (this.profile.twitters || []).map((e) => e.thumbnail_url)
+      const twitters = (profile.twitters || []).map((e) => e.thumbnail_url)
       urls.push(...twitters)
 
-      const youtubes = (this.profile.youtubes || []).map((e) => e.thumbnail_url)
+      const youtubes = (profile.youtubes || []).map((e) => e.thumbnail_url)
       urls.push(...youtubes)
       return urls
     },
@@ -73,8 +78,11 @@ export default {
 
   methods: {
     onSubmit: function () {
-      const id = this.profile.id
-      this.form.post(this.route('profiles.update', { id }), {
+      const profile = this.profile || {}
+      const id = profile.id
+
+      const url = id ? this.route('profiles.update', { id }) : this.route('profiles.store')
+      this.form.post(url, {
         preserveScroll: true,
       })
     },
