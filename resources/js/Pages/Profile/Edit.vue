@@ -2,9 +2,23 @@
   <v-form @submit.prevent="onSubmit">
     <v-text-field
       v-model="form.name"
-      :counter="10"
       label="name"
       required
+      counter="32"
+    />
+
+    <v-textarea
+      v-model="form.description"
+      label="description"
+      required
+      counter="32"
+    />
+
+    <VImageSelect
+      v-model="form.thumbnail_url"
+      label="thumbnail"
+      :size="100"
+      :image-urls="imageUrls"
     />
 
     <v-btn type="submit">submit</v-btn>
@@ -14,9 +28,12 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
+import VImageSelect from '@/COmponents/Forms/VImageSelect'
 
 export default {
   layout: [DefaultLayout, ContainerLayout],
+
+  components: { VImageSelect },
 
   props: {
     profile: {
@@ -31,8 +48,8 @@ export default {
         {
           _method: 'PUT',
           name: this.profile.name,
-          // email: this.email,
-          // photo: null,
+          description: this.profile.description,
+          thumbnail_url: this.profile.thumbnail_url,
         },
         {
           bag: 'onSubmit',
@@ -40,6 +57,18 @@ export default {
         }
       ),
     }
+  },
+
+  computed: {
+    imageUrls: function () {
+      const urls = []
+      const twitters = (this.profile.twitters || []).map((e) => e.thumbnail_url)
+      urls.push(...twitters)
+
+      const youtubes = (this.profile.youtubes || []).map((e) => e.thumbnail_url)
+      urls.push(...youtubes)
+      return urls
+    },
   },
 
   methods: {

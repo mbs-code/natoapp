@@ -1,12 +1,14 @@
 <template>
   <ContainerLayout>
     <template v-slot:toolbar>
-      <v-btn
-        :href="route('profiles.edit', { id: profile.id })"
-        @click.stop.prevent="$inertia.visit(route('profiles.edit', { id: profile.id }))"
-      >
-        <v-icon color="grey darken-2">mdi-pencil-box</v-icon>
-      </v-btn>
+      <v-row no-gutters justify="end">
+        <v-btn
+          :href="route('profiles.edit', { id: profile.id })"
+          @click.stop.prevent="$inertia.visit(route('profiles.edit', { id: profile.id }))"
+        >
+          <v-icon color="grey darken-2">mdi-pencil-box</v-icon>
+        </v-btn>
+      </v-row>
     </template>
 
     <v-row justify="start">

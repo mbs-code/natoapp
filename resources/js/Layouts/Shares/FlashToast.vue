@@ -48,7 +48,7 @@ export default {
             color: design.color,
             text: message,
           },
-          top: true,
+          bottom: true,
           right: true,
           color: design.background || 'grey darken-4',
           timeout: design.timeout,

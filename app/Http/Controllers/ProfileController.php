@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Request;
+use \Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request as FacadeRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Profile;
@@ -76,12 +77,14 @@ class ProfileController extends Controller
     public function update(Request $request, Profile $profile)
     {
         $profile->update(
-            Request::validate([
+            FacadeRequest::validate([
                 'name' => ['required', 'max:100'],
+                'description' => ['nullable', 'max:65535'],
+                'thumbnail_url' => ['nullable', 'max:255'],
             ])
         );
 
-        Helper::messageFlash('profile updated', 'success');
+        Helper::messageFlash('プロファイルを更新しました。', 'success');
         return Redirect::route('profiles.show', $profile);
     }
 
