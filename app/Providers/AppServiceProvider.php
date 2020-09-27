@@ -25,6 +25,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // error bag
+        Inertia::share([
+            'errors' => function () {
+                return Session::get('errors')
+                    ? Session::get('errors')->getBag('default')->getMessages()
+                    : (object) [];
+            },
+        ]);
+
         // inertia に渡したら session の値を消す
         Inertia::share('flash', function () {
             return [

@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as FacadeRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Profile;
+use App\Models\ProfileTag;
+use App\Rules\OrRules;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -41,7 +43,7 @@ class ProfileController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Profile/Edit');
+        return $this->edit(new Profile());
     }
 
     /**
@@ -53,7 +55,9 @@ class ProfileController extends Controller
     public function edit(Profile $profile)
     {
         $profile->load(['twitters', 'youtubes', 'tags']);
-        return Inertia::render('Profile/Edit', ['profile' => $profile]);
+        $tags = ProfileTag::all();
+
+        return Inertia::render('Profile/Edit', ['profile' => $profile, 'tags' => $tags]);
     }
 
     /**
@@ -64,14 +68,7 @@ class ProfileController extends Controller
      */
     public function store(Request $request)
     {
-        $profile = Profile::create(
-            FacadeRequest::validate([
-                'name' => ['required', 'max:100'],
-                'description' => ['nullable', 'max:65535'],
-                'thumbnail_url' => ['nullable', 'max:255'],
-            ])
-        );
-        return Redirect::route('profiles.show', $profile);
+        return $this->update($request, new Profile());
     }
 
     /**
@@ -83,15 +80,45 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Profile $profile)
     {
-        $profile->update(
-            FacadeRequest::validate([
-                'name' => ['required', 'max:100'],
-                'description' => ['nullable', 'max:65535'],
-                'thumbnail_url' => ['nullable', 'max:255'],
-            ])
-        );
+        DB::transaction(function () use ($request, $profile)
+        {
+            // Profile
+            $profile->fill(
+                $request->validate([
+                    // 'id' => ['required', ''],
+                    'name' => ['required', 'max:100'],
+                    'description' => ['nullable', 'max:65535'],
+                    'thumbnail_url' => ['nullable', 'max:255'],
+                ])
+            );
+            $profile->save();
 
-        Helper::messageFlash('プロファイルを更新しました。', 'success');
+            // ProfileTag
+            $tagProps = $request->validate([
+                'tags' => ['array'],
+                'tags.*' => [new OrRules(['string', 'array'])],
+                'tags.*.id' => ['sometimes', 'exists:App\Models\ProfileTag'], // ProfileTag のとき
+            ]);
+
+            // tag id を抽出していく
+            $tagIds = collect($tagProps['tags'])->map(function ($tag) {
+                $tid = data_get($tag, 'id');
+                if ($tid === null) {
+                    // ID が無いなら作成する
+                    $dbTag = ProfileTag::firstOrCreate(['name' => $tag ]);
+                    $tid = $dbTag->id;
+                }
+                return $tid;
+            });
+
+            // sync tags
+            $profile->tags()->sync($tagIds);
+        });
+
+        $message = $profile->wasRecentlyCreated
+            ? 'プロファイルを更新しました。'
+            : 'プロファイルを更新しました。';
+        Helper::messageFlash($message, 'success');
         return Redirect::route('profiles.show', $profile);
     }
 

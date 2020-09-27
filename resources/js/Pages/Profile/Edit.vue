@@ -1,5 +1,6 @@
 <template>
   <v-form @submit.prevent="onSubmit">
+    <div>{{ $page.errors }}</div>
     <v-text-field
       v-model="form.name"
       label="name"
@@ -21,6 +22,12 @@
       :image-urls="imageUrls"
     />
 
+    <VTagCombobox
+      v-model="form.tags"
+      label="tags"
+      :items="tags"
+    />
+
     <v-btn type="submit">submit</v-btn>
   </v-form>
 </template>
@@ -28,17 +35,23 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
-import VImageSelect from '@/COmponents/Forms/VImageSelect'
+import VImageSelect from '@/Components/Forms/VImageSelect'
+import VTagCombobox from '@/Components/forms/VTagCombobox'
 
 export default {
   layout: [DefaultLayout, ContainerLayout],
 
-  components: { VImageSelect },
+  components: { VImageSelect, VTagCombobox },
 
   props: {
     profile: {
       type: Object,
       default: () => {},
+    },
+    tags: {
+      // DBのタグ一覧
+      type: Array,
+      default: () => [],
     },
   },
 
@@ -53,6 +66,7 @@ export default {
           name: profile.name,
           description: profile.description,
           thumbnail_url: profile.thumbnail_url,
+          tags: profile.tags || [],
         },
         {
           bag: 'onSubmit',
