@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as FacadeRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use App\Helpers\Helper;
@@ -18,7 +17,7 @@ class DebugController extends Controller
      */
     public function toast(Request $request)
     {
-        $toast = FacadeRequest::validate([
+        $toast = $request->validate([
             'message' => ['required', 'max:100'],
             'type' => ['nullable', Rule::in(['info', 'success', 'error'])],
         ]);
