@@ -41,8 +41,8 @@ export default {
       const tw = this.twitter
       const f = this.$options.filters
 
+      items.push({ key: 'ID', value: '@' + tw.screen_name })
       items.push({ key: '名前', value: tw.name })
-      items.push({ key: '＠', value: tw.screen_name })
       items.push({ key: '備考', value: f.htmlLinker(tw.description), html: true })
       items.push({ key: '場所', value: tw.location })
       items.push({ key: 'リンク', value: f.htmlLinker(tw.url), html: true })
