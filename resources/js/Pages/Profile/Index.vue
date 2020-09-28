@@ -2,7 +2,12 @@
   <ContainerLayout>
     <template v-slot:toolbar>
       <v-row no-gutters justify="end">
+        <SwitchButton
+          v-model="buttonMode"
+          class="mx-1"
+        />
         <v-btn
+          class="mx-1"
           :href="route('profiles.create')"
           @click.stop.prevent="$inertia.visit(route('profiles.create'))"
         >
@@ -19,7 +24,7 @@
 
     <v-row justify="center">
       <v-col v-for="profile of profiles" :key="profile.id" cols="12">
-        <ProfileCard :profile="profile" :has-link="true" />
+        <ProfileCard :profile="profile" :button-mode="buttonMode" />
       </v-col>
     </v-row>
   </ContainerLayout>
@@ -28,18 +33,25 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
+import SwitchButton from '@/Components/CommonParts/SwitchButton'
 import ProfileCard from '@/Components/ProfileCard'
 
 export default {
   layout: [DefaultLayout],
 
-  components: { ContainerLayout, ProfileCard },
+  components: { ContainerLayout, SwitchButton, ProfileCard },
 
   props: {
     profiles: {
       type: Array,
       default: () => [],
     },
+  },
+
+  data: function () {
+    return {
+      buttonMode: true, // true で card のリンクを button にする
+    }
   },
 }
 </script>

@@ -130,6 +130,11 @@ class ProfileController extends Controller
      */
     public function destroy(Profile $profile)
     {
-        //
+        $name = $profile->name ?? 'プロファイル';
+        $profile->delete();
+
+        $message = '「'.$name.'」を削除しました。';
+        Helper::messageFlash($message, 'success');
+        return Redirect::back();
     }
 }
