@@ -3,8 +3,8 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TwitterController;
 use App\Http\Controllers\DebugController;
-use App\Models\Twitter;
 use App\Models\Youtube;
 
 /*
@@ -23,11 +23,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::resource('profiles', ProfileController::class);
-
-Route::get('/twitter', function () {
-    $twitters = Twitter::all();
-    return Inertia::render('Twitter/Index', ['twitters' => $twitters]);
-})->name('twitter');
+Route::resource('twitters', TwitterController::class);
 
 Route::get('/youtube', function () {
     $youtubes = Youtube::all();

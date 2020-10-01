@@ -57,7 +57,7 @@ export default {
       links: [
         { icon: 'mdi-home', text: 'Home', route: 'home' },
         { icon: 'mdi-card-account-details', text: 'Profile', route: 'profiles.index' },
-        { icon: 'mdi-twitter', text: 'Twitter', route: 'twitter' },
+        { icon: 'mdi-twitter', text: 'Twitter', route: 'twitters.index' },
         { icon: 'mdi-youtube', text: 'Youtube', route: 'youtube' },
       ],
       objects: [],
