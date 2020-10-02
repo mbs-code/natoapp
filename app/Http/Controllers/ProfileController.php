@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Profile;
 use App\Models\ProfileTag;
 use App\Rules\OrRules;
-use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
