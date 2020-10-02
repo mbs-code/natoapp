@@ -2,7 +2,7 @@
   <v-form ref="form" @submit.prevent="submit">
     <v-text-field
       v-model="form.screen_name"
-      label="screen_name"
+      label="@xxxxx"
       required
       counter="255"
       :error-messages="errors.screen_name"
