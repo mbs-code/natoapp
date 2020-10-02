@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use App\Helpers\Helper;
 use App\Models\Twitter;
 
 class TwitterController extends Controller
@@ -72,7 +75,23 @@ class TwitterController extends Controller
      */
     public function update(Request $request, Twitter $twitter)
     {
-        //
+        DB::transaction(function () use ($request, $twitter)
+        {
+            // twitter
+            $twitter->fill(
+                $request->validate([
+                    // 'id' => ['required', ''],
+                    'screen_name' => ['required', 'max:2'],
+                ])
+            );
+            $twitter->save();
+        });
+
+        $message = $twitter->wasRecentlyCreated
+            ? 'Twitter情報を更新しました。'
+            : 'Twitter情報を更新しました。';
+        Helper::messageFlash($message, 'success');
+        return Redirect::back();
     }
 
     /**

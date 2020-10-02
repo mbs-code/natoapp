@@ -7,7 +7,6 @@ import { InertiaForm } from 'laravel-jetstream'
 import PortalVue from 'portal-vue'
 
 import vuetify from './plugins/vuetify'
-import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(InertiaApp)
 Vue.use(InertiaForm)

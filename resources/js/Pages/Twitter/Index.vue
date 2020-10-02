@@ -41,8 +41,7 @@
           color="success"
           small
           outlined
-          :href="route('twitters.show', { id: item.id })"
-          @click.stop.prevent="$inertia.visit(route('twitters.edit', { id: item.id }))"
+          @click="openEditDialog(item)"
         >
           <v-icon small>mdi-pencil</v-icon>
         </v-btn>
@@ -57,6 +56,8 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
+import FormDialog from '@/Components/CommonParts/FormDialog'
+import EditTwitterForm from '@/Components/Forms/EditTwitterForm'
 import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
@@ -88,6 +89,17 @@ export default {
         { text: '公開日時', value: 'published_at' },
         { text: '', value: 'actions', sortable: false },
       ]
+    },
+  },
+  methods: {
+    openEditDialog: async function (item) {
+      const name = item.screen_name || 'プロファイル'
+      await this.$dialog.show(FormDialog, {
+        title: `${name} の編集`,
+        formComponent: EditTwitterForm,
+        item: item,
+        persistent: true,
+      })
     },
   },
 }
