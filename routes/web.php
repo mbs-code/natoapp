@@ -4,8 +4,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TwitterController;
+use App\Http\Controllers\YoutubeController;
 use App\Http\Controllers\DebugController;
-use App\Models\Youtube;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,11 +26,9 @@ Route::resource('profiles', ProfileController::class);
 Route::resource('twitters', TwitterController::class,
     ['only' => ['index', 'store', 'update', 'destroy']]
 );
-
-Route::get('/youtube', function () {
-    $youtubes = Youtube::all();
-    return Inertia::render('Youtube/Index', ['youtubes' => $youtubes]);
-})->name('youtube');
+Route::resource('youtubes', YoutubeController::class,
+    ['only' => ['index', 'store', 'update', 'destroy']]
+);
 
 Route::post('/debug/toast', [DebugController::class, 'toast'])->name('debug.toast');
 

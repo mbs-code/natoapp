@@ -20,6 +20,14 @@ class Youtube extends Model
         'deleted_at'
     ];
 
+    protected $appends = ['link'];
+
+    public function getLinkAttribute()
+    {
+        $code = $this->code;
+        return $code ? 'https://www.youtube.com/channel/'.$code : null;
+    }
+
     public function profiles()
     {
         return $this->morphToMany('App\Models\Profile', 'profilable');
