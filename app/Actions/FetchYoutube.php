@@ -20,23 +20,23 @@ class FetchYoutube {
         foreach ($items as $item) {
             $key = data_get($item, 'id');
 
-            $y = Youtube::firstOrNew(['code' => $key]);
-            $y->code = data_get($item, 'id');
-            $y->name = data_get($item, 'snippet.title');
-            $y->description = data_get($item, 'snippet.description');
-            $y->playlist = data_get($item, 'contentDetails.relatedPlaylists.uploads');
-            $y->thumbnail_url = self::chooseYoutubeThumbnail(data_get($item, 'snippet.thumbnails'));
-            $y->banner_url = data_get($item, 'brandingSettings.image.bannerTvHighImageUrl');
+            $yt = Youtube::firstOrNew(['code' => $key]);
+            $yt->code = data_get($item, 'id');
+            $yt->name = data_get($item, 'snippet.title');
+            $yt->description = data_get($item, 'snippet.description');
+            $yt->playlist = data_get($item, 'contentDetails.relatedPlaylists.uploads');
+            $yt->thumbnail_url = self::chooseYoutubeThumbnail(data_get($item, 'snippet.thumbnails'));
+            $yt->banner_url = data_get($item, 'brandingSettings.image.bannerTvHighImageUrl');
 
-            $y->published_at = Util::UTCToLocalCarbon(data_get($item, 'snippet.publishedAt'));
+            $yt->published_at = Util::UTCToLocalCarbon(data_get($item, 'snippet.publishedAt'));
 
-            $y->views = data_get($item, 'statistics.viewCount');
-            $y->comments = data_get($item, 'statistics.commentCount');
-            $y->subscribers = data_get($item, 'statistics.subscriberCount');
-            $y->videos = data_get($item, 'statistics.videoCount');
+            $yt->views = data_get($item, 'statistics.viewCount');
+            $yt->comments = data_get($item, 'statistics.commentCount');
+            $yt->subscribers = data_get($item, 'statistics.subscriberCount');
+            $yt->videos = data_get($item, 'statistics.videoCount');
 
-            $y->save();
-            $ret->push($y);
+            $yt->save();
+            $ret->push($yt);
         }
 
         return $ret;
