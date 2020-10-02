@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     openEditDialog: async function (youtube) {
-      const title = youtube ? `${youtube.name} の編集` : 'プロファイルの作成'
+      const title = youtube ? `「${youtube.name}」の編集` : 'Youtube情報の作成'
       await this.$dialog.show(FormDialog, {
         title: title,
         formComponent: EditForm,
@@ -122,6 +122,7 @@ export default {
         persistent: true,
         showClose: false,
         waitForResult: true,
+        width: 640,
       })
     },
 

@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     openEditDialog: async function (twitter) {
-      const title = twitter ? `${twitter.name} の編集` : 'プロファイルの作成'
+      const title = twitter ? `「${twitter.name}」の編集` : 'Twitter情報の作成'
       await this.$dialog.show(FormDialog, {
         title: title,
         formComponent: EditForm,
@@ -118,6 +118,7 @@ export default {
         persistent: true,
         showClose: false,
         waitForResult: true,
+        width: 640,
       })
     },
 

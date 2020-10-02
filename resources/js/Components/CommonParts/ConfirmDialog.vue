@@ -1,7 +1,7 @@
 <template>
   <v-card>
-    <v-card-title color="green">
-      <v-row no-gutters align="center" class="headline">
+    <v-card-title class="light-green lighten-5">
+      <v-row no-gutters align="center">
         <v-icon v-if="icon" left>{{ icon }}</v-icon>
         {{ title }}
         <v-spacer />
