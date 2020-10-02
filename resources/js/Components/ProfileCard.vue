@@ -84,7 +84,7 @@
             fab
             small
             color="light-blue"
-            :href="twitter.screen_name | toTwitterUserLink"
+            :href="twitter.link"
             target="_blank"
           >
             <v-icon>mdi-twitter</v-icon>
@@ -138,9 +138,6 @@ export default {
   components: { ConfirmDialog },
 
   filters: {
-    toTwitterUserLink: function (userName) {
-      return 'https://twitter.com/' + userName
-    },
     toYoutubeChannelLink: function (channelId) {
       return 'https://www.youtube.com/channel/' + channelId
     },

@@ -20,9 +20,17 @@ class Twitter extends Model
         'deleted_at'
     ];
 
-    protected $dasts = [
+    protected $casts = [
         'protected' => 'boolean',
     ];
+
+    protected $appends = ['link'];
+
+    public function getLinkAttribute()
+    {
+        $screenName = $this->screen_name;
+        return $screenName ? 'https://twitter.com/'.$screenName : null;
+    }
 
     public function profiles()
     {

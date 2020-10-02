@@ -43,7 +43,7 @@
             small
             icon
             color="light-blue"
-            :href="item.screen_name | toTwitterUserLink"
+            :href="item.link"
             target="_blank"
           >
             <v-icon small>mdi-twitter</v-icon>
@@ -85,12 +85,6 @@ export default {
   layout: [DefaultLayout],
 
   components: { ContainerLayout },
-
-  filters: {
-    toTwitterUserLink: function (userName) {
-      return 'https://twitter.com/' + userName
-    },
-  },
 
   mixins: [StringFormatter],
 
