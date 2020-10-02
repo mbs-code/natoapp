@@ -56,8 +56,8 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
+import EditForm from '@/Pages/Twitter/_EditForm'
 import FormDialog from '@/Components/CommonParts/FormDialog'
-import EditTwitterForm from '@/Components/Forms/EditTwitterForm'
 import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
@@ -96,7 +96,7 @@ export default {
       const name = item.screen_name || 'プロファイル'
       await this.$dialog.show(FormDialog, {
         title: `${name} の編集`,
-        formComponent: EditTwitterForm,
+        formComponent: EditForm,
         item: item,
         persistent: true,
       })
