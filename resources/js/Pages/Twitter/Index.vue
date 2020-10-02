@@ -17,17 +17,9 @@
         mobile-breakpoint="1000"
       >
         <template v-slot:[`item.links`]="{ item }">
-          <v-btn
-            class="ma-2"
-            outlined
-            small
-            icon
-            color="light-blue"
-            :href="item.screen_name | toTwitterUserLink"
-            target="_blank"
-          >
-            <v-icon small>mdi-twitter</v-icon>
-          </v-btn>
+          <v-avatar class="ma-2" color="grey" size="48">
+            <img :src="item.thumbnail_url" alt="twitter_thumbnail">
+          </v-avatar>
         </template>
 
         <template v-slot:[`item.friends`]="{ item: { friends } }">
@@ -45,6 +37,18 @@
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
+          <v-btn
+            class="ma-2"
+            outlined
+            small
+            icon
+            color="light-blue"
+            :href="item.screen_name | toTwitterUserLink"
+            target="_blank"
+          >
+            <v-icon small>mdi-twitter</v-icon>
+          </v-btn>
+
           <v-btn
             class="ma-1"
             color="success"
