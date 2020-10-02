@@ -23,7 +23,9 @@ Route::get('/', function () {
 })->name('home');
 
 Route::resource('profiles', ProfileController::class);
-Route::resource('twitters', TwitterController::class);
+Route::resource('twitters', TwitterController::class,
+    ['only' => ['index', 'store', 'update', 'destroy']]
+);
 
 Route::get('/youtube', function () {
     $youtubes = Youtube::all();

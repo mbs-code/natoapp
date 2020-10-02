@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title color="green">
       <v-row no-gutters align="center" class="headline">
-        <v-icon left>mdi-pencil</v-icon>
+        <v-icon v-if="icon" left>{{ icon }}</v-icon>
         {{ title }}
         <v-spacer />
         <v-btn icon @click="onCancel">
@@ -34,6 +34,14 @@
 <script>
 export default {
   props: {
+    title: {
+      type: String,
+      default: 'ダイアログ',
+    },
+    icon: {
+      type: String,
+      default: 'mdi-pencil',
+    },
     formComponent: {
       type: Object,
       default: null,
@@ -41,10 +49,6 @@ export default {
     item: {
       type: Object,
       default: null,
-    },
-    title: {
-      type: String,
-      default: 'ダイアログ',
     },
   },
 

@@ -1,56 +1,72 @@
 <template>
-  <v-row justify="center">
-    <!-- TODO: breakpoint を可変にしたい -->
-    <v-data-table
-      :headers="headers"
-      :items="twitters"
-      item-key="id"
-      mobile-breakpoint="1000"
-    >
-      <template v-slot:[`item.links`]="{ item }">
-        <v-btn
-          class="ma-2"
-          outlined
-          small
-          icon
-          color="light-blue"
-          :href="item.screen_name | toTwitterUserLink"
-          target="_blank"
-        >
-          <v-icon small>mdi-twitter</v-icon>
+  <ContainerLayout>
+    <template v-slot:toolbar>
+      <v-row no-gutters justify="end">
+        <v-btn class="mx-1" @click="openEditDialog()">
+          <v-icon color="grey darken-2">mdi-plus-box</v-icon>
         </v-btn>
-      </template>
+      </v-row>
+    </template>
 
-      <template v-slot:[`item.friends`]="{ item: { friends } }">
-        {{ friends | numberDigit }}
-      </template>
-      <template v-slot:[`item.followers`]="{ item: { followers } }">
-        {{ followers | numberDigit }}
-      </template>
-      <template v-slot:[`item.published_at`]="{ item: { published_at } }">
-        <span style="white-space: nowrap;">
-          {{ published_at | toDatetime }}
-          <br>
-          ({{ published_at | daysToNow }}, {{ published_at | datetimeHumanuzed }})
-        </span>
-      </template>
+    <v-row justify="center">
+      <!-- TODO: breakpoint を可変にしたい -->
+      <v-data-table
+        :headers="headers"
+        :items="twitters"
+        item-key="id"
+        mobile-breakpoint="1000"
+      >
+        <template v-slot:[`item.links`]="{ item }">
+          <v-btn
+            class="ma-2"
+            outlined
+            small
+            icon
+            color="light-blue"
+            :href="item.screen_name | toTwitterUserLink"
+            target="_blank"
+          >
+            <v-icon small>mdi-twitter</v-icon>
+          </v-btn>
+        </template>
 
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-btn
-          class="ma-1"
-          color="success"
-          small
-          outlined
-          @click="openEditDialog(item)"
-        >
-          <v-icon small>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn class="ma-1" color="error" small outlined>
-          <v-icon small>mdi-delete</v-icon>
-        </v-btn>
-      </template>
-    </v-data-table>
-  </v-row>
+        <template v-slot:[`item.friends`]="{ item: { friends } }">
+          {{ friends | numberDigit }}
+        </template>
+        <template v-slot:[`item.followers`]="{ item: { followers } }">
+          {{ followers | numberDigit }}
+        </template>
+        <template v-slot:[`item.published_at`]="{ item: { published_at } }">
+          <span style="white-space: nowrap;">
+            {{ published_at | toDatetime }}
+            <br>
+            ({{ published_at | daysToNow }}, {{ published_at | datetimeHumanuzed }})
+          </span>
+        </template>
+
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn
+            class="ma-1"
+            color="success"
+            small
+            outlined
+            @click="openEditDialog(item)"
+          >
+            <v-icon small>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn
+            class="ma-1"
+            color="error"
+            small
+            outlined
+            @click="openDeleteDialog(item)"
+          >
+            <v-icon small>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-row>
+  </ContainerLayout>
 </template>
 
 <script>
@@ -58,10 +74,13 @@ import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 import EditForm from '@/Pages/Twitter/_EditForm'
 import FormDialog from '@/Components/CommonParts/FormDialog'
+import ConfirmDialog from '@/Components/CommonParts/ConfirmDialog'
 import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
-  layout: [DefaultLayout, ContainerLayout],
+  layout: [DefaultLayout],
+
+  components: { ContainerLayout },
 
   filters: {
     toTwitterUserLink: function (userName) {
@@ -92,14 +111,28 @@ export default {
     },
   },
   methods: {
-    openEditDialog: async function (item) {
-      const name = item.screen_name || 'プロファイル'
+    openEditDialog: async function (twitter) {
+      const title = twitter ? `${twitter.screen_name} の編集` : 'プロファイルの作成'
       await this.$dialog.show(FormDialog, {
-        title: `${name} の編集`,
+        title: title,
         formComponent: EditForm,
-        item: item,
+        item: twitter,
         persistent: true,
+        showClose: false,
+        waitForResult: true,
       })
+    },
+
+    openDeleteDialog: async function (twitter) {
+      const res = await this.$dialog.show(ConfirmDialog, {
+        title: '確認',
+        message: `「@${twitter.screen_name}」を削除しますか？`,
+        showClose: false,
+        waitForResult: true,
+      })
+      if (res) {
+        this.$inertia.delete(route('twitters.destroy', { id: twitter.id }))
+      }
     },
   },
 }

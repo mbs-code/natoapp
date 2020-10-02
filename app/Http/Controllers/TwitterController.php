@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Twitter;
+use App\Actions\FetchTwitter;
 
 class TwitterController extends Controller
 {
@@ -23,27 +24,6 @@ class TwitterController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Twitter  $twitter
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Twitter $twitter)
-    {
-        return Inertia::render('Twitter/Edit', ['twitter' => $twitter]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -51,19 +31,7 @@ class TwitterController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Twitter  $twitter
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Twitter $twitter)
-    {
-        //
-        new Error('no route');
+        return $this->update($request, new Twitter());
     }
 
     /**
@@ -81,16 +49,26 @@ class TwitterController extends Controller
             $twitter->fill(
                 $request->validate([
                     // 'id' => ['required', ''],
-                    'screen_name' => ['required', 'max:2'],
+                    'screen_name' => ['required', 'max:255'],
                 ])
             );
-            $twitter->save();
+
+            if (!$twitter->isDirty()) {
+                Helper::messageFlash('変更点がありません。', 'info');
+            } else {
+                if ($twitter->id) {
+                    $twitter->save();
+                }
+
+                // api からデータを作成する
+                $twitter = FetchTwitter::handle([$twitter->screen_name])->first();
+
+                $method = $twitter->wasRecentlyCreated ? '作成' : '編集';
+                $message = '「@'.$twitter->screen_name.'」を'.$method.'しました。';
+                Helper::messageFlash($message, 'success');
+            }
         });
 
-        $message = $twitter->wasRecentlyCreated
-            ? 'Twitter情報を更新しました。'
-            : 'Twitter情報を更新しました。';
-        Helper::messageFlash($message, 'success');
         return Redirect::back();
     }
 
@@ -102,6 +80,11 @@ class TwitterController extends Controller
      */
     public function destroy(Twitter $twitter)
     {
-        //
+        $name = $twitter->screen_name ?? 'Twitter';
+        $twitter->delete();
+
+        $message = '「@'.$name.'」を削除しました。';
+        Helper::messageFlash($message, 'success');
+        return Redirect::back();
     }
 }

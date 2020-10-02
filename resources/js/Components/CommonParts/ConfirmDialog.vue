@@ -1,51 +1,59 @@
 <template>
-  <v-dialog v-model="show" max-width="320">
-    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-      <slot :name="slot" v-bind="scope" />
-    </template>
-    <!-- <template v-for="(value, name) in $slots" v-slot:[name]>
-      <slot :name="name" />
-    </template> -->
-    <v-card>
-      <v-card-title class="headline">
-        <slot name="title">
-          <v-icon left>mdi-alert-circle</v-icon>
-          確認
-        </slot>
-      </v-card-title>
-      <v-card-text v-if="this.$slots.text" class="text--primary">
+  <v-card>
+    <v-card-title color="green">
+      <v-row no-gutters align="center" class="headline">
+        <v-icon v-if="icon" left>{{ icon }}</v-icon>
+        {{ title }}
         <v-spacer />
-        <slot name="text" />
-      </v-card-text>
+        <v-btn icon @click="onCancel">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-row>
+    </v-card-title>
 
-      <v-divider />
+    <v-divider />
 
-      <v-card-actions>
-        <v-row no-gutters justify="end">
-          <v-btn color="red darken-1" text @click="onCancel">いいえ</v-btn>
-          <v-btn color="green darken-1" outlined @click="onConfirm">はい</v-btn>
-        </v-row>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <v-card-text class="text--primary">
+      <v-spacer />
+      {{ message }}
+      <!-- <component :is="formComponent" ref="form" :item="item" @success="close" /> -->
+    </v-card-text>
+
+    <v-divider />
+
+    <v-card-actions>
+      <v-row no-gutters justify="end">
+        <v-btn color="red darken-1" text @click="onCancel">キャンセル</v-btn>
+        <v-btn color="green darken-1" outlined @click="close">ＯＫ</v-btn>
+      </v-row>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
 export default {
-  data: function () {
-    return {
-      show: false,
-    }
+  props: {
+    title: {
+      type: String,
+      default: 'ダイアログ',
+    },
+    icon: {
+      type: String,
+      default: 'mdi-information-outline',
+    },
+    message: {
+      type: String,
+      default: '',
+    },
   },
 
   methods: {
-    onConfirm: function () {
-      this.show = false
-      this.$emit('ok')
-    },
     onCancel: function () {
-      this.show = false
-      this.$emit('cancel')
+      this.$emit('submit', false)
+    },
+
+    close: function () {
+      this.$emit('submit', true)
     },
   },
 }
