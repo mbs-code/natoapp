@@ -13,8 +13,6 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
-import VImageSelect from '@/Components/Forms/VImageSelect'
-import VTagCombobox from '@/Components/forms/VTagCombobox'
 
 export default {
   props: {
