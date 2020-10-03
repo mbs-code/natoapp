@@ -17,4 +17,10 @@ class Helper
         );
         session()->push('toasts', $flash);
     }
+
+    public static function arrayDiffDirect($a, $b) {
+        $ab = collect($a)->diff($b);
+        $ba = collect($b)->diff($a);
+        return $ab->merge($ba);
+    }
 }

@@ -37,30 +37,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return $this->edit(new Profile());
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Profile  $profile
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Profile $profile)
-    {
-        $profile->load(['twitters', 'youtubes', 'tags']);
-        $tags = ProfileTag::all();
-
-        return Inertia::render('Profile/Edit', ['profile' => $profile, 'tags' => $tags]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -91,7 +67,6 @@ class ProfileController extends Controller
                     'thumbnail_url' => ['nullable', 'max:255'],
                 ])
             );
-            $profile->save();
 
             // ProfileTag
             $tagProps = $request->validate([
@@ -100,7 +75,7 @@ class ProfileController extends Controller
                 'tags.*.id' => ['sometimes', 'exists:App\Models\ProfileTag'], // ProfileTag のとき
             ]);
 
-            // tag id を抽出していく
+            // tag id を抽出していく（[x, y, z]）
             $tagIds = collect($tagProps['tags'])->map(function ($tag) {
                 $tid = data_get($tag, 'id');
                 if ($tid === null) {
@@ -111,15 +86,22 @@ class ProfileController extends Controller
                 return $tid;
             });
 
-            // sync tags
-            $profile->tags()->sync($tagIds);
+            $tagDiffs = Helper::arrayDiffDirect($tagIds, $profile->tags->pluck('id'))->count();
+            if (!$profile->isDirty() && $tagDiffs === 0) {
+                Helper::messageFlash('変更点がありません。', 'info');
+            } else {
+                $profile->save();
+
+                // sync tags
+                $profile->tags()->sync($tagIds);
+
+                $method = $profile->wasRecentlyCreated ? '作成' : '編集';
+                $message = '「'.$profile->name.'」を'.$method.'しました。';
+                Helper::messageFlash($message, 'success');
+            }
         });
 
-        $message = $profile->wasRecentlyCreated
-            ? 'プロファイルを更新しました。'
-            : 'プロファイルを更新しました。';
-        Helper::messageFlash($message, 'success');
-        return Redirect::route('profiles.show', $profile);
+        return Redirect::back();
     }
 
     /**
