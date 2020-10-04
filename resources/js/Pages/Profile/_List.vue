@@ -7,8 +7,10 @@
     mobile-breakpoint="1000"
   >
     <template v-slot:[`item.links`]="{ item }">
-      <v-avatar class="ma-2" color="grey" size="48">
-        <img :src="item.thumbnail_url" alt="twitter_thumbnail">
+      <v-avatar class="ma-2" color="grey lighten-3" size="68">
+        <v-avatar class="ma-2" color="grey" size="64">
+          <img :src="item.thumbnail_url" alt="twitter_thumbnail">
+        </v-avatar>
       </v-avatar>
     </template>
 
@@ -24,6 +26,41 @@
       >
         {{ tag.name }}
       </v-chip>
+    </template>
+
+    <template v-slot:[`item.profiles`]="{ item }">
+      <div>
+        <v-btn
+          v-for="twitter in item.twitters"
+          :key="twitter.id"
+          class="ma-1"
+          outlined
+          small
+          rounded
+          color="light-blue"
+          :href="twitter.link"
+          target="_blank"
+        >
+          <v-icon left small>mdi-twitter</v-icon>
+          @{{ twitter.screen_name }}
+        </v-btn>
+      </div>
+      <div>
+        <v-btn
+          v-for="youtube in item.youtubes"
+          :key="youtube.id"
+          class="ma-1"
+          outlined
+          small
+          rounded
+          color="red"
+          :href="youtube.link"
+          target="_blank"
+        >
+          <v-icon left small>mdi-youtube</v-icon>
+          {{ youtube.name }}
+        </v-btn>
+      </div>
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
@@ -71,12 +108,14 @@ export default {
         { text: '', value: 'links', sortable: false },
         { text: '名前', value: 'name' },
         { text: 'タグ', value: 'tags' },
+        { text: '関連', value: 'profiles' },
         { text: '', value: 'actions', sortable: false },
       ]
     },
   },
 
   methods: {
+    asd: function () {},
     openEditDialog: async function (profile) {
       const title = profile ? `「${profile.name}」の編集` : 'Profile情報の作成'
       await this.$dialog.show(FormDialog, {
