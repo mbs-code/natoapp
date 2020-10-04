@@ -13,7 +13,7 @@
     </template>
 
     <v-row justify="center">
-      <List ref="list" :profiles="profiles" :tags="tags" />
+      <List ref="list" :profiles="profiles" />
       <!-- <v-col v-for="profile of profiles" :key="profile.id" cols="12">
         <ProfileCard :profile="profile" :button-mode="buttonMode" />
       </v-col> -->
@@ -35,11 +35,6 @@ export default {
 
   props: {
     profiles: {
-      type: Array,
-      default: () => [],
-    },
-    tags: {
-      // DBのタグ一覧
       type: Array,
       default: () => [],
     },

@@ -10,6 +10,8 @@ use App\Helpers\Helper;
 use App\Models\Profile;
 use App\Models\ProfileTag;
 use App\Rules\OrRules;
+use App\Actions\FetchTwitter;
+use App\Actions\FetchYoutube;
 
 class ProfileController extends Controller
 {
@@ -68,36 +70,68 @@ class ProfileController extends Controller
                 ])
             );
 
-            // ProfileTag
-            $tagProps = $request->validate([
+            // profile props
+            $props = $request->validate([
                 'tags' => ['array'],
                 'tags.*' => [new OrRules(['string', 'array'])],
                 'tags.*.id' => ['sometimes', 'exists:App\Models\ProfileTag'], // ProfileTag のとき
+                'twitters' => ['array'],
+                'twitters.*' => [new OrRules(['string', 'array'])],
+                'twitters.*.id' => ['sometimes', 'exists:App\Models\Twitter'], // Twitter のとき
+                'youtubes' => ['array'],
+                'youtubes.*' => [new OrRules(['string', 'array'])],
+                'youtubes.*.id' => ['sometimes', 'exists:App\Models\Youtube'], // Youtube のとき
             ]);
 
-            // tag id を抽出していく（[x, y, z]）
-            $tagIds = collect($tagProps['tags'])->map(function ($tag) {
-                $tid = data_get($tag, 'id');
-                if ($tid === null) {
-                    // ID が無いなら作成する
-                    $dbTag = ProfileTag::firstOrCreate(['name' => $tag ]);
-                    $tid = $dbTag->id;
-                }
-                return $tid;
+            // tag
+            $tagIDs = Helper::createSyncArray(data_get($props, 'tags'), function ($name) {
+                return ProfileTag::firstOrCreate(['name' => $name ]);
             });
 
-            $tagDiffs = Helper::arrayDiffDirect($tagIds, $profile->tags->pluck('id'))->count();
-            if (!$profile->isDirty() && $tagDiffs === 0) {
-                Helper::messageFlash('変更点がありません。', 'info');
-            } else {
+            // twitter
+            $twitterIDs = Helper::createSyncArray(data_get($props, 'twitters'), function ($name) {
+                $tw = FetchTwitter::handle([$name])->first();
+                if ($tw->wasRecentlyCreated) {
+                    $message = '「@'.$tw->name.'」を作成しました。';
+                    Helper::messageFlash($message, 'success');
+                }
+                return $tw;
+            });
+
+            // youtube
+            $youtubeIDs = Helper::createSyncArray(data_get($props, 'youtubes'), function ($name) {
+                $yt = FetchYoutube::handle([$name])->first();
+                if ($yt->wasRecentlyCreated) {
+                    $message = '「'.$yt->name.'」を作成しました。';
+                    Helper::messageFlash($message, 'success');
+                }
+                return $yt;
+            });
+
+            /// ////////////////////////////////////////
+
+            $isChange = false;
+            if ($profile->isDirty()) {
+                $isChange = true;
                 $profile->save();
+            }
+            // sync
+            $syncTags = $profile->tags()->sync($tagIDs);
+            $isChange |= Helper::syncChangeCount(($syncTags)) > 0;
 
-                // sync tags
-                $profile->tags()->sync($tagIds);
+            $syncTwitters = $profile->twitters()->sync($twitterIDs);
+            $isChange |= Helper::syncChangeCount(($syncTwitters)) > 0;
 
+            $syncYoutubes = $profile->youtubes()->sync($youtubeIDs);
+            $isChange |= Helper::syncChangeCount(($syncYoutubes)) > 0;
+
+            // message
+            if ($isChange) {
                 $method = $profile->wasRecentlyCreated ? '作成' : '編集';
                 $message = '「'.$profile->name.'」を'.$method.'しました。';
                 Helper::messageFlash($message, 'success');
+            } else {
+                Helper::messageFlash('変更点はありません。', 'info');
             }
         });
 

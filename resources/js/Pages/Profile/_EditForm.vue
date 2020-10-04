@@ -19,7 +19,19 @@
     <VTagCombobox
       v-model="form.tags"
       label="tags"
-      :items="tags"
+      :items="dbTags"
+    />
+
+    <VTagCombobox
+      v-model="form.twitters"
+      label="twitters"
+      :items="dbTwitters"
+    />
+
+    <VTagCombobox
+      v-model="form.youtubes"
+      label="youtubes"
+      :items="dbYoutubes"
     />
 
     <VImageSelect
@@ -45,11 +57,6 @@ export default {
       type: Object,
       default: () => {},
     },
-    tags: {
-      // DBのタグ一覧
-      type: Array,
-      default: () => [],
-    },
   },
 
   data: function () {
@@ -64,6 +71,8 @@ export default {
           description: profile.description,
           thumbnail_url: profile.thumbnail_url,
           tags: profile.tags || [],
+          twitters: profile.twitters || [],
+          youtubes: profile.youtubes || [],
         },
         {
           bag: 'submit',
@@ -71,6 +80,9 @@ export default {
         }
       ),
       errors: {},
+      dbTags: [],
+      dbTwitters: [],
+      dbYoutubes: [],
     }
   },
 
@@ -86,6 +98,17 @@ export default {
       urls.push(...youtubes)
       return urls
     },
+  },
+
+  mounted: async function () {
+    const { data: tags } = await this.$http.get(route('api.tags'))
+    this.dbTags = tags
+
+    const { data: twitters } = await this.$http.get(route('api.twitters'))
+    this.dbTwitters = twitters
+
+    const { data: youtubes } = await this.$http.get(route('api.youtubes'))
+    this.dbYoutubes = youtubes
   },
 
   methods: {
