@@ -14,6 +14,10 @@
       </v-avatar>
     </template>
 
+    <template v-slot:[`item.name`]="{ item: { name } }">
+      <span class="text-nowrap">{{ name }}</span>
+    </template>
+
     <template v-slot:[`item.tags`]="{ item: { tags } }">
       <v-chip
         v-for="tag in tags"
@@ -115,7 +119,6 @@ export default {
   },
 
   methods: {
-    asd: function () {},
     openEditDialog: async function (profile) {
       const title = profile ? `「${profile.name}」の編集` : 'Profile情報の作成'
       await this.$dialog.show(FormDialog, {
