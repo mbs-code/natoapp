@@ -9,7 +9,7 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'thumbnail_url', 'tags'];
+    protected $fillable = ['name', 'kana', 'description', 'thumbnail_url', 'tags'];
 
     protected $dates = [
         'published_at',

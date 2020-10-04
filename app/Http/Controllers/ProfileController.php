@@ -65,6 +65,7 @@ class ProfileController extends Controller
                 $request->validate([
                     // 'id' => ['required', ''],
                     'name' => ['required', 'max:100'],
+                    'kana' => ['nullable', 'hiragana', 'max:100'],
                     'description' => ['nullable', 'max:65535'],
                     'thumbnail_url' => ['nullable', 'max:255'],
                 ])

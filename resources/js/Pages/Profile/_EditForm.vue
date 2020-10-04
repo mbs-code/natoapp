@@ -2,43 +2,57 @@
   <v-form ref="form" @submit.prevent="submit">
     <v-text-field
       v-model="form.name"
-      label="name"
+      label="名前*"
       required
       counter="32"
+      :error-messages="errors.name"
+    />
+
+    <v-text-field
+      v-model="form.kana"
+      label="ふりがな"
+      required
+      counter="64"
+      :error-messages="errors.kana"
     />
 
     <v-textarea
       v-model="form.description"
-      label="description"
+      label="メモ"
       required
       auto-grow
       rows="1"
       counter="65535"
+      :error-messages="errors.description"
     />
 
     <VTagCombobox
       v-model="form.tags"
-      label="tags"
+      label="タグ"
       :items="dbTags"
+      :error-messages="errors.tags"
     />
 
     <VTagCombobox
       v-model="form.twitters"
-      label="twitters"
+      label="Twitter"
       :items="dbTwitters"
+      :error-messages="errors.twitters"
     />
 
     <VTagCombobox
       v-model="form.youtubes"
-      label="youtubes"
+      label="Youtube"
       :items="dbYoutubes"
+      :error-messages="errors.youtubes"
     />
 
     <VImageSelect
       v-model="form.thumbnail_url"
-      label="thumbnail"
+      label="サムネイル"
       :size="100"
       :image-urls="imageUrls"
+      :error-messages="errors.thumbnail_url"
     />
   </v-form>
 </template>
@@ -68,6 +82,7 @@ export default {
         {
           _method: id ? 'PUT' : 'POST',
           name: profile.name,
+          kana: profile.kana,
           description: profile.description,
           thumbnail_url: profile.thumbnail_url,
           tags: profile.tags || [],

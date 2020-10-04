@@ -178,6 +178,9 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
 
+        // add
+        App\Providers\ValidateServiceProvider::class,
+
     ],
 
     /*
