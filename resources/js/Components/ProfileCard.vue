@@ -2,9 +2,9 @@
   <v-hover v-slot:default="{ hover }">
     <v-card
       class="mx-auto"
-      :elevation="hover ? 12 : 2"
-      :href="route('profiles.show', { id: profile.id })"
-      @click.stop.prevent="$inertia.visit(route('profiles.show', { id: profile.id }))"
+      :elevation="hover && cardLink ? 12 : 2"
+      :[cardHref]="route('profiles.show', { id: profile.id })"
+      @[cardClick].stop.prevent="$inertia.visit(route('profiles.show', { id: profile.id }))"
     >
       <v-list-item>
         <v-list-item-avatar color="grey" size="64">
@@ -103,6 +103,19 @@ export default {
     profile: {
       type: Object,
       default: () => {},
+    },
+    cardLink: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  computed: {
+    cardHref: function () {
+      return this.cardLink ? 'href' : null
+    },
+    cardClick: function () {
+      return this.cardLink ? 'click' : null
     },
   },
 }

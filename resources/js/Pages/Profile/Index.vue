@@ -18,7 +18,7 @@
       </template>
       <template v-else>
         <v-col v-for="profile of profiles" :key="profile.id" cols="12">
-          <ProfileCard :profile="profile" />
+          <ProfileCard :profile="profile" card-link="true" />
         </v-col>
       </template>
     </v-row>
