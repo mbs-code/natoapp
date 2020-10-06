@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Twitter;
-use App\Actions\FetchTwitter;
+use App\Lib\Tasks\UpsertTwitterUser;
 
 class TwitterController extends Controller
 {
@@ -61,7 +61,7 @@ class TwitterController extends Controller
                 }
 
                 // api からデータを作成する
-                $twitter = FetchTwitter::handle([$twitter->screen_name])->first();
+                $twitter = UpsertTwitterUser::run($twitter->screen_name);
 
                 $method = $twitter->wasRecentlyCreated ? '作成' : '編集';
                 $message = '「@'.$twitter->screen_name.'」を'.$method.'しました。';

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Youtube;
-use App\Actions\FetchYoutube;
+use App\Lib\Tasks\UpsertYoutubeChannel;
 
 class YoutubeController extends Controller
 {
@@ -61,7 +61,7 @@ class YoutubeController extends Controller
                 }
 
                 // api からデータを作成する
-                $youtube = FetchYoutube::handle([$youtube->code])->first();
+                $youtube = UpsertYoutubeChannel::run($youtube->code);
 
                 $method = $youtube->wasRecentlyCreated ? '作成' : '編集';
                 $message = '「'.$youtube->name.'」を'.$method.'しました。';

@@ -10,8 +10,8 @@ use App\Helpers\Helper;
 use App\Models\Profile;
 use App\Models\ProfileTag;
 use App\Rules\OrRules;
-use App\Actions\FetchTwitter;
-use App\Actions\FetchYoutube;
+use App\Lib\Tasks\UpsertTwitterUser;
+use App\Lib\Tasks\UpsertYoutubeChannel;
 
 class ProfileController extends Controller
 {
@@ -91,7 +91,7 @@ class ProfileController extends Controller
 
             // twitter
             $twitterIDs = Helper::createSyncArray(data_get($props, 'twitters'), function ($name) {
-                $tw = FetchTwitter::handle([$name])->first();
+                $tw = UpsertTwitterUser::run($name);
                 if ($tw->wasRecentlyCreated) {
                     $message = '「@'.$tw->name.'」を作成しました。';
                     Helper::messageFlash($message, 'success');
@@ -100,8 +100,8 @@ class ProfileController extends Controller
             });
 
             // youtube
-            $youtubeIDs = Helper::createSyncArray(data_get($props, 'youtubes'), function ($name) {
-                $yt = FetchYoutube::handle([$name])->first();
+            $youtubeIDs = Helper::createSyncArray(data_get($props, 'youtubes'), function ($id) {
+                $yt = UpsertYoutubeChannel::run($id);
                 if ($yt->wasRecentlyCreated) {
                     $message = '「'.$yt->name.'」を作成しました。';
                     Helper::messageFlash($message, 'success');
