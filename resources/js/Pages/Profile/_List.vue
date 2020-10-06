@@ -70,6 +70,16 @@
     <template v-slot:[`item.actions`]="{ item }">
       <v-btn
         class="ma-1"
+        color="info"
+        small
+        outlined
+        :href="route('profiles.show', { id: item.id })"
+        @click.stop.prevent="$inertia.visit(route('profiles.show', { id: item.id }))"
+      >
+        <v-icon small>mdi-link-variant</v-icon>
+      </v-btn>
+      <v-btn
+        class="ma-1"
         color="success"
         small
         outlined
