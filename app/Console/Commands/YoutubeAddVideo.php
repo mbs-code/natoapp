@@ -3,24 +3,24 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\Tasks\UpsertTwitterUser;
+use App\Lib\Tasks\UpsertYoutubeVideo;
 
-class TwitterAddUser extends Command
+class YoutubeAddVideo extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twitter:add {names*}';
+    protected $signature = 'youtube:video {ids*}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'add twitter item$item
-        {names* : twitter screen name (@xxx)}';
+    protected $description = 'add youtube video
+    {ids* : youtube videoId (?v=xxx)}';
 
     /**
      * Create a new command instance.
@@ -39,13 +39,13 @@ class TwitterAddUser extends Command
      */
     public function handle()
     {
-        $names = $this->argument('names');
-        UpsertTwitterUser::getInstance(true)
+        $ids = $this->argument('ids');
+        UpsertYoutubeVideo::getInstance(true)
             ->addEvent('inserted', function ($item, $index, $length) {
                 $pref = '['.($index+1).'/'.$length.']insert: ';
-                echo($pref.$item->screen_name.' => ['.$item->id.']'.$item->name.' '.PHP_EOL);
+                echo($pref.$item->code.' => ['.$item->id.']'.$item->title.' '.PHP_EOL);
             })
-            ->handle($names);
+            ->handle($ids);
 
         return 0;
     }

@@ -4,10 +4,11 @@ namespace App\Lib\Parsers;
 
 use App\Lib\Parsers\Parser;
 use App\Lib\TimeUtil;
+use App\Exceptions\NoChannelException;
+use App\Models\Youtube;
 use App\Models\Video;
 use App\Enums\VideoStatus;
 use App\Enums\VideoType;
-use App\Models\Youtube;
 
 class YoutubeVideoParser extends Parser
 {
@@ -15,7 +16,10 @@ class YoutubeVideoParser extends Parser
     {
         // channel の取得
         $channelID = data_get($item, 'snippet.channelId');
-        $channel = Youtube::where(['code' => $channelID])->firstOrFail();
+        $channel = Youtube::where(['code' => $channelID])->first();
+        if (!$channel) {
+            throw new NoChannelException('channelID = '.$channelID);
+        }
 
         // video の生成
         $key = data_get($item, 'id');

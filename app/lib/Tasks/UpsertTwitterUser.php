@@ -5,12 +5,13 @@ namespace App\Lib\Tasks;
 use App\Lib\Tasks\ChunkUpsertTask;
 use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
 use App\Lib\Parsers\TwitterUserParser;
+use Illuminate\Database\Eloquent\Model;
 
 class UpsertTwitterUser extends ChunkUpsertTask
 {
     protected $itemLengthOnce = 100;
 
-    protected function fetch($items)
+    protected function fetch(array $items): array
     {
         // doc: https://github.com/atymic/twitter
         // api ref: https://developer.twitter.com/en/docs/twitter-api
@@ -22,7 +23,7 @@ class UpsertTwitterUser extends ChunkUpsertTask
         return $items;
     }
 
-    protected function parse($item)
+    protected function parse($item): Model
     {
         $parse = TwitterUserParser::insert($item);
         return $parse;

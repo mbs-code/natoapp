@@ -5,12 +5,13 @@ namespace App\Lib\Tasks;
 use App\Lib\Tasks\ChunkUpsertTask;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
 use App\Lib\Parsers\YoutubeVideoParser;
+use Illuminate\Database\Eloquent\Model;
 
 class UpsertYoutubeVideo extends ChunkUpsertTask
 {
     protected $itemLengthOnce = 50;
 
-    protected function fetch($items)
+    protected function fetch($items): array
     {
         // doc: https://github.com/alaouy/Youtube
         // api ref: https://developers.google.com/youtube/v3/docs?hl=ja
@@ -19,7 +20,7 @@ class UpsertYoutubeVideo extends ChunkUpsertTask
         return $items;
     }
 
-    protected function parse($item)
+    protected function parse($item): Model
     {
         $parse = YoutubeVideoParser::insert($item);
         return $parse;

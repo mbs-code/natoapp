@@ -11,9 +11,10 @@ trait SingletonTrait
     {
     }
 
-    public static function getInstance()
+    public static function getInstance(bool $another = false)
     {
         $class = get_called_class();
+        if ($another) return new $class;
         if (!isset(self::$instance[$class])) self::$instance[$class] = new $class;
 
         return self::$instance[$class];

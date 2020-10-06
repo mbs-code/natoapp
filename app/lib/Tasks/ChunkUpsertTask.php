@@ -3,16 +3,19 @@
 namespace App\Lib\Tasks;
 
 use App\Lib\SingletonTrait;
+use App\Lib\EventTrait;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class ChunkUpsertTask
 {
     use SingletonTrait;
+    use EventTrait;
 
     protected $itemLengthOnce = 10;
 
-    protected abstract function fetch(array $items);
+    protected abstract function fetch(array $items): array;
 
-    protected abstract function parse(object $item);
+    protected abstract function parse($item): Model;
 
     /// ////////////////////////////////////////
 
@@ -28,6 +31,8 @@ abstract class ChunkUpsertTask
         $res = $instance->handle($items);
         return $res;
     }
+
+    /// ////////////////////////////////////////
 
     public function handle(array $items)
     {
@@ -46,12 +51,14 @@ abstract class ChunkUpsertTask
     {
         // fetch 実行
         $fetch = $this->fetch($items);
+        $len = count($fetch);
 
         $buffer = collect();
-        foreach ($fetch as $data) {
+        foreach ($fetch as $key => $data) {
             // parse 実行
             $res = $this->parse($data);
             $buffer->push($res);
+            $this->fireEvent('inserted', $res, $key, $len);
         }
         return $buffer;
     }
