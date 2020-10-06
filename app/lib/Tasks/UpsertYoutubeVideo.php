@@ -2,11 +2,11 @@
 
 namespace App\Lib\Tasks;
 
-use App\Lib\Tasks\ChunkFetchTask;
+use App\Lib\Tasks\ChunkUpsertTask;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
 use App\Lib\Parsers\YoutubeVideoParser;
 
-class FetchYoutubeVideo extends ChunkFetchTask
+class UpsertYoutubeVideo extends ChunkUpsertTask
 {
     protected $itemLengthOnce = 50;
 

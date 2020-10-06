@@ -4,7 +4,7 @@ namespace App\Lib\Tasks;
 
 use App\Lib\SingletonTrait;
 
-abstract class ChunkFetchTask
+abstract class ChunkUpsertTask
 {
     use SingletonTrait;
 
