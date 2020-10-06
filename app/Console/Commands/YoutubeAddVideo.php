@@ -12,7 +12,7 @@ class YoutubeAddVideo extends Command
      *
      * @var string
      */
-    protected $signature = 'youtube:video {ids*}';
+    protected $signature = 'youtube:video {--force} {ids*}';
 
     /**
      * The console command description.
@@ -20,6 +20,7 @@ class YoutubeAddVideo extends Command
      * @var string
      */
     protected $description = 'add youtube video
+    {--force : Create when there is no channel. }
     {ids* : youtube videoId (?v=xxx)}';
 
     /**
@@ -40,7 +41,10 @@ class YoutubeAddVideo extends Command
     public function handle()
     {
         $ids = $this->argument('ids');
+        $force = $this->option('force'); // true で channel が無いとき create する
+
         UpsertYoutubeVideo::getInstance(true)
+            ->notExistChannel($force)
             ->addEvent('inserted', function ($item, $index, $length) {
                 $pref = '['.($index+1).'/'.$length.']insert: ';
                 echo($pref.$item->code.' => ['.$item->id.']'.$item->title.' '.PHP_EOL);

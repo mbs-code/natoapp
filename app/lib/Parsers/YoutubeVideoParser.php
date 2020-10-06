@@ -5,6 +5,7 @@ namespace App\Lib\Parsers;
 use App\Lib\Parsers\Parser;
 use App\Lib\TimeUtil;
 use App\Exceptions\NoChannelException;
+use App\Lib\Tasks\UpsertYoutubeChannel;
 use App\Models\Youtube;
 use App\Models\Video;
 use App\Enums\VideoStatus;
@@ -12,13 +13,18 @@ use App\Enums\VideoType;
 
 class YoutubeVideoParser extends Parser
 {
-    public static function insert(object $item)
+    public static function insert(object $item, bool $notExistChannel)
     {
         // channel の取得
         $channelID = data_get($item, 'snippet.channelId');
         $channel = Youtube::where(['code' => $channelID])->first();
         if (!$channel) {
-            throw new NoChannelException('channelID = '.$channelID);
+            // 無いなら作成か例外
+            if ($notExistChannel) {
+                $channel = UpsertYoutubeChannel::run($channelID);
+            } else {
+                throw new NoChannelException('channelID = '.$channelID);
+            }
         }
 
         // video の生成

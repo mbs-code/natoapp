@@ -11,6 +11,14 @@ class UpsertYoutubeVideo extends ChunkUpsertTask
 {
     protected $itemLengthOnce = 50;
 
+    protected $notExistChannel = false; // true で channel も保存する
+
+    public function notExistChannel(bool $val)
+    {
+        $this->notExistChannel = $val;
+        return $this;
+    }
+
     protected function fetch($items): array
     {
         // doc: https://github.com/alaouy/Youtube
@@ -22,7 +30,7 @@ class UpsertYoutubeVideo extends ChunkUpsertTask
 
     protected function parse($item): Model
     {
-        $parse = YoutubeVideoParser::insert($item);
+        $parse = YoutubeVideoParser::insert($item, $this->notExistChannel);
         return $parse;
     }
 }
