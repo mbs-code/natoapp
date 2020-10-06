@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Interfaces\ChannelInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Youtube extends Model
+class Youtube extends Model implements ChannelInterface
 {
     use HasFactory;
 
@@ -31,5 +32,10 @@ class Youtube extends Model
     public function profiles()
     {
         return $this->morphToMany('App\Models\Profile', 'profilable');
+    }
+
+    public function videos()
+    {
+        return $this->morphMany('App\Models\Video', 'channel');
     }
 }
