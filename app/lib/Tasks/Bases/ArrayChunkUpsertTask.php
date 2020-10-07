@@ -11,7 +11,7 @@ abstract class ArrayChunkUpsertTask extends ArrayUpsertTask
     public static function runs(array $items)
     {
         $instance = self::getInstance();
-        $res = $instance->execChunk($items);
+        $res = $instance->execArray($items);
         return $res;
     }
 

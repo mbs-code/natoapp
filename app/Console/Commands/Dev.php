@@ -7,6 +7,9 @@ use App\Lib\Parsers\YoutubeVideoParser;
 use App\Lib\Tasks\UpsertTwitterUser;
 use App\Lib\Tasks\UpsertYoutubeChannel;
 use App\Lib\Tasks\UpsertYoutubeVideo;
+use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
+use App\Lib\Tasks\AddYoutubePlaylist;
+use App\Models\Youtube;
 
 class Dev extends Command
 {
@@ -43,18 +46,19 @@ class Dev extends Command
     {
         // $twitterIds = ['YaezawaNatori'];
         // $res = UpsertTwitterUser::runs($twitterIds);
-        // var_dump($res->toArray());
 
         // $channelIds = ['UC1519-d1jzGiL1MPTxEdtSA'];
         // $res = UpsertYoutubeChannel::runs($channelIds);
-        // var_dump($res->toArray());
 
         // $videoIds = ['gSnnGL2trao'];
         // $res = UpsertYoutubeVideo::runs($videoIds);
-        // var_dump($res->map(function ($item) {
-        //     return $item->title;
-        // }));
 
+        $channelID = 'UC1opHUrw8rvnsadT-iGp7Cg';
+        $res = AddYoutubePlaylist::run($channelID);
+
+        var_dump($res->map(function ($item) {
+            return $item->title;
+        }));
         return 0;
     }
 }
