@@ -1,5 +1,5 @@
 <template>
-  <v-simple-table dense>
+  <v-simple-table dense class="fixed-table">
     <template v-slot:default>
       <thead>
         <tr>
@@ -58,9 +58,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-table {
-  table-layout: fixed;
-}
-</style>
