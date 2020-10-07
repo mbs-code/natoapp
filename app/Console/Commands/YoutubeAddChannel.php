@@ -45,7 +45,7 @@ class YoutubeAddChannel extends Command
                 $pref = '['.($index+1).'/'.$length.']insert: ';
                 echo($pref.$item->code.' => ['.$item->id.']'.$item->name.' '.PHP_EOL);
             })
-            ->handle($ids);
+            ->execArray($ids);
 
         return 0;
     }

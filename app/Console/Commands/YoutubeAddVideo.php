@@ -49,7 +49,7 @@ class YoutubeAddVideo extends Command
                 $pref = '['.($index+1).'/'.$length.']insert: ';
                 echo($pref.$item->code.' => ['.$item->id.']'.$item->title.' '.PHP_EOL);
             })
-            ->handle($ids);
+            ->execArray($ids);
 
         return 0;
     }

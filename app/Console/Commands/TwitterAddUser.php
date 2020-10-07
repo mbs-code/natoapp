@@ -45,7 +45,7 @@ class TwitterAddUser extends Command
                 $pref = '['.($index+1).'/'.$length.']insert: ';
                 echo($pref.$item->screen_name.' => ['.$item->id.']'.$item->name.' '.PHP_EOL);
             })
-            ->handle($names);
+            ->execArray($names);
 
         return 0;
     }
