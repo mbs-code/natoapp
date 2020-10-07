@@ -21,6 +21,7 @@ class YoutubeChannelParser extends Parser
         $yt->thumbnail_url = self::chooseYoutubeThumbnail(data_get($item, 'snippet.thumbnails'));
         $yt->banner_url = data_get($item, 'brandingSettings.image.bannerTvHighImageUrl');
 
+        $yt->tags = explode(' ', data_get($item, 'brandingSettings.channel.keywords'));
         $yt->published_at = TimeUtil::UTCToLocalCarbon(data_get($item, 'snippet.publishedAt'));
 
         $yt->views = data_get($item, 'statistics.viewCount');

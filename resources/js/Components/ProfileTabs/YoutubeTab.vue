@@ -26,6 +26,15 @@
 import StringFormatter from '@/Mixins/StringFormatter'
 
 export default {
+  filters: {
+    arrayToString: function (ary) {
+      if (Array.isArray(ary)) {
+        return ary.join(', ')
+      }
+      return ary
+    },
+  },
+
   mixins: [StringFormatter],
 
   props: {
@@ -49,6 +58,7 @@ export default {
       items.push({ key: '登録者数', value: f.numberDigit(yt.subscribers) })
       items.push({ key: '動画数', value: f.numberDigit(yt.videos) })
       // items.push({ key: 'コメント数', value: f.numberDigit(yt.comments) }) // 大抵0なのでコメントアウト
+      items.push({ key: 'タグ', value: f.arrayToString(yt.tags) })
       items.push({ key: '取得開始日時', value: f.formatHelper(yt.created_at, 'DF (DH)') })
       items.push({ key: '最終更新日時', value: f.formatHelper(yt.updated_at, 'DF (DH)') })
       items.push({ key: '備考', value: f.htmlLinker(yt.description), html: true })

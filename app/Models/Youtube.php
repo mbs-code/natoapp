@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Models\Interfaces\ChannelInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Casts\CSV;
 
 class Youtube extends Model implements ChannelInterface
 {
     use HasFactory;
 
     protected $fillable = ['code', 'name', 'description', 'playlist',
-        'thumbnail_url', 'banner_url', 'published_at',
+        'thumbnail_url', 'banner_url', 'tags', 'published_at',
         'views', 'comments', 'subscribers', 'videos'];
 
     protected $dates = [
@@ -19,6 +20,10 @@ class Youtube extends Model implements ChannelInterface
         'created_at',
         'updated_at',
         'deleted_at'
+    ];
+
+    public $casts = [
+        'tags' => CSV::class,
     ];
 
     protected $appends = ['link'];
