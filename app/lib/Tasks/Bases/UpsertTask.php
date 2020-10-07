@@ -6,9 +6,14 @@ use App\Lib\Tasks\Bases\Task;
 
 abstract class UpsertTask extends Task
 {
-    protected abstract function fetch( $var);
+    protected abstract function fetch($var);
 
-    protected abstract function process($data);
+    protected abstract function handle($data);
+
+    protected function preFormat($var)
+    {
+        return $var;
+    }
 
     /// ////////////////////////////////////////
 
@@ -21,22 +26,21 @@ abstract class UpsertTask extends Task
 
     public function exec($var)
     {
+        // 引数の事前整形
+        $formatVar = $this->preFormat($var);
+
         // fetch 実行
-        $fetch = $this->fetch($var);
-        $isArray = is_array($fetch); // fetch の戻り値検査
+        $fetch = $this->fetch($formatVar);
 
-        $ary = $isArray ? $fetch : [$fetch];
-        $len = count($ary);
+        // process 実行
+        $buffer = $this->process($fetch);
 
-        $buffer = collect();
-        foreach ($ary as $key => $data) {
-            // process 実行
-            $res = $this->process($data);
-            $buffer->push($res);
-            $this->fireEvent('inserted', $res, $key, $len);
-        }
+        return $buffer;
+    }
 
-        // 配列モードなら配列、単体なら単体を返却
-        return $isArray ? $buffer : $buffer->first();
+    protected function process($data)
+    {
+        $res = $this->handle($data);
+        return $res;
     }
 }

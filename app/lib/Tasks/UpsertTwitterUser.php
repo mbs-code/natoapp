@@ -2,11 +2,11 @@
 
 namespace App\Lib\Tasks;
 
-use App\Lib\Tasks\Bases\ChunkUpsertTask;
+use App\Lib\Tasks\Bases\ArrayChunkUpsertTask;
 use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
 use App\Lib\Parsers\TwitterUserParser;
 
-class UpsertTwitterUser extends ChunkUpsertTask
+class UpsertTwitterUser extends ArrayChunkUpsertTask
 {
     protected $chunkSize = 100;
 
@@ -23,7 +23,7 @@ class UpsertTwitterUser extends ChunkUpsertTask
         return $items;
     }
 
-    protected function process($item)
+    protected function handle($item)
     {
         $parse = TwitterUserParser::insert($item);
         return $parse;

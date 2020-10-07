@@ -2,9 +2,9 @@
 
 namespace App\Lib\Tasks\Bases;
 
-use App\Lib\Tasks\Bases\UpsertTask;
+use App\Lib\Tasks\Bases\ArrayUpsertTask;
 
-abstract class ChunkUpsertTask extends UpsertTask
+abstract class ArrayChunkUpsertTask extends ArrayUpsertTask
 {
     protected $chunkSize = 10; // 1チャンクのサイズ
 

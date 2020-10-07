@@ -2,11 +2,11 @@
 
 namespace App\Lib\Tasks;
 
-use App\Lib\Tasks\Bases\ChunkUpsertTask;
+use App\Lib\Tasks\Bases\ArrayChunkUpsertTask;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
 use App\Lib\Parsers\YoutubeChannelParser;
 
-class UpsertYoutubeChannel extends ChunkUpsertTask
+class UpsertYoutubeChannel extends ArrayChunkUpsertTask
 {
     protected $chunkSize = 50;
 
@@ -22,7 +22,7 @@ class UpsertYoutubeChannel extends ChunkUpsertTask
         return $items;
     }
 
-    protected function process($item)
+    protected function handle($item)
     {
         $parse = YoutubeChannelParser::insert($item);
         return $parse;

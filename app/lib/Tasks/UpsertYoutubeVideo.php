@@ -2,11 +2,11 @@
 
 namespace App\Lib\Tasks;
 
-use App\Lib\Tasks\Bases\ChunkUpsertTask;
+use App\Lib\Tasks\Bases\ArrayChunkUpsertTask;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
 use App\Lib\Parsers\YoutubeVideoParser;
 
-class UpsertYoutubeVideo extends ChunkUpsertTask
+class UpsertYoutubeVideo extends ArrayChunkUpsertTask
 {
     protected $chunkSize = 50;
 
@@ -27,7 +27,7 @@ class UpsertYoutubeVideo extends ChunkUpsertTask
         return $items;
     }
 
-    protected function process($item)
+    protected function handle($item)
     {
         $parse = YoutubeVideoParser::insert($item, $this->notExistChannel);
         return $parse;
