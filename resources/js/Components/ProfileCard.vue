@@ -105,7 +105,7 @@ export default {
       default: () => {},
     },
     cardLink: {
-      type: Boolean,
+      type: [Boolean, String],
       default: false,
     },
   },
