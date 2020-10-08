@@ -12,7 +12,7 @@
             :src="video.thumbnail_url"
             alt="video_thumbnail"
             :aspect-ratio="16/9"
-            width="240"
+            width="160"
           />
         </v-list-item-action>
 
