@@ -14,11 +14,11 @@
 
     <v-row justify="center">
       <template v-if="buttonMode">
-        <List ref="list" :videos="videos" />
+        <VideoList ref="list" :videos="videos" />
       </template>
       <template v-else>
         <v-col v-for="video of videos" :key="video.id" cols="12">
-          <Card :video="video" card-link="true" />
+          <VideoCard :video="video" card-link="true" />
         </v-col>
       </template>
     </v-row>
@@ -29,13 +29,13 @@
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 import SwitchButton from '@/Components/CommonParts/SwitchButton'
-import List from './_List'
-import Card from './_Card'
+import VideoList from './_List'
+import VideoCard from './_Card'
 
 export default {
   layout: [DefaultLayout],
 
-  components: { ContainerLayout, SwitchButton, List, Card },
+  components: { ContainerLayout, SwitchButton, VideoList, VideoCard },
 
   props: {
     videos: {

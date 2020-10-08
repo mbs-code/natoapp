@@ -14,11 +14,11 @@
 
     <v-row justify="center">
       <template v-if="buttonMode">
-        <List ref="list" :profiles="profiles" />
+        <ProfileList ref="list" :profiles="profiles" />
       </template>
       <template v-else>
         <v-col v-for="profile of profiles" :key="profile.id" cols="12">
-          <Card :profile="profile" card-link="true" />
+          <ProfileCard :profile="profile" card-link="true" />
         </v-col>
       </template>
     </v-row>
@@ -29,13 +29,13 @@
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 import SwitchButton from '@/Components/CommonParts/SwitchButton'
-import List from './_List'
-import Card from './_Card'
+import ProfileList from './_List'
+import ProfileCard from './_Card'
 
 export default {
   layout: [DefaultLayout],
 
-  components: { ContainerLayout, SwitchButton, List, Card },
+  components: { ContainerLayout, SwitchButton, ProfileList, ProfileCard },
 
   props: {
     profiles: {

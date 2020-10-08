@@ -9,7 +9,7 @@
     </template>
 
     <v-row justify="center">
-      <List ref="list" :twitters="twitters" />
+      <TwitterList ref="list" :twitters="twitters" />
     </v-row>
   </ContainerLayout>
 </template>
@@ -17,12 +17,12 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
-import List from './_List'
+import TwitterList from './_List'
 
 export default {
   layout: [DefaultLayout],
 
-  components: { ContainerLayout, List },
+  components: { ContainerLayout, TwitterList },
 
   props: {
     twitters: {
