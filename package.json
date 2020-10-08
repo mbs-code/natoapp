@@ -33,6 +33,7 @@
         "vuetify-loader": "^1.4.3"
     },
     "dependencies": {
+        "@nesk/puphpeteer": "^1.6.0",
         "date-fns": "^2.16.1",
         "delay": "^4.4.0",
         "format-duration": "^1.3.1",

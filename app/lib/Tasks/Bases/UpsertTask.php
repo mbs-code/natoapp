@@ -8,7 +8,7 @@ abstract class UpsertTask extends Task
 {
     protected abstract function fetch($var);
 
-    protected abstract function handle($data);
+    // protected abstract function handle($data);
 
     protected function preFormat($var)
     {
@@ -17,6 +17,7 @@ abstract class UpsertTask extends Task
 
     /// ////////////////////////////////////////
 
+    // @override
     public static function run($var)
     {
         $instance = self::getInstance();
@@ -24,6 +25,7 @@ abstract class UpsertTask extends Task
         return $res;
     }
 
+    // @override
     public function exec($var)
     {
         // 引数の事前整形

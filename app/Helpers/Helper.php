@@ -46,4 +46,43 @@ class Helper
         $updated = data_get($syncs, 'updated', []);
         return count($attached) + count($detached) + count($updated);
     }
+
+    /**
+     * 2つの文字列の最長一致部分を取り出す.
+     */
+    public static function chooseStringDiff(string $str1, string $str2)
+    {
+        $str1 = $str1 ?? '';
+        $str2 = $str2 ?? '';
+
+        $ary = str_split($str1); // 基準文字列配列
+        $p = 0; // ポインタ
+        $len = count($ary); // 比較元の配列
+
+        // 1つ目の先頭から見ていく
+        $word = '';
+        $mostLengthWord = '';
+        while ($p <= $len) {
+            $wordBuf = $word; // 一致してた word のバッファ
+            $word .= $p >= $len ? '' : $ary[$p]; // 一つ追加
+            // echo('word: ['.$word.']'.PHP_EOL);
+
+            if ($word) {
+                if ((mb_strpos($str2, $word) === false || $p >= $len)) {
+                    // word が2つ目に存在しないなら word を初期化 (最大長到達でも)
+                    // もし最大長ならバッファに記録
+                    // echo(mb_strlen($wordBuf).' '.mb_strlen($mostLengthWord).PHP_EOL);
+                    if (mb_strlen($wordBuf) >= mb_strlen($mostLengthWord)) {
+                        $mostLengthWord = $wordBuf;
+                    }
+                    $word = '';
+                }
+                // word が2つ目に存在するなら次の文字へ
+            }
+
+            $p ++;
+        }
+
+        return $mostLengthWord;
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Lib\Tasks\UpsertYoutubeChannel;
+use App\Lib\Tasks\AddProfileFromYoutubeChannel;
 
 class YoutubeAddChannel extends Command
 {
@@ -12,7 +13,7 @@ class YoutubeAddChannel extends Command
      *
      * @var string
      */
-    protected $signature = 'youtube:add {ids*}';
+    protected $signature = 'youtube:add {--profile} {ids*} ';
 
     /**
      * The console command description.
@@ -20,6 +21,7 @@ class YoutubeAddChannel extends Command
      * @var string
      */
     protected $description = 'add youtube channel
+        {--profile : Create Profile. }
         {ids* : youtube channelid (UCxxx)}';
 
     /**
@@ -40,12 +42,21 @@ class YoutubeAddChannel extends Command
     public function handle()
     {
         $ids = $this->argument('ids');
-        UpsertYoutubeChannel::getInstance(true)
+        $createProfile = $this->option('profile'); // true で profile 生成モード
+
+        if ($createProfile) {
+            foreach ($ids as $id) {
+                $res = AddProfileFromYoutubeChannel::run($id);
+                echo('profile: ['.$res->id.']'.$res->name);
+            }
+        } else {
+            UpsertYoutubeChannel::getInstance(true)
             ->addEvent('inserted', function ($item, $index, $length) {
                 $pref = '['.($index+1).'/'.$length.']insert: ';
                 echo($pref.$item->code.' => ['.$item->id.']'.$item->name.' '.PHP_EOL);
             })
             ->execArray($ids);
+        }
 
         return 0;
     }

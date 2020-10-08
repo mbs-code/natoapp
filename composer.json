@@ -19,6 +19,7 @@
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
         "myclabs/php-enum": "^1.7",
+        "nesk/puphpeteer": "^1.6",
         "thujohn/twitter": "^2.3",
         "tightenco/ziggy": "^0.9.4"
     },
