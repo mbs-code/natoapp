@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import IntierFormMixin from '@/Mixins/InertiaFormMixin'
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 import VImageSelect from '@/Components/Forms/VImageSelect'
@@ -65,6 +66,8 @@ import VTagCombobox from '@/Components/forms/VTagCombobox'
 
 export default {
   components: { VImageSelect, VTagCombobox },
+
+  mixins: [IntierFormMixin],
 
   props: {
     item: {
@@ -81,6 +84,8 @@ export default {
       form: this.$inertia.form(
         {
           _method: id ? 'PUT' : 'POST',
+          _route: 'profiles',
+          _params: { id },
           name: profile.name,
           kana: profile.kana,
           description: profile.description,
@@ -124,35 +129,6 @@ export default {
 
     const { data: youtubes } = await this.$http.get(route('api.youtubes'))
     this.dbYoutubes = youtubes
-  },
-
-  methods: {
-    submit: function () {
-      const profile = this.item || {}
-      const id = profile.id
-
-      const url = id ? this.route('profiles.update', { id }) : this.route('profiles.store')
-      this.form
-        .post(url, {
-          preserveScroll: true,
-        })
-        .then(() => {
-          // 取り出したらエラーを消す
-          this.errors = this.$page.errors
-          this.$page.errors = {}
-
-          if (Object.keys(this.errors).length === 0) {
-            this.$emit('success')
-          } else {
-            this.$emit('error')
-          }
-        })
-    },
-
-    reset: function () {
-      this.form.reset()
-      this.errors = {}
-    },
   },
 }
 </script>

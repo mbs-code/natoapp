@@ -11,10 +11,13 @@
 </template>
 
 <script>
+import IntierFormMixin from '@/Mixins/InertiaFormMixin'
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 
 export default {
+  mixins: [IntierFormMixin],
+
   props: {
     item: {
       type: Object,
@@ -30,6 +33,8 @@ export default {
       form: this.$inertia.form(
         {
           _method: id ? 'PUT' : 'POST',
+          _route: 'twitters',
+          _params: { id },
           screen_name: twitter.screen_name,
         },
         {
@@ -39,35 +44,6 @@ export default {
       ),
       errors: {},
     }
-  },
-
-  methods: {
-    submit: function () {
-      const twitter = this.item || {}
-      const id = twitter.id
-
-      const url = id ? this.route('twitters.update', { id }) : this.route('twitters.store')
-      this.form
-        .post(url, {
-          preserveScroll: true,
-        })
-        .then(() => {
-          // 取り出したらエラーを消す
-          this.errors = this.$page.errors
-          this.$page.errors = {}
-
-          if (Object.keys(this.errors).length === 0) {
-            this.$emit('success')
-          } else {
-            this.$emit('error')
-          }
-        })
-    },
-
-    reset: function () {
-      this.form.reset()
-      this.errors = {}
-    },
   },
 }
 </script>

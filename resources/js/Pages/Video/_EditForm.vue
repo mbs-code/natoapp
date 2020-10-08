@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" @submit.prevent="submit">
+  <v-form ref="form" @submit.prevent="submit('videos')">
     <v-text-field
       v-model="form.code"
       label="動画ID"
@@ -11,10 +11,13 @@
 </template>
 
 <script>
+import IntierFormMixin from '@/Mixins/InertiaFormMixin'
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 
 export default {
+  mixins: [IntierFormMixin],
+
   props: {
     item: {
       type: Object,
@@ -24,12 +27,12 @@ export default {
 
   data: function () {
     const video = this.item || {}
-    const id = video.id
 
     return {
       form: this.$inertia.form(
         {
           _method: id ? 'PUT' : 'POST',
+          _route: 'videos',
           code: video.code,
         },
         {
@@ -39,35 +42,6 @@ export default {
       ),
       errors: {},
     }
-  },
-
-  methods: {
-    submit: function () {
-      const video = this.item || {}
-      const id = video.id
-
-      const url = id ? this.route('videos.update', { id }) : this.route('videos.store')
-      this.form
-        .post(url, {
-          preserveScroll: true,
-        })
-        .then(() => {
-          // 取り出したらエラーを消す
-          this.errors = this.$page.errors
-          this.$page.errors = {}
-
-          if (Object.keys(this.errors).length === 0) {
-            this.$emit('success')
-          } else {
-            this.$emit('error')
-          }
-        })
-    },
-
-    reset: function () {
-      this.form.reset()
-      this.errors = {}
-    },
   },
 }
 </script>
