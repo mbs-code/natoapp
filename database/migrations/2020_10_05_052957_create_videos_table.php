@@ -27,7 +27,7 @@ class CreateVideosTable extends Migration
             $table->enum('status', VideoStatus::keys()); // puiblic, unlisted とか
             $table->integer('duration')->unsigned(); // seconds
 
-            $table->string('tags')->nullable(); // csv array
+            $table->string('tags', 511)->nullable(); // csv array
             $table->unsignedInteger('max-viewers')->nullable();
             $table->datetime('published_at'); // 作成日時
 
