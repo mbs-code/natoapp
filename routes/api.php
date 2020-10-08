@@ -15,9 +15,10 @@ use App\Http\Controllers\APIController;
 |
 */
 
-Route::get('/api/tags', [APIController::class, 'tags'])->name('api.tags');
-Route::get('/api/twitters', [APIController::class, 'twitters'])->name('api.twitters');
-Route::get('/api/youtubes', [APIController::class, 'youtubes'])->name('api.youtubes');
+Route::get('/tags', [APIController::class, 'tags'])->name('api.tags');
+Route::get('/twitters', [APIController::class, 'twitters'])->name('api.twitters');
+Route::get('/youtubes', [APIController::class, 'youtubes'])->name('api.youtubes');
+Route::get('/videos', [APIController::class, 'videos'])->name('api.videos');
 
 Route::post('/debug/toast', [DebugController::class, 'toast'])->name('debug.toast');
 

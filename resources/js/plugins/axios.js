@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import axios from 'axios'
+import Axios from 'axios'
 import VueAxios from 'vue-axios'
 
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, Axios)
