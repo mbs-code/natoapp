@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import TwitterTab from '@/Components/ProfileTabs/TwitterTab'
-import YoutubeTab from '@/Components/ProfileTabs/YoutubeTab'
+import TwitterTab from './_TwitterTab'
+import YoutubeTab from './_YoutubeTab'
 
 export default {
   components: { TwitterTab, YoutubeTab },

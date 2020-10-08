@@ -25,8 +25,8 @@
 <script>
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
-import ProfileCard from '@/Components/ProfileCard'
-import ProfileTabCard from '@/Components/ProfileTabs/ProfileTabCard'
+import ProfileCard from './_Card'
+import ProfileTabCard from './_InfoTabs/_InfoTab'
 
 export default {
   layout: [DefaultLayout],
