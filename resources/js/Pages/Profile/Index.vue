@@ -18,7 +18,7 @@
       </template>
       <template v-else>
         <v-col v-for="profile of profiles" :key="profile.id" cols="12">
-          <ProfileCard :profile="profile" card-link="true" />
+          <Card :profile="profile" card-link="true" />
         </v-col>
       </template>
     </v-row>
@@ -29,13 +29,13 @@
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 import SwitchButton from '@/Components/CommonParts/SwitchButton'
-import ProfileCard from '@/Components/ProfileCard'
 import List from './_List'
+import Card from './_Card'
 
 export default {
   layout: [DefaultLayout],
 
-  components: { ContainerLayout, SwitchButton, List, ProfileCard },
+  components: { ContainerLayout, SwitchButton, List, Card },
 
   props: {
     profiles: {
