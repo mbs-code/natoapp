@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TwitterController;
 use App\Http\Controllers\YoutubeController;
+use App\Http\Controllers\VideoController;
 use App\Http\Controllers\DebugController;
 
 /*
@@ -28,6 +29,9 @@ Route::resource('twitters', TwitterController::class,
 );
 Route::resource('youtubes', YoutubeController::class,
     ['only' => ['index', 'store', 'update', 'destroy']]
+);
+Route::resource('videos', VideoController::class,
+    ['only' => ['index', 'show', 'store', 'destroy']]
 );
 
 Route::post('/debug/toast', [DebugController::class, 'toast'])->name('debug.toast');

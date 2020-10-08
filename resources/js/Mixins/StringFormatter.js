@@ -2,6 +2,7 @@ import dateFnsFormat from 'date-fns/format'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import differenceInDays from 'date-fns/differenceInDays'
 import { ja } from 'date-fns/locale'
+import formatDuration from 'format-duration'
 
 // ref: https://www.softel.co.jp/blogs/tech/archives/6099
 const urlReg = new RegExp(
@@ -25,6 +26,35 @@ const numberDigit = function (num) {
     return Number(num).toLocaleString()
   } catch (err) {
     return num
+  }
+}
+
+/**
+ * 小数点を固定する.
+ *
+ * @param {number|string} num 数字文字列
+ * @param {number|0} digit 桁数
+ * @return {string} 3桁区切りの数字
+ */
+const numberToFixed = function (num, digit = 0) {
+  try {
+    return Number(num).toFixed(digit)
+  } catch (err) {
+    return num
+  }
+}
+
+/**
+ * duration数値を分かりやすく変換する.
+ *
+ * @param {number|string} num duration 文字列
+ * @return {string} HH:MM:SS
+ */
+const durationHumanized = function (num) {
+  try {
+    return formatDuration(Number(num) * 1000)
+  } catch (err) {
+    return datetimeUTC
   }
 }
 
@@ -140,6 +170,8 @@ const formatHelper = function (datetimeUTC, format, formatDatetime = undefined) 
 export default {
   filters: {
     numberDigit,
+    numberToFixed,
+    durationHumanized,
     htmlLinker,
 
     toDatetime,
