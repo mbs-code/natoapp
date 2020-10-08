@@ -13,15 +13,14 @@
     </template>
 
     <v-row justify="center">
-      <!-- <template v-if="buttonMode"> -->
+      <template v-if="buttonMode">
         <List ref="list" :videos="videos" />
-      <!-- </template> -->
-      <!-- <template v-else> -->
-        <!-- <v-col v-for="video of videos" :key="video.id" cols="12">
-          <div>{{ video.title }}</div> -->
-          <!-- <ProfileCard :profile="profile" card-link="true" /> -->
-        <!-- </v-col> -->
-      <!-- </template> -->
+      </template>
+      <template v-else>
+        <v-col v-for="video of videos" :key="video.id" cols="12">
+          <Card :video="video" card-link="true" />
+        </v-col>
+      </template>
     </v-row>
   </ContainerLayout>
 </template>
@@ -30,13 +29,13 @@
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
 import SwitchButton from '@/Components/CommonParts/SwitchButton'
-// import ProfileCard from '@/Components/ProfileCard'
 import List from './_List'
+import Card from './_Card'
 
 export default {
   layout: [DefaultLayout],
 
-  components: { ContainerLayout, SwitchButton, List },
+  components: { ContainerLayout, SwitchButton, List, Card },
 
   props: {
     videos: {
@@ -47,7 +46,7 @@ export default {
 
   data: function () {
     return {
-      buttonMode: true, // true で card のリンクを button にする
+      buttonMode: false, // true で card のリンクを button にする
     }
   },
 }
