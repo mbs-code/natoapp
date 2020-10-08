@@ -23,7 +23,7 @@ export default {
   },
 
   data: function () {
-    const youtube = this.youtube || {}
+    const youtube = this.item || {}
     const id = youtube.id
 
     return {
@@ -43,7 +43,7 @@ export default {
 
   methods: {
     submit: function () {
-      const youtube = this.youtube || {}
+      const youtube = this.item || {}
       const id = youtube.id
 
       const url = id ? this.route('youtubes.update', { id }) : this.route('youtubes.store')
