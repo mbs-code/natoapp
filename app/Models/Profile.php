@@ -18,6 +18,18 @@ class Profile extends Model
         'deleted_at'
     ];
 
+    public function getTwitterFollowersAttribute()
+    {
+        // use append('twitterFollowers')
+        return collect($this->twitters, [])->max('followers');
+    }
+
+    public function getYoutubeSubscribersAttribute()
+    {
+        // use append('youtubeSubscribers')
+        return collect($this->youtubes, [])->max('subscribers');
+    }
+
     public function twitters()
     {
         return $this->morphedByMany('App\Models\Twitter', 'profilable')

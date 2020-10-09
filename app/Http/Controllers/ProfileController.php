@@ -22,7 +22,11 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $profiles = Profile::with(['twitters', 'youtubes', 'tags'])->get();
+        $profiles = Profile::with(['twitters', 'youtubes', 'tags'])
+            ->get()
+            ->append('twitterFollowers')
+            ->append('youtubeSubscribers')
+            ->toArray();
         return Inertia::render('Profile/Index', ['profiles' => $profiles]);
     }
 

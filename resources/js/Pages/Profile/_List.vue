@@ -32,6 +32,13 @@
       </v-chip>
     </template>
 
+    <template v-slot:[`item.twitterFollowers`]="{ item: { twitterFollowers } }">
+      {{ twitterFollowers | numberDigit }}
+    </template>
+    <template v-slot:[`item.youtubeSubscribers`]="{ item: { youtubeSubscribers } }">
+      {{ youtubeSubscribers | numberDigit }}
+    </template>
+
     <template v-slot:[`item.profiles`]="{ item }">
       <div>
         <v-btn
@@ -118,10 +125,13 @@ export default {
 
   computed: {
     headers: function () {
+      console.log(this.profiles)
       return [
         { text: '', value: 'links', sortable: false },
         { text: '名前', value: 'name' },
         { text: 'タグ', value: 'tags' },
+        { text: 'フォロワー', value: 'twitterFollowers' },
+        { text: '登録者数', value: 'youtubeSubscribers' },
         { text: '関連', value: 'profiles' },
         { text: '', value: 'actions', sortable: false },
       ]
