@@ -7,11 +7,11 @@ use LogicException;
 
 trait HasHistoryModel
 {
-
+    // 保存するモデル
     // protected $historyModel = YoutubeStat::class;
 
     // 一つも変更が無くても保存する
-    protected $createHistoryWhenNoChanged = false;
+    // protected $createHistoryWhenNoChanged = false;
 
     public static function bootHasHistoryModel()
     {
@@ -38,8 +38,8 @@ trait HasHistoryModel
 
     private function createHistoryRecord($model)
     {
-        $historyModel = $this->historyModel;
         // 必ず Model 系を定義させる
+        $historyModel = $this->historyModel;
         if (!$historyModel || !is_subclass_of($historyModel, Model::class)) {
             throw new LogicException('Wrong implementation of "$this->historyModel"');
         }
