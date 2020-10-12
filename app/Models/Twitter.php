@@ -3,12 +3,9 @@
 namespace App\Models;
 
 use App\Traits\HasHistoryModel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Twitter extends Model
+class Twitter extends BaseModel
 {
-    use HasFactory;
     use HasHistoryModel;
 
     protected $historyModel = TwitterStat::class;
@@ -17,13 +14,7 @@ class Twitter extends Model
     protected $fillable = [
         'code', 'name', 'screen_name', 'location', 'description',
         'url', 'thumbnail_url', 'banner_url', 'protected', 'published_at',
-        'followers', 'friends', 'listed', 'favourites', 'statuses', 'last_tweet_id'];
-
-    protected $dates = [
-        'published_at',
-        'created_at',
-        'updated_at',
-        'deleted_at'
+        'followers', 'friends', 'listed', 'favourites', 'statuses', 'last_tweet_id'
     ];
 
     protected $casts = [
@@ -32,19 +23,24 @@ class Twitter extends Model
 
     protected $appends = ['link'];
 
+    /// ////////////////////////////////////////
+
     public function getLinkAttribute()
     {
         $screenName = $this->screen_name;
         return $screenName ? 'https://twitter.com/'.$screenName : null;
     }
 
+    /// ////////////////////////////////////////
+
     public function profiles()
     {
-        return $this->morphToMany('App\Models\Profile', 'profilable');
+        return $this->morphToMany(Profile::class, 'profilable');
     }
 
     public function stats()
     {
-        return $this->histories()->orderBy('created_at', 'desc')->limit(10);
+        return $this->histories()
+            ->orderBy('created_at', 'desc')->limit(10);
     }
 }

@@ -2,21 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Profile extends Model
+class Profile extends BaseModel
 {
-    use HasFactory;
-
-    protected $fillable = ['name', 'kana', 'description', 'thumbnail_url', 'tags'];
-
-    protected $dates = [
-        'published_at',
-        'created_at',
-        'updated_at',
-        'deleted_at'
+    protected $fillable = [
+        'name', 'kana', 'description', 'thumbnail_url', 'tags'
     ];
+
+    /// ////////////////////////////////////////
 
     public function getTwitterFollowersAttribute()
     {
@@ -30,21 +22,23 @@ class Profile extends Model
         return collect($this->youtubes, [])->max('subscribers');
     }
 
+    /// ////////////////////////////////////////
+
     public function twitters()
     {
-        return $this->morphedByMany('App\Models\Twitter', 'profilable')
+        return $this->morphedByMany(Twitter::class, 'profilable')
             ->withPivot('created_at');
     }
 
     public function youtubes()
     {
-        return $this->morphedByMany('App\Models\Youtube', 'profilable')
+        return $this->morphedByMany(Youtube::class, 'profilable')
             ->withPivot('created_at');
     }
 
     public function tags()
     {
-        return $this->belongsToMany('App\Models\ProfileTag', 'tag_profile')
+        return $this->belongsToMany(ProfileTag::class, 'tag_profile')
             ->withPivot('created_at');
     }
 }

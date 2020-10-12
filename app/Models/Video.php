@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Interfaces\ChannelInterface;
-use App\Casts\CSV;
 use App\Traits\HasHistoryModel;
+use App\Casts\CSV;
 
-class Video extends Model
+class Video extends BaseModel
 {
-    use HasFactory;
     use HasHistoryModel;
 
     protected $historyModel = VideoStat::class;
@@ -24,22 +21,19 @@ class Video extends Model
         'views', 'likes', 'dislikes', 'favorites', 'comments','concurrent_viewers',
     ];
 
-    protected $dates = [
-        'published_at',
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
-
     public $casts = [
         'tags' => CSV::class,
     ];
 
+    /// ////////////////////////////////////////
+
     public function setChannelAttribute(ChannelInterface $channel)
     {
-        $this->channel_type = 'App\Models\Youtube';
+        $this->channel_type = Youtube::class;
         $this->channel_id = $channel->id;
     }
+
+    /// ////////////////////////////////////////
 
     public function channel()
     {
@@ -48,6 +42,7 @@ class Video extends Model
 
     public function stats()
     {
-        return $this->histories()->orderBy('created_at', 'desc')->limit(10);
+        return $this->histories()
+            ->orderBy('created_at', 'desc')->limit(10);
     }
 }

@@ -3,14 +3,11 @@
 namespace App\Models;
 
 use App\Models\Interfaces\ChannelInterface;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use App\Casts\CSV;
 use App\Traits\HasHistoryModel;
+use App\Casts\CSV;
 
-class Youtube extends Model implements ChannelInterface
+class Youtube extends BaseModel implements ChannelInterface
 {
-    use HasFactory;
     use HasHistoryModel;
 
     protected $historyModel = YoutubeStat::class;
@@ -22,18 +19,13 @@ class Youtube extends Model implements ChannelInterface
         'views', 'comments', 'subscribers', 'videos'
     ];
 
-    protected $dates = [
-        'published_at',
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
-
     public $casts = [
         'tags' => CSV::class,
     ];
 
     protected $appends = ['link'];
+
+    /// ////////////////////////////////////////
 
     public function getLinkAttribute()
     {
@@ -41,18 +33,21 @@ class Youtube extends Model implements ChannelInterface
         return $code ? 'https://www.youtube.com/channel/'.$code : null;
     }
 
+    /// ////////////////////////////////////////
+
     public function profiles()
     {
-        return $this->morphToMany('App\Models\Profile', 'profilable');
+        return $this->morphToMany(Profile::class, 'profilable');
     }
 
     public function videos()
     {
-        return $this->morphMany('App\Models\Video', 'channel');
+        return $this->morphMany(Video::class, 'channel');
     }
 
     public function stats()
     {
-        return $this->histories()->orderBy('created_at', 'desc')->limit(10);
+        return $this->histories()
+            ->orderBy('created_at', 'desc')->limit(10);
     }
 }

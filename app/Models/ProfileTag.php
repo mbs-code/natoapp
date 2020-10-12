@@ -2,24 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class ProfileTag extends Model
+class ProfileTag extends BaseModel
 {
-    use HasFactory;
-
     protected $fillable = ['name', 'color'];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+    /// ////////////////////////////////////////
 
     public function profiles()
     {
-        return $this->belongsToMany('App\Models\Profile', 'tag_profile')
+        return $this->belongsToMany(Profile::class, 'tag_profile')
             ->withPivot('created_at');
     }
 }
