@@ -7,6 +7,12 @@ use LogicException;
 
 trait HasHistoryModel
 {
+
+    // protected $historyModel = YoutubeStat::class;
+
+    // 一つも変更が無くても保存する
+    protected $createHistoryWhenNoChanged = false;
+
     public static function bootHasHistoryModel()
     {
         self::created(function ($model) {
@@ -15,6 +21,13 @@ trait HasHistoryModel
 
         self::updated(function ($model) {
             $model->createHistoryRecord($model);
+        });
+
+        // 何も変更が無い時のrouting
+        self::saved(function ($model) {
+            if ($model->createHistoryWhenNoChanged) {
+                $model->createHistoryRecord($model);
+            }
         });
     }
 
