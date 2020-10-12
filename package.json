@@ -33,6 +33,7 @@
         "vuetify-loader": "^1.4.3"
     },
     "dependencies": {
+        "@ianwalter/vuex-reset": "^4.3.2",
         "@nesk/puphpeteer": "^1.6.0",
         "date-fns": "^2.16.1",
         "delay": "^4.4.0",
@@ -41,6 +42,8 @@
         "v-snackbars": "^3.1.0",
         "vue-axios": "^2.1.5",
         "vuetify": "^2.3.13",
-        "vuetify-dialog": "^2.0.12"
+        "vuetify-dialog": "^2.0.12",
+        "vuex": "^3.5.1",
+        "vuex-persistedstate": "^4.0.0-beta.1"
     }
 }

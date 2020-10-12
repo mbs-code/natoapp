@@ -3,7 +3,7 @@
     <template v-slot:toolbar>
       <v-row no-gutters justify="end">
         <SwitchButton
-          v-model="buttonMode"
+          v-model="videoTableMode"
           class="mx-1"
         />
         <v-btn class="mx-1" @click="$refs.list.openEditDialog()">
@@ -13,7 +13,7 @@
     </template>
 
     <v-row justify="center">
-      <template v-if="buttonMode">
+      <template v-if="videoTableMode">
         <VideoList ref="list" :videos="videos" />
       </template>
       <template v-else>
@@ -44,10 +44,15 @@ export default {
     },
   },
 
-  data: function () {
-    return {
-      buttonMode: false, // true で card のリンクを button にする
-    }
+  computed: {
+    videoTableMode: {
+      get() {
+        return this.$store.getters['config/getVideoTableMode']
+      },
+      set(value) {
+        this.$store.commit('config/setVideoTableMode', value)
+      },
+    },
   },
 }
 </script>

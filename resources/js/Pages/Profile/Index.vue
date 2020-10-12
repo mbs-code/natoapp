@@ -3,7 +3,7 @@
     <template v-slot:toolbar>
       <v-row no-gutters justify="end">
         <SwitchButton
-          v-model="buttonMode"
+          v-model="profileTableMode"
           class="mx-1"
         />
         <v-btn class="mx-1" @click="$refs.list.openEditDialog()">
@@ -13,7 +13,7 @@
     </template>
 
     <v-row justify="center">
-      <template v-if="buttonMode">
+      <template v-if="profileTableMode">
         <ProfileList ref="list" :profiles="profiles" />
       </template>
       <template v-else>
@@ -44,10 +44,15 @@ export default {
     },
   },
 
-  data: function () {
-    return {
-      buttonMode: true, // true で card のリンクを button にする
-    }
+  computed: {
+    profileTableMode: {
+      get() {
+        return this.$store.getters['config/getProfileTableMode']
+      },
+      set(value) {
+        this.$store.commit('config/setProfileTableMode', value)
+      },
+    },
   },
 }
 </script>
