@@ -25,10 +25,12 @@ class CreateYoutubesTable extends Migration
             $table->string('tags', 511)->nullable(); // csv array
             $table->datetime('published_at'); // 作成日時
 
-            $table->integer('views')->unsigned(); // 再生数
-            $table->integer('comments')->unsigned(); // コメント数
-            $table->integer('subscribers')->unsigned(); // 登録者数
-            $table->integer('videos')->unsigned(); // 動画数
+            // start stat fields
+            $table->unsignedInteger('views')->nullable(); // 再生数
+            $table->unsignedInteger('comments')->nullable(); // コメント数
+            $table->unsignedInteger('subscribers')->nullable(); // 登録者数
+            $table->unsignedInteger('videos')->nullable(); // 動画数
+            // end stat fields
 
             $table->datetime('created_at')->nullable(); // system
             $table->datetime('updated_at')->nullable(); // system

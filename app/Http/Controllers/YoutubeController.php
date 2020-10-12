@@ -19,7 +19,7 @@ class YoutubeController extends Controller
      */
     public function index()
     {
-        $youtubes = Youtube::all();
+        $youtubes = Youtube::with(['stats'])->get();
         return Inertia::render('Youtube/Index', ['youtubes' => $youtubes]);
     }
 

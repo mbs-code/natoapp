@@ -14,6 +14,7 @@ class Video extends Model
     use HasHistoryModel;
 
     protected $historyModel = VideoStat::class;
+    protected $createHistoryWhenNoChanged = true;
 
     protected $fillable = [
         'channel_id', 'channel_type','code', 'title', 'description', 'thumbnail_url',

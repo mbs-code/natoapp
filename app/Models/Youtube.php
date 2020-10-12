@@ -6,14 +6,21 @@ use App\Models\Interfaces\ChannelInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Casts\CSV;
+use App\Traits\HasHistoryModel;
 
 class Youtube extends Model implements ChannelInterface
 {
     use HasFactory;
+    use HasHistoryModel;
 
-    protected $fillable = ['code', 'name', 'description', 'playlist',
+    protected $historyModel = YoutubeStat::class;
+    protected $createHistoryWhenNoChanged = true;
+
+    protected $fillable = [
+        'code', 'name', 'description', 'playlist',
         'thumbnail_url', 'banner_url', 'tags', 'published_at',
-        'views', 'comments', 'subscribers', 'videos'];
+        'views', 'comments', 'subscribers', 'videos'
+    ];
 
     protected $dates = [
         'published_at',
@@ -42,5 +49,10 @@ class Youtube extends Model implements ChannelInterface
     public function videos()
     {
         return $this->morphMany('App\Models\Video', 'channel');
+    }
+
+    public function stats()
+    {
+        return $this->histories()->orderBy('created_at', 'desc')->limit(10);
     }
 }
