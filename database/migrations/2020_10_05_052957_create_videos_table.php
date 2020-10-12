@@ -38,12 +38,14 @@ class CreateVideosTable extends Migration
             $table->datetime('actual_start_time')->nullable();
             $table->datetime('actual_end_time')->nullable();
 
+            // start stat fields
             $table->unsignedInteger('views')->nullable();
             $table->unsignedInteger('likes')->nullable();
             $table->unsignedInteger('dislikes')->nullable();
             $table->unsignedInteger('favorites')->nullable();
             $table->unsignedInteger('comments')->nullable();
             $table->unsignedInteger('concurrent_viewers')->nullable();
+            // end stat fields
 
             $table->datetime('created_at')->nullable(); // system
             $table->datetime('updated_at')->nullable(); // system

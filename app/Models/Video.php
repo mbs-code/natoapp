@@ -6,13 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Interfaces\ChannelInterface;
 use App\Casts\CSV;
+use App\Traits\HasHistoryModel;
 
 class Video extends Model
 {
     use HasFactory;
+    use HasHistoryModel;
 
-    protected $fillable = ['channel_id', 'channel_type','code', 'title', 'description',
-        'thumbnail_url', 'type', 'status', 'duration', 'tags', 'max-viewers', 'published_at',
+    protected $historyModel = VideoStat::class;
+
+    protected $fillable = [
+        'channel_id', 'channel_type','code', 'title', 'description', 'thumbnail_url',
+        'type', 'status', 'duration', 'tags', 'max-viewers', 'published_at',
         'start_time', 'end_time', 'scheduled_start_time', 'scheduled_end_time',
         'actual_start_time', 'actual_end_time',
         'views', 'likes', 'dislikes', 'favorites', 'comments','concurrent_viewers',
@@ -29,14 +34,19 @@ class Video extends Model
         'tags' => CSV::class,
     ];
 
+    public function setChannelAttribute(ChannelInterface $channel)
+    {
+        $this->channel_type = 'App\Models\Youtube';
+        $this->channel_id = $channel->id;
+    }
+
     public function channel()
     {
         return $this->morphTo();
     }
 
-    public function setChannelAttribute(ChannelInterface $channel)
+    public function stats()
     {
-        $this->channel_type = 'App\Models\Youtube';
-        $this->channel_id = $channel->id;
+        return $this->histories()->orderBy('created_at', 'desc')->limit(10);
     }
 }
