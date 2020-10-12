@@ -19,7 +19,7 @@ class TwitterController extends Controller
      */
     public function index()
     {
-        $twitters = Twitter::with(['stats'])->get();
+        $twitters = Twitter::query()->get();
         return Inertia::render('Twitter/Index', ['twitters' => $twitters]);
     }
 

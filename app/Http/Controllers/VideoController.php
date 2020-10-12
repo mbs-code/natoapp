@@ -19,7 +19,7 @@ class VideoController extends Controller
      */
     public function index()
     {
-        $videos = Video::with(['channel', 'stats'])->get();
+        $videos = Video::with(['channel'])->get();
         return Inertia::render('Video/Index', ['videos' => $videos]);
     }
 
