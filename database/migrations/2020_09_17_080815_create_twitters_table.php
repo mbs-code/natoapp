@@ -27,11 +27,13 @@ class CreateTwittersTable extends Migration
             $table->boolean('protected'); // 鍵の有無
             $table->datetime('published_at'); // 作成日時 (api の created_at)
 
-            $table->integer('followers')->unsigned(); // フォロワー
-            $table->integer('friends')->unsigned(); // フォロー
-            $table->integer('listed')->unsigned(); // リストに入ってる数
-            $table->integer('favourites')->unsigned(); // いいね数
-            $table->integer('statuses')->unsigned(); // ツイート数
+            // start stat fields
+            $table->unsignedInteger('followers')->nullable(); // フォロワー
+            $table->unsignedInteger('friends')->nullable(); // フォロー
+            $table->unsignedInteger('listed')->nullable(); // リストに入ってる数
+            $table->unsignedInteger('favourites')->nullable(); // いいね数
+            $table->unsignedInteger('statuses')->nullable(); // ツイート数
+            // end stat fields
 
             $table->string('last_tweet_id', 32)->nullable(); // 最後に処理したツイートID
 
