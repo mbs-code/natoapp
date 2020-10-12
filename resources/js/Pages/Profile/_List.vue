@@ -125,7 +125,6 @@ export default {
 
   computed: {
     headers: function () {
-      console.log(this.profiles)
       return [
         { text: '', value: 'links', sortable: false },
         { text: '名前', value: 'name' },
