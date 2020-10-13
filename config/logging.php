@@ -3,6 +3,8 @@
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use App\Logging\LineFormatterApply;
+use App\Logging\ColorFormatterApply;
 
 return [
 
@@ -17,7 +19,8 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    // 'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => 'stack', // 変更させない
 
     /*
     |--------------------------------------------------------------------------
@@ -37,9 +40,37 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['dailyNotice', 'singleError'],
             'ignore_exceptions' => false,
         ],
+
+        'singleError' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel_error.log'),
+            'level' => 'error', // upper error log
+            'tap' => [LineFormatterApply::class],
+        ],
+
+        'dailyNotice' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => 'notice', // all log
+            'days' => 7,
+            'tap' => [LineFormatterApply::class],
+        ],
+
+        // add stdout
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'with' => [
+                'stream' => 'php://stdout',
+            ],
+            'level' => 'debug', // all log
+            'tap' => [ColorFormatterApply::class],
+        ],
+
+        /// ////////////////////////////////////////
 
         'single' => [
             'driver' => 'single',

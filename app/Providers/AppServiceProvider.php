@@ -25,6 +25,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // logger cli mode
+        if(strpos(strtolower(php_sapi_name()), 'cli') !== false) {
+            $path = 'logging.channels.stack.channels';
+            $stacks = collect(config($path, []))
+                ->push('stdout')
+                ->unique();
+            config([$path => $stacks]);
+        }
+
         // error bag
         Inertia::share([
             'errors' => function () {
