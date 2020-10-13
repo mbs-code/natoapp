@@ -20,8 +20,6 @@ Route::get('/twitters', [APIController::class, 'twitters'])->name('api.twitters'
 Route::get('/youtubes', [APIController::class, 'youtubes'])->name('api.youtubes');
 Route::get('/videos', [APIController::class, 'videos'])->name('api.videos');
 
-Route::post('/debug/toast', [DebugController::class, 'toast'])->name('debug.toast');
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
