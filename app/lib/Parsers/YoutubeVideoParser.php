@@ -5,6 +5,7 @@ namespace App\Lib\Parsers;
 use App\Lib\Parsers\Parser;
 use App\Lib\TimeUtil;
 use App\Exceptions\NoChannelException;
+use App\Exceptions\NullPointerException;
 use App\Lib\Tasks\UpsertYoutubeChannel;
 use App\Models\Youtube;
 use App\Models\Video;
@@ -13,6 +14,28 @@ use App\Enums\VideoType;
 
 class YoutubeVideoParser extends Parser
 {
+
+    public static function delete(string $key)
+    {
+        $vv = Video::where(['code' => $key])->first();
+        if (!$vv) {
+            // 無いなら例外
+            throw new NullPointerException('videoId = '.$key);
+        }
+
+        $vv->status = VideoStatus:: DELETE(); // とりあえず delete に
+        // TODO: private, BAN との判別方法がほしい
+
+        // ライブ中だったら終わった時刻をとりあえず入れておく
+        if (VideoType::LIVE()->equals($vv->type)) {
+            $vv->type = VideoType::ARCHIVE();
+            $vv->endTime = TimeUtil::LocaleCarbonNow();
+        }
+
+        $vv->save();
+        return $vv;
+    }
+
     public static function insert(object $item, bool $notExistChannel)
     {
         // channel の取得
@@ -23,7 +46,7 @@ class YoutubeVideoParser extends Parser
             if ($notExistChannel) {
                 $channel = UpsertYoutubeChannel::run($channelID);
             } else {
-                throw new NoChannelException('channelID = '.$channelID);
+                throw new NoChannelException('channelId = '.$channelID);
             }
         }
 

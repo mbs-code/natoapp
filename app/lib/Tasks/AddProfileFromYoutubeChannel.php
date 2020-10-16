@@ -3,14 +3,14 @@
 namespace App\Lib\Tasks;
 
 use Nesk\Puphpeteer\Puppeteer;
-use App\Lib\Tasks\Bases\UpsertTask;
+use App\Lib\Tasks\Bases\FetchArrayTask;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Helpers\Helper;
 use App\lib\TimeUtil;
 use App\Models\Profile;
 
-class AddProfileFromYoutubeChannel extends UpsertTask
+class AddProfileFromYoutubeChannel extends FetchArrayTask
 {
     protected function fetch($channelID)
     {
@@ -43,7 +43,6 @@ class AddProfileFromYoutubeChannel extends UpsertTask
 
                 // url の type 判定処理
                 if ($q) {
-                    echo($q.PHP_EOL);
                     // twitter
                     if (strpos($q, '//twitter.com') !== false) {
                         $innerParse = parse_url($q);
@@ -59,7 +58,11 @@ class AddProfileFromYoutubeChannel extends UpsertTask
 
         $browser->close();
 
-        return $profilables;
+        return [$profilables];
+    }
+
+    protected function getKeyCallback($item, $keys) {
+        return collect($keys)->first();
     }
 
     protected function handle($data) {

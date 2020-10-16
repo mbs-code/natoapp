@@ -50,4 +50,11 @@ class Youtube extends BaseModel implements ChannelInterface
         return $this->histories()
             ->orderBy('created_at', 'desc')->limit(10);
     }
+
+    /// ////////////////////////////////////////
+
+    public function __toString()
+    {
+        return "[{$this->id}] {$this->name}";
+    }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Lib\Tasks;
 
-use App\Lib\Tasks\Bases\ArrayChunkUpsertTask;
+use App\Lib\Tasks\Bases\ChunkFetchArrayTask;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
 use App\Lib\Parsers\YoutubeVideoParser;
+use App\Models\Video;
+use App\Enums\VideoStatus;
 
-class UpsertYoutubeVideo extends ArrayChunkUpsertTask
+class UpsertYoutubeVideo extends ChunkFetchArrayTask
 {
     protected $chunkSize = 50;
 
@@ -27,9 +29,36 @@ class UpsertYoutubeVideo extends ArrayChunkUpsertTask
         return $items;
     }
 
+    protected function getKeyCallback($item, $keys) {
+        return data_get($item, 'id');
+    }
+
     protected function handle($item)
     {
-        $parse = YoutubeVideoParser::insert($item, $this->notExistChannel);
+        $parse = null;
+
+        if (!$item) {
+            // 値が無い = YouTube から削除されている -> 削除処理へ
+            $key = $this->getEventAttr('innerKey');
+            $parse = YoutubeVideoParser::delete($key);
+        } else {
+            $parse = YoutubeVideoParser::insert($item, $this->notExistChannel);
+        }
+
+        // 処理結果を event から読み出せるように
+        if ($parse instanceof Video) {
+            if (VideoStatus::DELETE()->equals($parse->status)) {
+                // TODO: delete に切り替えた時だけでもいいかも
+                $this->setEventAttr('handleMethod', 'delete');
+            } else {
+                if ($parse->wasRecentlyCreated) {
+                    $this->setEventAttr('handleMethod', 'create');
+                } else {
+                    $this->setEventAttr('handleMethod', 'update');
+                }
+            }
+        }
+
         return $parse;
     }
 }

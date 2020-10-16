@@ -2,11 +2,12 @@
 
 namespace App\Lib\Tasks;
 
-use App\Lib\Tasks\Bases\ArrayChunkUpsertTask;
+use App\Lib\Tasks\Bases\ChunkFetchArrayTask;
 use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
 use App\Lib\Parsers\TwitterUserParser;
+use App\Exceptions\NullPointerException;
 
-class UpsertTwitterUser extends ArrayChunkUpsertTask
+class UpsertTwitterUser extends ChunkFetchArrayTask
 {
     protected $chunkSize = 100;
 
@@ -23,8 +24,17 @@ class UpsertTwitterUser extends ArrayChunkUpsertTask
         return $items;
     }
 
+    protected function getKeyCallback($item, $keys) {
+        return data_get($item, 'screen_name');
+    }
+
     protected function handle($item)
     {
+        if (!$item) {
+            // TODO: 値が無い = twitter から削除されている。今のとこ手動対応
+            throw new NullPointerException();
+        }
+
         $parse = TwitterUserParser::insert($item);
         return $parse;
     }
