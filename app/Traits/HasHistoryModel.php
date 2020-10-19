@@ -23,12 +23,23 @@ trait HasHistoryModel
             $model->createHistoryRecord($model);
         });
 
-        // 何も変更が無い時のrouting
+        // 何も変更が無い時の routing
         self::saved(function ($model) {
             if ($model->createHistoryWhenNoChanged) {
                 $model->createHistoryRecord($model);
             }
         });
+
+        // DB 削除時に history も削除する（残す意味ないしね）
+        if (method_exists(static::class, 'bootSoftDeletes')) {
+            self::forceDeleted(function ($model) {
+                $model->removeHistoryRecord($model);
+            });
+        } else {
+            self::deleted(function ($model) {
+                $model->removeHistoryRecord($model);
+            });
+        }
     }
 
     public function histories()
@@ -56,5 +67,10 @@ trait HasHistoryModel
 
         $hm->fill($fills);
         $model->histories()->save($hm);
+    }
+
+    private function removeHistoryRecord($model)
+    {
+        $model->histories()->delete();
     }
 }
