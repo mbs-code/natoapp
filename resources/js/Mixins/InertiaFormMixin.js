@@ -12,8 +12,9 @@ export default {
       const routePrefix = (this.form._route || '').toLowerCase()
       const params = this.form._params || {}
 
-      const routeSuffix = method === 'PUT' ? 'update' : 'store'
+      const routeSuffix = this._methodToSuffix(method)
       const url = `${routePrefix}.${routeSuffix}`
+      console.log(url)
       this.form
         .post(route(url, params), {
           preserveScroll: true,
@@ -29,6 +30,20 @@ export default {
             this.$emit('error')
           }
         })
+    },
+
+    _methodToSuffix: function (method) {
+      const upper = (method || '').toUpperCase()
+      switch (upper) {
+        case 'PUT':
+          return 'update'
+        case 'POST':
+          return 'store'
+        case 'DELETE':
+          return 'destroy'
+        default:
+          return 'index'
+      }
     },
 
     reset: function () {

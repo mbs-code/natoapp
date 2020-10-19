@@ -15,8 +15,14 @@
 
     <v-card-text class="text--primary">
       <v-spacer />
-      {{ message }}
-      <!-- <component :is="formComponent" ref="form" :item="item" @success="close" /> -->
+      <span v-if="message">{{ message }}</span>
+      <component
+        :is="formComponent"
+        v-if="formComponent"
+        ref="form"
+        :item="item"
+        @success="close"
+      />
     </v-card-text>
 
     <v-divider />
@@ -24,7 +30,7 @@
     <v-card-actions>
       <v-row no-gutters justify="end">
         <v-btn color="red darken-1" text @click="onCancel">キャンセル</v-btn>
-        <v-btn color="green darken-1" outlined @click="close">ＯＫ</v-btn>
+        <v-btn color="green darken-1" outlined @click="onConfirm">ＯＫ</v-btn>
       </v-row>
     </v-card-actions>
   </v-card>
@@ -41,13 +47,39 @@ export default {
       type: String,
       default: 'mdi-information-outline',
     },
+    width: {
+      type: [String, Number],
+      default: 450,
+    },
+
+    formComponent: {
+      type: Object,
+      default: null,
+    },
+    item: {
+      type: Object,
+      default: null,
+    },
     message: {
       type: String,
-      default: '',
+      default: null,
     },
   },
 
+  created: function () {
+    // dialog prop の上書き
+    const parent = ((this.$parent || {}).$parent || {}).$parent || {}
+    parent.showClose = false
+    parent.waitForResult = false
+    parent.width = this.width
+  },
+
   methods: {
+    onConfirm: function () {
+      const form = this.$refs.form.submit()
+      this.close()
+    },
+
     onCancel: function () {
       this.$emit('submit', false)
     },

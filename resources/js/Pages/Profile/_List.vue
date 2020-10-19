@@ -112,6 +112,7 @@ import FormDialog from '@/Components/CommonParts/FormDialog'
 import ConfirmDialog from '@/Components/CommonParts/ConfirmDialog'
 import StringFormatter from '@/Mixins/StringFormatter'
 import EditForm from './_EditForm'
+import DeleteForm from './_DeleteForm'
 
 export default {
   mixins: [StringFormatter],
@@ -145,22 +146,15 @@ export default {
         formComponent: EditForm,
         item: profile,
         persistent: true,
-        showClose: false,
-        waitForResult: true,
-        width: 640,
       })
     },
 
     openDeleteDialog: async function (profile) {
-      const res = await this.$dialog.show(ConfirmDialog, {
+      await this.$dialog.show(ConfirmDialog, {
         title: '確認',
-        message: `「${profile.name}」を削除しますか？`,
-        showClose: false,
-        waitForResult: true,
+        formComponent: DeleteForm,
+        item: profile,
       })
-      if (res) {
-        this.$inertia.delete(route('profiles.destroy', { id: profile.id }))
-      }
     },
   },
 }

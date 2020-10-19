@@ -42,6 +42,11 @@ export default {
       type: String,
       default: 'mdi-pencil',
     },
+    width: {
+      type: [String, Number],
+      default: 640,
+    },
+
     formComponent: {
       type: Object,
       default: null,
@@ -50,6 +55,14 @@ export default {
       type: Object,
       default: null,
     },
+  },
+
+  created: function () {
+    // dialog prop の上書き
+    const parent = ((this.$parent || {}).$parent || {}).$parent || {}
+    parent.showClose = false
+    parent.waitForResult = false
+    parent.width = this.width
   },
 
   methods: {
