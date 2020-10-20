@@ -17,6 +17,10 @@ class CustomLineFormatter extends LineFormatter
 
     public function format(array $record): string
     {
+        $sapi = php_sapi_name();
+        if ($sapi === 'apache2handler') $sapi = 'apache2';
+        $record['channel'] = $sapi;
+
         $output = parent::format($record);
         return $output;
     }

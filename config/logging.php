@@ -54,7 +54,7 @@ return [
         'dailyNotice' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
-            'level' => 'notice', // all log
+            'level' => env('LOG_LEVEL', 'notice'),
             'days' => 7,
             'tap' => [LineFormatterApply::class],
         ],
