@@ -95,22 +95,12 @@ class ProfileController extends Controller
 
             // twitter
             $twitterIDs = Helper::createSyncArray(data_get($props, 'twitters'), function ($name) {
-                $tw = UpsertTwitterUser::run($name);
-                if ($tw->wasRecentlyCreated) {
-                    $message = '「@'.$tw->name.'」を作成しました。';
-                    Helper::messageFlash($message, 'success');
-                }
-                return $tw;
+                return UpsertTwitterUser::run($name);
             });
 
             // youtube
             $youtubeIDs = Helper::createSyncArray(data_get($props, 'youtubes'), function ($id) {
-                $yt = UpsertYoutubeChannel::run($id);
-                if ($yt->wasRecentlyCreated) {
-                    $message = '「'.$yt->name.'」を作成しました。';
-                    Helper::messageFlash($message, 'success');
-                }
-                return $yt;
+                return UpsertYoutubeChannel::run($id);
             });
 
             /// ////////////////////////////////////////
@@ -131,11 +121,7 @@ class ProfileController extends Controller
             $isChange |= Helper::syncChangeCount(($syncYoutubes)) > 0;
 
             // message
-            if ($isChange) {
-                $method = $profile->wasRecentlyCreated ? '作成' : '編集';
-                $message = '「'.$profile->name.'」を'.$method.'しました。';
-                Helper::messageFlash($message, 'success');
-            } else {
+            if (!$isChange) {
                 Helper::messageFlash('変更点はありません。', 'info');
             }
         });
@@ -149,13 +135,35 @@ class ProfileController extends Controller
      * @param  \App\Models\Profile  $profile
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Profile $profile)
+    public function destroy(Request $request, Profile $profile)
     {
-        $name = $profile->name ?? 'プロファイル';
-        $profile->delete();
+        DB::transaction(function () use ($request, $profile)
+        {
+            $props = $request->validate([
+                'withProfilable' => ['nullable', 'boolean'],
+            ]);
 
-        $message = '「'.$name.'」を削除しました。';
-        Helper::messageFlash($message, 'success');
+            // 関連オブジェクトの削除
+            if ($props['withProfilable']) {
+                $profile->load(['twitters', 'youtubes']);
+                foreach ($profile->twitters as $twitter) {
+                    // 逆向きに profile が1つなら削除
+                    if ($twitter->profiles->count()) {
+                        $twitter->delete();
+                    }
+                }
+                foreach ($profile->youtubes as $youtube) {
+                    // 逆向きに profile が1つなら削除
+                    if ($youtube->profiles->count()) {
+                        $youtube->delete();
+                    }
+                }
+            }
+
+            // 削除
+            $profile->delete();
+        });
+
         return Redirect::back();
     }
 }
