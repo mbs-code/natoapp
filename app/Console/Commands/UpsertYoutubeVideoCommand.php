@@ -45,9 +45,9 @@ class UpsertYoutubeVideoCommand extends Command
     {
         $all = $this->option('all'); // true で DB の値を対象に upsert する
         $force = $this->option('force'); // true で channel が無いとき create する
+        $ids = $this->argument('ids') ?? []; // video ids
 
         // ID が指定されていなければ DB 全てを対象とする
-        $ids = $this->argument('ids') ?? [];
         if ($all) {
             $ids = Video::select(['code'])->get()
                 ->pluck('code')

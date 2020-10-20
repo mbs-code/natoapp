@@ -43,9 +43,9 @@ class UpsertTwitterUserCommand extends Command
     public function handle()
     {
         $all = $this->option('all'); // true で DB の値を対象に upsert する
+        $names = $this->argument('names') ?? []; // screen_name ids
 
         // ID が指定されていなければ DB 全てを対象とする
-        $names = $this->argument('names') ?? [];
         if ($all) {
             $names = Twitter::select(['screen_name'])->get()
                 ->pluck('screen_name')

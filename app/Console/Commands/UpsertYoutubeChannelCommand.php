@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use App\Lib\Tasks\UpsertYoutubeChannel;
-use App\Lib\Tasks\AddProfileFromYoutubeChannel;
 use App\Lib\Tasks\Utils\GeneralEvents;
 use App\Models\Youtube;
 
@@ -44,41 +44,29 @@ class UpsertYoutubeChannelCommand extends Command
      */
     public function handle()
     {
+        $createProfileMode = $this->option('profile'); // true で profile 推測生成モード
         $all = $this->option('all'); // true で DB の値を対象に upsert する
-        $createProfile = $this->option('profile'); // true で profile 推測生成モード
+        $ids = $this->argument('ids') ?? []; // channel ids
 
-        // create profile 中は all は無視される
-        if ($createProfile) {
-            $ids = $this->argument('ids') ?? [];
-            // TODO: ログ適当＆整合性未チェック
-            AddProfileFromYoutubeChannel::builder()
-                ->addEvent('fetched', function ($e) {
-                    $find = json_encode($e->fetchResponse);
-                    $mes = "find: {$find}";
-                    logger()->info($mes);
-                })
-                ->addEvent('beforeOuterLoop', function ($e) {
-                    $total = count($e->execProps);
-                    $mes = "Outer Loop (length: {$e->outerLength}, total: {$total})";
-                    logger()->notice($mes);
-                })
-                ->exec($ids);
+        // create profile の ailias 処理
+        if ($createProfileMode) {
+            return Artisan::call(CreateProfileFromYoutube::class, [
+                'ids' => $ids,
+            ]);
         }
 
-        // 通常実行
-        if (!$createProfile) {
-            // ID が指定されていなければ DB 全てを対象とする
-            $ids = $this->argument('ids') ?? [];
-            if ($all) {
-                $ids = Youtube::select(['code'])->get()
-                    ->pluck('code')
-                    ->toArray();
-            }
+        ///
 
-            UpsertYoutubeChannel::builder()
-                ->addEvents(GeneralEvents::arrayTaskEvents('Upsert youtube channels'))
-                ->exec($ids);
+        // ID が指定されていなければ DB 全てを対象とする
+        if ($all) {
+            $ids = Youtube::select(['code'])->get()
+                ->pluck('code')
+                ->toArray();
         }
+
+        UpsertYoutubeChannel::builder()
+            ->addEvents(GeneralEvents::arrayTaskEvents('Upsert youtube channels'))
+            ->exec($ids);
 
         return 0;
     }
