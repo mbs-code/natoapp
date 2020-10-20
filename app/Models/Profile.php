@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\HasCRUDLogger;
+
 class Profile extends BaseModel
 {
+    use HasCRUDLogger;
+
     protected $fillable = [
         'name', 'kana', 'description', 'thumbnail_url', 'tags'
     ];
@@ -40,5 +44,12 @@ class Profile extends BaseModel
     {
         return $this->belongsToMany(ProfileTag::class, 'tag_profile')
             ->withPivot('created_at');
+    }
+
+    /// ////////////////////////////////////////
+
+    public function __toString()
+    {
+        return "[{$this->id}] {$this->name}";
     }
 }

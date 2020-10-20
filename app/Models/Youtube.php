@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Interfaces\ChannelInterface;
 use App\Traits\HasHistoryModel;
+use App\Traits\HasCRUDLogger;
 use App\Casts\CSV;
 
 class Youtube extends BaseModel implements ChannelInterface
 {
     use HasHistoryModel;
+    use HasCRUDLogger;
 
     protected $historyModel = YoutubeStat::class;
     protected $createHistoryWhenNoChanged = true;
@@ -55,6 +57,6 @@ class Youtube extends BaseModel implements ChannelInterface
 
     public function __toString()
     {
-        return "[{$this->id}] {$this->name}";
+        return "[{$this->id}] {$this->name} ({$this->code})";
     }
 }

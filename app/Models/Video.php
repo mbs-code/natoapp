@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Models\Interfaces\ChannelInterface;
 use App\Traits\HasHistoryModel;
+use App\Traits\HasCRUDLogger;
 use App\Casts\CSV;
 
 class Video extends BaseModel
 {
     use HasHistoryModel;
+    use HasCRUDLogger;
 
     protected $historyModel = VideoStat::class;
     protected $createHistoryWhenNoChanged = true;
@@ -50,6 +52,6 @@ class Video extends BaseModel
 
     public function __toString()
     {
-        return "[{$this->id}] {$this->title}";
+        return "[{$this->id}] {$this->title} ({$this->code})";
     }
 }

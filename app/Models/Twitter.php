@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasCRUDLogger;
 use App\Traits\HasHistoryModel;
 
 class Twitter extends BaseModel
 {
     use HasHistoryModel;
+    use HasCRUDLogger;
 
     protected $historyModel = TwitterStat::class;
     protected $createHistoryWhenNoChanged = true;
@@ -48,6 +50,6 @@ class Twitter extends BaseModel
 
     public function __toString()
     {
-        return "[{$this->id}] {$this->name}";
+        return "[{$this->id}] {$this->name} (@{$this->screen_name})";
     }
 }
