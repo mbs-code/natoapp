@@ -4,6 +4,7 @@ namespace App\Lib\Tasks\Bases;
 
 use App\Lib\Tasks\Bases\Task;
 use App\Lib\Tasks\Events\EventAttrs;
+use Iterator;
 use Exception;
 
 /**
@@ -41,6 +42,11 @@ abstract class FetchTask extends Task
 
     /// ////////////////////////////////////////
 
+    protected function innerLoopCondition(Iterator $it)
+    {
+        return $it->valid();
+    }
+
     // @override
     protected function process($data, EventAttrs $e)
     {
@@ -70,38 +76,43 @@ abstract class FetchTask extends Task
         // ■ start inner loop
         $this->fireEvent('beforeInnerLoop', $e);
 
+        // 手動で iterator を回す
+        $inner = collect();
+        $it = $e->innerProps->getIterator();
+        $it->rewind();
+
         // false は失敗、null は例外、それ以外は成功
-        $inner = $e->innerProps
-            ->map(function ($item, $key) use ($e) {
-                try {
-                    $e->innerKey = $key;
-                    $e->innerIndex += 1;
+        while($this->innerLoopCondition($it)) {
+            $key = $it->key();
+            $item = $it->current();
 
-                    // parent process
-                    $innerRes = parent::process($item, $e);
-                    // inner props と response は handle の cache を使う
+            try {
+                $e->innerKey = $key;
+                $e->innerIndex += 1;
 
-                    if ($innerRes === false) {
-                        $e->innerSkip += 1;
-                        $this->fireEvent('innerSkip', $e);
-                    } else {
-                        $e->innerSuccess += 1;
-                        $this->fireEvent('innerSuccess', $e);
-                    }
+                // parent process
+                $innerRes = parent::process($item, $e);
+                // inner props と response は handle の cache を使う
 
-                    return $innerRes;
-                } catch (Exception $ex) {
-                    $e->innerThrow += 1;
-                    $e->exception = $ex;
-                    $this->fireEvent('innerException', $e, function () use ($ex) {
-                        throw $ex; // event の指定が無いなら例外を投げる
-                    });
-                    return null;
+                if ($innerRes === false) {
+                    $e->innerSkip += 1;
+                    $this->fireEvent('innerSkip', $e);
+                } else {
+                    $e->innerSuccess += 1;
+                    $this->fireEvent('innerSuccess', $e);
                 }
-            })
-            ->reject(function ($value) {
-                return $value === false;
-            });
+
+                $inner->push($innerRes);
+            } catch (Exception $ex) {
+                $e->innerThrow += 1;
+                $e->exception = $ex;
+                $this->fireEvent('innerException', $e, function () use ($ex) {
+                    throw $ex; // event の指定が無いなら例外を投げる
+                });
+            }
+
+            $it->next();
+        }
 
         $e->innerResponse = $inner;
         $this->fireEvent('innerLooped', $e);

@@ -4,6 +4,7 @@ namespace App\Lib\Tasks\Bases;
 
 use App\Lib\Tasks\Bases\FetchTask;
 use App\Lib\Tasks\Events\EventAttrs;
+use Iterator;
 use Exception;
 
 /**
@@ -28,6 +29,11 @@ use Exception;
  */
 abstract class FetchArrayTask extends FetchTask
 {
+    protected function outerLoopCondition(Iterator $it)
+    {
+        return $it->valid();
+    }
+
     // @override
     protected function process($data, EventAttrs $e)
     {
@@ -46,31 +52,39 @@ abstract class FetchArrayTask extends FetchTask
         // ■ start outer loop
         $this->fireEvent('beforeOuterLoop', $e);
 
+        // 手動で iterator を回す
+        $outer = collect();
+        $it = $e->outerProps->getIterator();
+        $it->rewind();
+
         // outer の統計は取得していない（全体を繰り返すという処理なので必要ない）
-        $outer = $e->outerProps
-            ->map(function ($item, $key) use ($e) {
-                try {
-                    $e->outerKey = $key;
-                    $e->outerIndex += 1;
+        while ($this->outerLoopCondition($it)) {
+            $key = $it->key();
+            $item = $it->current();
 
-                    // parent process
-                    $outerRes = parent::process($item, $e);
-                    // outer props と response は inner の cache を使う
+            try {
+                $e->outerKey = $key;
+                $e->outerIndex += 1;
 
-                    $e->outerTotal += $e->innerIndex; // cache から処理数を読み取る
-                    $e->outerSuccess += $e->innerSuccess;
-                    $e->outerSkip += $e->innerSkip;
-                    $e->outerThrow += $e->innerThrow;
+                // parent process
+                $outerRes = parent::process($item, $e);
+                // outer props と response は inner の cache を使う
 
-                    return $outerRes;
-                } catch (Exception $ex) {
-                    $e->exception = $ex;
-                    $this->fireEvent('outerException', $e, function () use ($ex) {
-                        throw $ex; // event の指定が無いなら例外を投げる
-                    });
-                    return null;
-                }
-            });
+                $e->outerTotal += $e->innerIndex; // cache から処理数を読み取る
+                $e->outerSuccess += $e->innerSuccess;
+                $e->outerSkip += $e->innerSkip;
+                $e->outerThrow += $e->innerThrow;
+
+                $outer->push($outerRes);
+            } catch (Exception $ex) {
+                $e->exception = $ex;
+                $this->fireEvent('outerException', $e, function () use ($ex) {
+                    throw $ex; // event の指定が無いなら例外を投げる
+                });
+            }
+
+            $it->next();
+        }
 
         $e->outerResponse = $outer;
         $this->fireEvent('outerLooped', $e);
