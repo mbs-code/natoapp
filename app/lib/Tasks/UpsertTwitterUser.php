@@ -9,13 +9,14 @@ use App\Exceptions\NullPointerException;
 
 class UpsertTwitterUser extends ChunkFetchArrayTask
 {
+    protected $doMapping = true;
     protected $chunkSize = 100;
 
     protected function fetch($var)
     {
         // doc: https://github.com/atymic/twitter
         // api ref: https://developer.twitter.com/en/docs/twitter-api
-        $names = is_array($var) ? implode(',', $var) : $var;
+        $names = collect($var)->implode(',');
         $params = [
             'screen_name' => $names, // max: 100
             'format' => 'object'

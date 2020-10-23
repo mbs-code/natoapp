@@ -34,6 +34,11 @@ abstract class FetchArrayTask extends FetchTask
         return $it->valid();
     }
 
+    protected function outerLoopNext(Iterator $it)
+    {
+        $it->next();
+    }
+
     // @override
     protected function process($data, EventAttrs $e)
     {
@@ -83,7 +88,7 @@ abstract class FetchArrayTask extends FetchTask
                 });
             }
 
-            $it->next();
+            $this->outerLoopNext($it);
         }
 
         $e->outerResponse = $outer;

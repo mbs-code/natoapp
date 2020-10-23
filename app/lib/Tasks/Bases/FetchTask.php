@@ -6,6 +6,7 @@ use App\Lib\Tasks\Bases\Task;
 use App\Lib\Tasks\Events\EventAttrs;
 use Iterator;
 use Exception;
+use LogicException;
 
 /**
  * preFormat() -> fetch() -> in:[ handle() ] -> postFormat()
@@ -36,15 +37,24 @@ use Exception;
  */
 abstract class FetchTask extends Task
 {
+    protected $doMapping = false;
+
     protected abstract function fetch($var);
 
-    protected abstract function getKeyCallback($item, $keys);
+    protected function getKeyCallback($item, $keys) {
+        throw new LogicException('Please override or $this->doMapping = false');
+    }
 
     /// ////////////////////////////////////////
 
     protected function innerLoopCondition(Iterator $it)
     {
         return $it->valid();
+    }
+
+    protected function innerLoopNext(Iterator $it)
+    {
+        $it->next();
     }
 
     // @override
@@ -62,7 +72,9 @@ abstract class FetchTask extends Task
         // ■ end fetch
 
         $e->innerScala = is_iterable($fetch);
-        $map = $this->mapping(collect($e->fetchProps), collect($e->fetchResponse)); // data に対して mapping する
+        $map = $this->doMapping
+            ? $this->mapping(collect($e->fetchProps), collect($e->fetchResponse)) // data に対して mapping する
+            : $e->fetchResponse;
         $items = collect($map);
 
         $e->innerProps = $items;
@@ -77,7 +89,7 @@ abstract class FetchTask extends Task
         $this->fireEvent('beforeInnerLoop', $e);
 
         // 手動で iterator を回す
-        $inner = collect();
+        $inner = collect(); // 戻り値の箱
         $it = $e->innerProps->getIterator();
         $it->rewind();
 
@@ -111,7 +123,7 @@ abstract class FetchTask extends Task
                 });
             }
 
-            $it->next();
+            $this->innerLoopNext($it);
         }
 
         $e->innerResponse = $inner;

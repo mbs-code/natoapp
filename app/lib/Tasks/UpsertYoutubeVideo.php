@@ -10,6 +10,7 @@ use App\Enums\VideoStatus;
 
 class UpsertYoutubeVideo extends ChunkFetchArrayTask
 {
+    protected $doMapping = true;
     protected $chunkSize = 50;
 
     protected $notExistChannel = false; // true で channel も保存する

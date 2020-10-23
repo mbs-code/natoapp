@@ -9,6 +9,7 @@ use App\Exceptions\NullPointerException;
 
 class UpsertYoutubeChannel extends ChunkFetchArrayTask
 {
+    protected $doMapping = true;
     protected $chunkSize = 50;
 
     protected function fetch($var)
