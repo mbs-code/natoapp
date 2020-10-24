@@ -43,10 +43,24 @@ abstract class Task extends BaseTask
 
     public function exec($var)
     {
-        $e = $this->bindEventAttrs(); // 記録開始
-
+        // 記録開始
+        $e = $this->bindEventAttrs();
         $e->startTimestamp = microtime(true);
-        $e->execProps = $var;
+
+        // exec 実行
+        $res = $this->wrapProcess($var, $e);
+
+        // 記録消去
+        $this->unbindEventAttrs();
+
+        return $res;
+    }
+
+    /// ////////////////////////////////////////
+
+    protected function wrapProcess($data, EventAttrs $e)
+    {
+        $e->execProps = $data;
 
         // 引数の事前整形
         $this->fireEvent('beforeExec', $e);
@@ -65,12 +79,8 @@ abstract class Task extends BaseTask
         $this->fireEvent('execed', $e);
 
         $res = $e->execResponse;
-        $this->unbindEventAttrs(); // 記録消去
-
         return $res;
     }
-
-    /// ////////////////////////////////////////
 
     protected function process($data, EventAttrs $e)
     {

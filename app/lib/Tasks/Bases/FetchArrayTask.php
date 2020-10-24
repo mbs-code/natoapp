@@ -22,9 +22,9 @@ use Exception;
  *   - outerKey: 実行しているキー (意味ないかも)
  *   - outerIndex: 実行している外部ループの index
  *     - outerTotal: 実行回数統計
- *     - innerSuccess: 成功回数統計
- *     - innerSkip: 失敗回数統計
- *     - innerThrow: 例外回数統計
+ *     - outerSuccess: 成功回数統計
+ *     - outerSkip: 失敗回数統計
+ *     - outerThrow: 例外回数統計
  *   - exception: 例外内容
  */
 abstract class FetchArrayTask extends FetchTask
@@ -62,7 +62,7 @@ abstract class FetchArrayTask extends FetchTask
         $it = $e->outerProps->getIterator();
         $it->rewind();
 
-        // outer の統計は取得していない（全体を繰り返すという処理なので必要ない）
+        // outer loop
         while ($this->outerLoopCondition($it)) {
             $key = $it->key();
             $item = $it->current();

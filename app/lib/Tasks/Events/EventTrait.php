@@ -2,6 +2,8 @@
 
 namespace App\Lib\Tasks\Events;
 
+use Exception;
+
 trait EventTrait
 {
     private $events = [];
@@ -26,11 +28,11 @@ trait EventTrait
     {
         $fires = $this->events[$key] ?? [];
         if (count($fires) > 0) {
-        foreach ($fires as $fire) {
-            $fire($e);
-        }
+            foreach ($fires as $fire) {
+                $fire($e);
+            }
         } else if ($defaultEvent) {
-        $defaultEvent($e);
+            $defaultEvent($e);
         }
     }
 }
