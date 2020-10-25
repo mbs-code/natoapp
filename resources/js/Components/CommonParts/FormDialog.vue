@@ -67,11 +67,17 @@ export default {
 
   methods: {
     onConfirm: function () {
-      const form = this.$refs.form.submit()
+      const form = this.$refs.form
+      if (form) {
+        form.submit()
+      }
     },
 
     onReset: function () {
-      const form = this.$refs.form.reset()
+      const form = this.$refs.form
+      if (form) {
+        form.reset()
+      }
     },
 
     onCancel: function () {
