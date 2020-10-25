@@ -5,6 +5,16 @@ namespace App\Lib\Tasks\Utils;
 
 class GeneralEvents
 {
+    private static function wrapResponse($res)
+    {
+        if (is_array($res)) {
+            return json_encode($res, JSON_UNESCAPED_UNICODE);
+        }
+        return $res;
+    }
+
+    /// ////////////////////////////////////////////////////////////
+
     public static function arrayTaskEvents(string $eventName = null) {
         $e = collect();
 
@@ -29,7 +39,8 @@ class GeneralEvents
 
         $e->put('innerSuccess', function ($e) {
             $method = $e->handleMethod ?? 'success';
-            $mes = "[{$e->innerIndex}/{$e->innerLength}] {$method}: {$e->innerKey} => {$e->handleResponse}";
+            $res = self::wrapResponse($e->handleResponse);
+            $mes = "[{$e->innerIndex}/{$e->innerLength}] {$method}: {$e->innerKey} => {$res}";
             logger()->debug($mes);
         });
         $e->put('innerSkip', function ($e) {
@@ -97,7 +108,8 @@ class GeneralEvents
 
         $e->put('innerSuccess', function ($e) {
             $method = $e->handleMethod ?? 'success';
-            $mes = "[{$e->innerIndex}/{$e->innerLength}] {$method}: {$e->innerKey} => {$e->handleResponse}";
+            $res = self::wrapResponse($e->handleResponse);
+            $mes = "[{$e->innerIndex}/{$e->innerLength}] {$method}: {$e->innerKey} => {$res}";
             logger()->debug($mes);
         });
         $e->put('innerSkip', function ($e) {
