@@ -85,50 +85,52 @@ abstract class FetchTask extends Task
         $e->innerSkip = 0;
         $e->innerThrow = 0;
 
-        // ■ start inner loop
-        $this->fireEvent('beforeInnerLoop', $e);
+        // ■ start inner loop (配列が空なら実行しない)
+        if ($e->innerProps->count()) {
+            $this->fireEvent('beforeInnerLoop', $e);
 
-        // 手動で iterator を回す
-        $inner = collect(); // 戻り値の箱
-        $it = $e->innerProps->getIterator();
-        $it->rewind();
+            // 手動で iterator を回す
+            $inner = collect(); // 戻り値の箱
+            $it = $e->innerProps->getIterator();
+            $it->rewind();
 
-        // false は失敗、null は例外、それ以外は成功
-        while($this->innerLoopCondition($it)) {
-            $key = $it->key();
-            $item = $it->current();
+            // false は正常スキップ、null は例外、それ以外は成功
+            while($this->innerLoopCondition($it)) {
+                $key = $it->key();
+                $item = $it->current();
 
-            try {
-                $e->innerKey = $key;
-                $e->innerIndex += 1;
+                try {
+                    $e->innerKey = $key;
+                    $e->innerIndex += 1;
 
-                // parent process
-                $innerRes = parent::process($item, $e);
-                // inner props と response は handle の cache を使う
+                    // parent process
+                    $innerRes = parent::process($item, $e);
+                    // inner props と response は handle の cache を使う
 
-                if ($innerRes === false) {
-                    $e->innerSkip += 1;
-                    $this->fireEvent('innerSkip', $e);
-                } else {
-                    $e->innerSuccess += 1;
-                    $this->fireEvent('innerSuccess', $e);
+                    if ($innerRes === false) {
+                        $e->innerSkip += 1;
+                        $this->fireEvent('innerSkip', $e);
+                        // $inner->push($innerRes); <- skip
+                    } else {
+                        $e->innerSuccess += 1;
+                        $this->fireEvent('innerSuccess', $e);
+                        $inner->push($innerRes);
+                    }
+                } catch (Exception $ex) {
+                    $e->innerThrow += 1;
+                    $e->exception = $ex;
+                    $this->fireEvent('innerException', $e, function () use ($ex) {
+                        throw $ex; // event の指定が無いなら例外を投げる
+                    });
                 }
 
-                $inner->push($innerRes);
-            } catch (Exception $ex) {
-                $e->innerThrow += 1;
-                $e->exception = $ex;
-                $this->fireEvent('innerException', $e, function () use ($ex) {
-                    throw $ex; // event の指定が無いなら例外を投げる
-                });
+                $this->innerLoopNext($it);
             }
 
-            $this->innerLoopNext($it);
+            $e->innerResponse = $inner;
+            $this->fireEvent('innerLooped', $e);
+            // ■ end inner loop
         }
-
-        $e->innerResponse = $inner;
-        $this->fireEvent('innerLooped', $e);
-        // ■ end inner loop
 
         // scala mode なら単体を返却する
         return $e->innerScala ? $e->innerResponse->first() : $e->innerResponse;
