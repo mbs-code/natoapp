@@ -75,7 +75,7 @@ abstract class SeriesFetchArrayTask extends FetchArrayTask
                 $seriesRes = parent::wrapProcess($item, $e);
                 // series props と response は outer の cache を使う
 
-                $e->seriesTotal += $e->outerIndex; // cache から処理数を読み取る
+                $e->seriesTotal += $e->outerTotal;
                 $e->seriesSuccess += $e->outerSuccess;
                 $e->seriesSkip += $e->outerSkip;
                 $e->seriesThrow += $e->outerThrow;
