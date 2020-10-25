@@ -14,7 +14,7 @@ class TwitterUserParser extends Parser
         $key  = data_get($item, 'screen_name');
         $tw = Twitter::firstOrNew(['screen_name' => $key]);
 
-        $tw->code = data_get($item, 'id');
+        $tw->code = data_get($item, 'id_str');
         $tw->name = data_get($item, 'name');
         $tw->screen_name = data_get($item, 'screen_name');
         $tw->location = data_get($item, 'location');
