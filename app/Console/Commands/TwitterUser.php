@@ -7,7 +7,7 @@ use App\Lib\Tasks\UpsertTwitterUser;
 use App\Lib\Tasks\Utils\GeneralEvents;
 use App\Models\Twitter;
 
-class UpsertTwitterUserCommand extends Command
+class TwitterUser extends Command
 {
     /**
      * The name and signature of the console command.
