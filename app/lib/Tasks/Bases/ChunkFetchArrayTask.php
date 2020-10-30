@@ -11,7 +11,6 @@ abstract class ChunkFetchArrayTask extends FetchArrayTask
     protected function preFormat($var)
     {
         return collect($var)
-            ->chunk($this->chunkSize)
-            ->toArray();
+            ->chunk($this->chunkSize);
     }
 }

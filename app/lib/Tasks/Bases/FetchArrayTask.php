@@ -42,7 +42,7 @@ abstract class FetchArrayTask extends FetchTask
     // @override
     protected function process($data, EventAttrs $e)
     {
-        $e->outerScala = is_iterable($data);
+        // $e->outerScala = is_iterable($data); // 使わないので
         $items = collect($data);
 
         $e->outerProps = $items;
@@ -95,7 +95,7 @@ abstract class FetchArrayTask extends FetchTask
         $this->fireEvent('outerLooped', $e);
         // ■ end outer loop
 
-        // scala mode なら単体を返却する
-        return $e->outerScala ? $e->outerResponse->first() : $e->outerResponse;
+        // ループ分 flat にする
+        return $e->outerResponse->flatten(1);
     }
 }

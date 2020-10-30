@@ -60,7 +60,7 @@ abstract class Task extends BaseTask
 
     protected function wrapProcess($data, EventAttrs $e)
     {
-        $e->execProps = $data;
+        $e->execProps = collect($data); // 単体も配列化しちゃう
 
         // 引数の事前整形
         $this->fireEvent('beforeExec', $e);

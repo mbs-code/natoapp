@@ -37,7 +37,7 @@ use LogicException;
  */
 abstract class FetchTask extends Task
 {
-    protected $doMapping = false;
+    protected $doMapping = false; // 引数に対してhandleを対応付ける(nullでも処理)
 
     protected abstract function fetch($var);
 
@@ -71,7 +71,7 @@ abstract class FetchTask extends Task
         $this->fireEvent('fetched', $e);
         // ■ end fetch
 
-        $e->innerScala = is_iterable($fetch);
+        // $e->innerScala = is_iterable($fetch); // 使わないので
         $map = $this->doMapping
             ? $this->mapping(collect($e->fetchProps), collect($e->fetchResponse)) // data に対して mapping する
             : $e->fetchResponse;
@@ -132,8 +132,7 @@ abstract class FetchTask extends Task
             // ■ end inner loop
         }
 
-        // scala mode なら単体を返却する
-        return $e->innerScala ? $e->innerResponse->first() : $e->innerResponse;
+        return $e->innerResponse;
     }
 
     private function mapping(iterable $keys, iterable $items)

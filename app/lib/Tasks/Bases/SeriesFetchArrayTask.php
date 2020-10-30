@@ -42,7 +42,7 @@ abstract class SeriesFetchArrayTask extends FetchArrayTask
     // @override
     protected function wrapProcess($data, EventAttrs $e)
     {
-        $e->seriesScala = is_iterable($data);
+        // $e->seriesScala = is_iterable($data); // 使わないので
         $items = collect($data);
 
         $e->seriesProps = $items;
@@ -95,7 +95,7 @@ abstract class SeriesFetchArrayTask extends FetchArrayTask
         $this->fireEvent('seriesLooped', $e);
         // ■ end series loop
 
-        // scala mode なら単体を返却する
-        return $e->seriesScala ? $e->seriesResponse->first() : $e->seriesResponse;
+        // ループ分 flat にする
+        return $e->seriesResponse->flatten(1);
     }
 }
