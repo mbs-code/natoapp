@@ -16,7 +16,7 @@ class UpsertTwitterUser extends ChunkFetchArrayTask
     {
         // doc: https://github.com/atymic/twitter
         // api ref: https://developer.twitter.com/en/docs/twitter-api
-        $names = collect($var)->implode(',');
+        $names = $var->implode(',');
         $params = [
             'screen_name' => $names, // max: 100
             'format' => 'object'

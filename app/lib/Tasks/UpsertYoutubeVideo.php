@@ -13,20 +13,48 @@ class UpsertYoutubeVideo extends ChunkFetchArrayTask
     protected $doMapping = true;
     protected $chunkSize = 50;
 
-    protected $notExistChannel = false; // true で channel も保存する
+    protected $createNewChannel = false; // true で channel が無いとき作成する(優先度高)
+    protected $skipNewChannel = false; // true で channel が無いときスキップする
+    protected $skipExistVideo = false; // true で 存在してる video を除外する
 
-    public function notExistChannel(bool $val)
+    public function createNewChannel(bool $val)
     {
-        $this->notExistChannel = $val;
+        $this->createNewChannel = $val;
         return $this;
+    }
+
+    public function skipNewChannel(bool $val)
+    {
+        $this->skipNewChannel = $val;
+        return $this;
+    }
+
+    public function skipExistVideo(bool $val)
+    {
+        $this->skipExistVideo = $val;
+        return $this;
+    }
+
+    /// ////////////////////////////////////////////////////////////
+
+    protected function preFormat($var)
+    {
+        // DBに存在しないのを抽出する
+        if ($this->skipExistVideo) {
+            $var = $var->filter(function ($e) {
+                return !Video::where(['code' => $e])->exists();
+            });
+        }
+        return parent::preFormat($var);
     }
 
     protected function fetch($var)
     {
         // doc: https://github.com/alaouy/Youtube
         // api ref: https://developers.google.com/youtube/v3/docs?hl=ja
+        $ids = $var->toArray();
         $parts = ['id, snippet, contentDetails, statistics, status, liveStreamingDetails'];
-        $items = YoutubeAPI::getVideoInfo($var, $parts);
+        $items = YoutubeAPI::getVideoInfo($ids, $parts);
         return $items;
     }
 
@@ -43,7 +71,7 @@ class UpsertYoutubeVideo extends ChunkFetchArrayTask
             $key = $this->getEventAttr('innerKey');
             $parse = YoutubeVideoParser::delete($key);
         } else {
-            $parse = YoutubeVideoParser::insert($item, $this->notExistChannel);
+            $parse = YoutubeVideoParser::insert($item, $this->createNewChannel, $this->skipNewChannel);
         }
 
         // 処理結果を event から読み出せるように

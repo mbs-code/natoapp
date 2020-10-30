@@ -16,11 +16,12 @@ class UpsertYoutubeChannel extends ChunkFetchArrayTask
     {
         // doc: https://github.com/alaouy/Youtube
         // api ref: https://developers.google.com/youtube/v3/docs?hl=ja
+        $ids = $var->toArray();
         $params = [
             'part' => 'id, snippet, statistics, contentDetails, brandingSettings',
             'maxResults' => 50 // max: 50
         ];
-        $items = YoutubeAPI::getChannelById($var, $params);
+        $items = YoutubeAPI::getChannelById($ids, $params);
 
         return $items;
     }
