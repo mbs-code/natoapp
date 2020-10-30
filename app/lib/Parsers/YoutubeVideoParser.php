@@ -36,15 +36,17 @@ class YoutubeVideoParser extends Parser
         return $vv;
     }
 
-    public static function insert(object $item, bool $notExistChannel)
+    public static function insert(object $item, bool $createNewChannel, bool $skipNewChannel)
     {
         // channel の取得
         $channelID = data_get($item, 'snippet.channelId');
         $channel = Youtube::where(['code' => $channelID])->first();
         if (!$channel) {
-            // 無いなら作成か例外
-            if ($notExistChannel) {
+            // 無いなら作成かスキップか例外
+            if ($createNewChannel) {
                 $channel = UpsertYoutubeChannel::run($channelID);
+            } else if ($skipNewChannel) {
+                return false;
             } else {
                 throw new NoChannelException('channelId = '.$channelID);
             }
