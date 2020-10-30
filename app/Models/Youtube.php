@@ -57,6 +57,6 @@ class Youtube extends BaseModel implements ChannelInterface
 
     public function __toString()
     {
-        return "[{$this->id}] {$this->name} ({$this->code})";
+        return "[{$this->id}] ({$this->code}) {$this->name}";
     }
 }

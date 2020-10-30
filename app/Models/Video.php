@@ -52,6 +52,6 @@ class Video extends BaseModel
 
     public function __toString()
     {
-        return "[{$this->id}] {$this->title} ({$this->code})";
+        return "[{$this->id}] ({$this->code}) {$this->title}";
     }
 }

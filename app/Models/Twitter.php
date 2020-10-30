@@ -50,6 +50,6 @@ class Twitter extends BaseModel
 
     public function __toString()
     {
-        return "[{$this->id}] {$this->name} (@{$this->screen_name})";
+        return "[{$this->id}] (@{$this->screen_name}) {$this->name}";
     }
 }
