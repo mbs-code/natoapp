@@ -3,20 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
-use App\Lib\Tasks\UpsertYoutubeChannel;
+use App\Lib\Tasks\CheckYoutubeFeed;
 use App\Lib\Tasks\Utils\GeneralEvents;
 use App\Models\Youtube;
+use Illuminate\Support\Facades\Artisan;
 
-class UpsertYoutubeChannelCommand extends Command
+class YoutubeFeed extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'youtube:channel
-        { --profile : Create profile (disable --all option) }
+    protected $signature = 'youtube:feed
+        { --force : Create when there\'s no channel }
+        { --skip : Skip when there\'s no channel }
+        { --nonexist : Skip when exist in DB }
         { --all : Upsert All Record in DB }
         { ids?* : Youtube channelID (UCxxx) }';
 
@@ -25,7 +27,7 @@ class UpsertYoutubeChannelCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Upsert youtube channel';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -44,18 +46,8 @@ class UpsertYoutubeChannelCommand extends Command
      */
     public function handle()
     {
-        $createProfileMode = $this->option('profile'); // true で profile 推測生成モード
-        $all = $this->option('all'); // true で DB の値を対象に upsert する
+        $all = $this->option('all'); // true で DB の値を対象に
         $ids = $this->argument('ids') ?? []; // channel ids
-
-        // create profile の ailias 処理
-        if ($createProfileMode) {
-            return Artisan::call(CreateProfileFromYoutube::class, [
-                'ids' => $ids,
-            ]);
-        }
-
-        ///
 
         // ID が指定されていなければ DB 全てを対象とする
         if ($all) {
@@ -64,9 +56,19 @@ class UpsertYoutubeChannelCommand extends Command
                 ->toArray();
         }
 
-        UpsertYoutubeChannel::builder()
-            ->addEvents(GeneralEvents::arrayTaskEvents('Upsert youtube channels'))
+        // feed から video id を取得
+        $links = CheckYoutubeFeed::builder()
+            ->addEvents(GeneralEvents::seriesArrayTaskEvents('Check youtube feeds'))
             ->exec($ids);
+
+        // video 処理 command へ渡す（追加されていないもののみ！）
+        logger()->notice('=> pipe');
+        Artisan::call(YoutubeVideo::class, [
+            'ids' => $links,
+            '--force' => $this->option('force'),
+            '--skip' => $this->option('skip'),
+            '--nonexist' => $this->option('nonexist'),
+        ]);
 
         return 0;
     }
