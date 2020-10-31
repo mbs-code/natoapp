@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Lib\Tasks\AddProfileFromYoutubeChannel;
 
-class CreateProfileFromYoutube extends Command
+class ProfileCreate extends Command
 {
     /**
      * The name and signature of the console command.

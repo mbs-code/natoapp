@@ -50,7 +50,7 @@ class YoutubeChannel extends Command
 
         // create profile の ailias 処理
         if ($createProfileMode) {
-            return Artisan::call(CreateProfileFromYoutube::class, [
+            return Artisan::call(ProfileCreate::class, [
                 'ids' => $ids,
             ]);
         }

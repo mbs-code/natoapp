@@ -71,18 +71,21 @@ class AddProfileFromYoutubeChannel extends FetchArrayTask
             // twitter 生成
             $twitters = collect(data_get($data, 'twitters', []))
                 ->map(function($item) {
-                    return UpsertTwitterUser::run($item);
+                    return UpsertTwitterUser::run($item)->first();
                 });
 
             // youtube 生成
             $youtubes = collect(data_get($data, 'youtubes', []))
                 ->map(function($item) {
-                    return UpsertYoutubeChannel::run($item);
+                    return UpsertYoutubeChannel::run($item)->first();
                 });
 
             // name 推測
             $name1 = data_get($twitters->first(), 'name');
             $name2 = data_get($youtubes->first(), 'name');
+            logger()->debug("twitter name: {$name1}");
+            logger()->debug("youtube name: {$name2}");
+
             $diff = Helper::chooseStringDiff($name1, $name2);
             $name = strlen($diff) >= 3 ? $diff : ($name1 ?? $name2);
 

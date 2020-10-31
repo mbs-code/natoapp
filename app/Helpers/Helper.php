@@ -50,7 +50,7 @@ class Helper
     /**
      * 2つの文字列の最長一致部分を取り出す.
      */
-    public static function chooseStringDiff(string $str1, string $str2)
+    public static function chooseStringDiff(string $str1 = null, string $str2 = null)
     {
         $str1 = $str1 ?? '';
         $str2 = $str2 ?? '';
