@@ -5,6 +5,8 @@ namespace App\Lib\Tasks\Utils;
 
 class GeneralEvents
 {
+    private static $baseLength = 80;
+
     public static function arrayTaskEvents(string $eventName = null)
     {
         $e = self::core(true);
@@ -12,7 +14,7 @@ class GeneralEvents
         $e->put('beforeOuterLoop', function ($e) use ($eventName) {
             $pref = $eventName ?? 'Task';
             $total = self::wrapCount($e->execProps);
-            logger()->notice("{$pref} (length: {$e->outerLength}, total: {$total})");
+            logger()->info("{$pref} (length: {$e->outerLength}, total: {$total})");
         });
 
         /// ////////////////////////////////////////
@@ -33,12 +35,12 @@ class GeneralEvents
 
         $e->put('beforeSeriesLoop', function ($e) use ($eventName) {
             $pref = $eventName ?? 'Series loop';
-            logger()->notice("{$pref} (length: {$e->seriesLength})");
+            logger()->info("{$pref} (length: {$e->seriesLength})");
         });
 
         $e->put('beforeOuterLoop', function ($e) {
             $prog = self::progresString($e->seriesIndex, $e->seriesLength, true, '{', '}');
-            $task = self::wrapString($e->outerProps, 60);
+            $task = self::wrapString($e->outerProps, self::$baseLength);
             $total = self::wrapCount($e->execProps);
             logger()->info("{$prog} Task {$task} (length: {$e->outerLength}, total: {$total})");
         });
@@ -47,7 +49,7 @@ class GeneralEvents
 
         $e->put('outerLooped', function ($e) {
             $prog = self::progresString($e->seriesIndex, $e->seriesLength, true, '{', '}');
-            $task = self::wrapString($e->outerProps, 60);
+            $task = self::wrapString($e->outerProps, self::$baseLength);
             $stat = self::rateStatString($e, 'outer');
             logger()->info("{$prog} Task finish {$task} ({$stat})");
         });
@@ -86,7 +88,7 @@ class GeneralEvents
         $e->put('innerSuccess', function ($e) {
             $prog = self::progresString($e->innerIndex, $e->innerLength, true, '[', ']');
             $method = $e->handleMethod ?? 'success';
-            $res = self::wrapString($e->handleResponse, 60);
+            $res = self::wrapString($e->handleResponse, self::$baseLength);
             logger()->debug("{$prog} {$method}: {$e->innerKey} => {$res}");
         });
         $e->put('innerSkip', function ($e) {
@@ -123,7 +125,7 @@ class GeneralEvents
         if ($limit > 0) {
             $len = strlen($str);
             if ($len > $limit - 3) {
-                $str = substr($str, 0, $limit).'...';
+                $str = substr($str, 0, $limit -3).'...';
             }
         }
         return $str;
