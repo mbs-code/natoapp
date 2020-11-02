@@ -25,6 +25,12 @@ class Video extends BaseModel
 
     public $casts = [
         'tags' => CSV::class,
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+        'scheduled_start_time' => 'datetime',
+        'scheduled_end_time' => 'datetime',
+        'actual_start_time' => 'datetime',
+        'actual_end_time' => 'datetime',
     ];
 
     /// ////////////////////////////////////////
@@ -52,6 +58,10 @@ class Video extends BaseModel
 
     public function __toString()
     {
-        return "[{$this->id}] ({$this->code}) {$this->title}";
+        $start = $this->start_time;
+        if ($start) $start = $start->format('Ymd_His');
+
+        $type = substr($this->type, 0, 4);
+        return "[{$this->id}] {$this->start_time} ({$this->code}) [$type] {$this->title}";
     }
 }
