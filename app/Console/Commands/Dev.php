@@ -8,10 +8,12 @@ use App\Lib\Tasks\UpsertTwitterUser;
 use App\Lib\Tasks\UpsertYoutubeChannel;
 use App\Lib\Tasks\UpsertYoutubeVideo;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
+use App\Enums\VideoType;
 use App\Helpers\Helper;
 use App\Lib\Tasks\AddProfileFromYoutubeChannel;
 use App\Lib\Tasks\AddYoutubePlaylist;
 use App\Models\Youtube;
+use Illuminate\Support\Facades\Artisan;
 
 class Dev extends Command
 {
@@ -58,13 +60,28 @@ class Dev extends Command
         // $channelID = 'UCIdEIHpS0TdkqRkHL5OkLtA';
         // $res = AddYoutubePlaylist::run($channelID);
 
-        $channelID = 'UCP9ZgeIJ3Ri9En69R0kJc9Q';
-        $res = AddProfileFromYoutubeChannel::run($channelID);
-        echo($res);
+        // $channelID = 'UCP9ZgeIJ3Ri9En69R0kJc9Q';
+        // $res = AddProfileFromYoutubeChannel::run($channelID);
+        // echo($res);
 
         // var_dump($res->map(function ($item) {
         //     return $item->title;
         // }));
+
+
+        Artisan::call(YoutubeVideo::class, [
+            '--all' => true,
+            '--before' => 24,
+            '--after' => 0,
+            // '--after' => 16,
+            '--dump' => true,
+            // '--before' => 2,
+            // '--range' => 1,
+            // '--type' => [VideoType::LIVE(), VideoType::UPCOMING()],
+            // '--skip' => true, // チャンネルが無かったらスキップ
+        ]);
+        $this->line(Artisan::output());
+
         return 0;
     }
 }
