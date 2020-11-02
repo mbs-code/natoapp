@@ -12,7 +12,7 @@ class ProfileCreate extends Command
      *
      * @var string
      */
-    protected $signature = 'profile:crate
+    protected $signature = 'profile:create
         { ids?* : Youtube ChannelID (UCxxx) }';
 
     /**
