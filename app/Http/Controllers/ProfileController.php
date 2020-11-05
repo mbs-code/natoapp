@@ -22,11 +22,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $profiles = Profile::with(['twitters', 'youtubes', 'tags'])
-            ->get()
-            ->append('twitterFollowers')
-            ->append('youtubeSubscribers')
-            ->toArray();
+        $profiles = Profile::with(['twitters', 'youtubes', 'tags'])->get();
         return Inertia::render('Profile/Index', ['profiles' => $profiles]);
     }
 
@@ -71,7 +67,6 @@ class ProfileController extends Controller
                     'name' => ['required', 'max:100'],
                     'kana' => ['nullable', 'hiragana', 'max:100'],
                     'description' => ['nullable', 'max:65535'],
-                    'thumbnail_url' => ['nullable', 'max:255'],
                 ])
             );
 
@@ -95,12 +90,12 @@ class ProfileController extends Controller
 
             // twitter
             $twitterIDs = Helper::createSyncArray(data_get($props, 'twitters'), function ($name) {
-                return UpsertTwitterUser::run($name);
+                return UpsertTwitterUser::run($name)->first();
             });
 
             // youtube
             $youtubeIDs = Helper::createSyncArray(data_get($props, 'youtubes'), function ($id) {
-                return UpsertYoutubeChannel::run($id);
+                return UpsertYoutubeChannel::run($id)->first();
             });
 
             /// ////////////////////////////////////////
@@ -112,13 +107,16 @@ class ProfileController extends Controller
             }
             // sync
             $syncTags = $profile->tags()->sync($tagIDs);
-            $isChange |= Helper::syncChangeCount(($syncTags)) > 0;
+            $isChange |= Helper::syncChangeCount($syncTags) > 0;
 
             $syncTwitters = $profile->twitters()->sync($twitterIDs);
-            $isChange |= Helper::syncChangeCount(($syncTwitters)) > 0;
+            $isChange |= Helper::syncChangeCount($syncTwitters) > 0;
 
             $syncYoutubes = $profile->youtubes()->sync($youtubeIDs);
-            $isChange |= Helper::syncChangeCount(($syncYoutubes)) > 0;
+            $isChange |= Helper::syncChangeCount($syncYoutubes) > 0;
+
+            // cache
+            $profile->cacheSync()->save();
 
             // message
             if (!$isChange) {
@@ -145,16 +143,17 @@ class ProfileController extends Controller
 
             // 関連オブジェクトの削除
             if ($props['withProfilable']) {
-                $profile->load(['twitters', 'youtubes']);
+                // profilable 要素とそれから逆向きの profile を取得
+                $profile->load(['twitters', 'youtubes', 'twitters.profiles', 'youtubes.profiles']);
                 foreach ($profile->twitters as $twitter) {
-                    // 逆向きに profile が1つなら削除
-                    if ($twitter->profiles->count()) {
+                    // 逆向きに profile が 1つ(自身)なら削除
+                    if ($twitter->profiles->count() === 1) {
                         $twitter->delete();
                     }
                 }
                 foreach ($profile->youtubes as $youtube) {
-                    // 逆向きに profile が1つなら削除
-                    if ($youtube->profiles->count()) {
+                    // 逆向きに profile が 1つ(自身)なら削除
+                    if ($youtube->profiles->count() === 1) {
                         $youtube->delete();
                     }
                 }

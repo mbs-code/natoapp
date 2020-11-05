@@ -9,24 +9,18 @@ class Profile extends BaseModel
     use HasCRUDLogger;
 
     protected $fillable = [
-        'name', 'kana', 'description', 'thumbnail_url', 'tags'
+        'name', 'kana', 'description', 'tags',
+        'thumbnail_url', 'published_at', 'followers', 'subscribes',
     ];
 
-    /// ////////////////////////////////////////
-
-    public function getTwitterFollowersAttribute()
+    public function getProfilablesAttribute()
     {
-        // use append('twitterFollowers')
-        return collect($this->twitters, [])->max('followers');
+        // !!! readonly
+        // TODO: 代替手段があったら書き換えたい
+        return collect()
+            ->merge($this->twitters)
+            ->merge($this->youtubes);
     }
-
-    public function getYoutubeSubscribersAttribute()
-    {
-        // use append('youtubeSubscribers')
-        return collect($this->youtubes, [])->max('subscribers');
-    }
-
-    /// ////////////////////////////////////////
 
     public function twitters()
     {
@@ -47,6 +41,17 @@ class Profile extends BaseModel
     }
 
     /// ////////////////////////////////////////
+
+    public function cacheSync()
+    {
+        $pf = $this->profilables;
+        $this->thumbnail_url = data_get($pf->first(fn($e) => $e->thumbnail_url), 'thumbnail_url');
+        $this->published_at = data_get($pf->sortBy('published_at')->first(), 'published_at');
+
+        $this->followers = collect($this->twitters, [])->max('followers');
+        $this->subscribers = collect($this->youtubes, [])->max('subscribers');
+        return $this;
+    }
 
     public function __toString()
     {

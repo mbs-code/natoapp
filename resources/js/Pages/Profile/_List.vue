@@ -9,7 +9,7 @@
     <template v-slot:[`item.links`]="{ item }">
       <v-avatar class="ma-2" color="grey lighten-3" size="68">
         <v-avatar class="ma-2" color="grey" size="64">
-          <img :src="item.thumbnail_url" alt="twitter_thumbnail">
+          <img :src="item.thumbnail_url" alt="profile_thumbnail">
         </v-avatar>
       </v-avatar>
     </template>
@@ -32,11 +32,11 @@
       </v-chip>
     </template>
 
-    <template v-slot:[`item.twitterFollowers`]="{ item: { twitterFollowers } }">
-      {{ twitterFollowers | numberDigit }}
+    <template v-slot:[`item.followers`]="{ item: { followers } }">
+      {{ followers | numberDigit }}
     </template>
-    <template v-slot:[`item.youtubeSubscribers`]="{ item: { youtubeSubscribers } }">
-      {{ youtubeSubscribers | numberDigit }}
+    <template v-slot:[`item.subscribers`]="{ item: { subscribers } }">
+      {{ subscribers | numberDigit }}
     </template>
 
     <template v-slot:[`item.profiles`]="{ item }">
@@ -72,6 +72,14 @@
           {{ youtube.name }}
         </v-btn>
       </div>
+    </template>
+
+    <template v-slot:[`item.published_at`]="{ item: { published_at } }">
+      <span style="white-space: nowrap;">
+        {{ published_at | toDatetime }}
+        <br>
+        ({{ published_at | daysToNow }}, {{ published_at | datetimeHumanuzed }})
+      </span>
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
@@ -130,9 +138,10 @@ export default {
         { text: '', value: 'links', sortable: false },
         { text: '名前', value: 'name' },
         { text: 'タグ', value: 'tags' },
-        { text: 'フォロワー', value: 'twitterFollowers' },
-        { text: '登録者数', value: 'youtubeSubscribers' },
+        { text: 'フォロワー', value: 'followers' },
+        { text: '登録者数', value: 'subscribers' },
         { text: '関連', value: 'profiles' },
+        { text: '公開日時', value: 'published_at' },
         { text: '', value: 'actions', sortable: false },
       ]
     },

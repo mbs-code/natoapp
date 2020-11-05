@@ -18,7 +18,11 @@ class CreateProfilesTable extends Migration
             $table->string('name', 255)->unique(); // 同名禁止にしておく
             $table->string('kana', 255); // 検索用ひらがな
             $table->text('description')->nullable();
-            $table->string('thumbnail_url', 255)->nullable();
+
+            $table->string('thumbnail_url', 255)->nullable(); // cache
+            $table->datetime('published_at')->nullable();; // cache
+            $table->unsignedInteger('followers')->nullable(); // twitter cache
+            $table->unsignedInteger('subscribers')->nullable(); // youtube cache
 
             $table->datetime('created_at')->nullable(); // system
             $table->datetime('updated_at')->nullable(); // system

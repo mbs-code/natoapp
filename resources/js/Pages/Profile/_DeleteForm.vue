@@ -5,6 +5,7 @@
     <v-checkbox
       v-model="form.withProfilable"
       label="関連データも削除する (Twitterなど)"
+      messages="※他で使われている場合は削除されません。"
       :error-messages="errors.withProfilable"
     />
   </v-form>

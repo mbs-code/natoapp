@@ -13,6 +13,7 @@ class ProfileCreate extends Command
      * @var string
      */
     protected $signature = 'profile:create
+        { --force : Create when there\'s duplicated profile }
         { ids?* : Youtube ChannelID (UCxxx) }';
 
     /**
@@ -40,9 +41,11 @@ class ProfileCreate extends Command
     public function handle()
     {
         $ids = $this->argument('ids') ?? []; // channel ids
+        $force = $this->option('force'); // true で profile が重複してても作成する
 
         // TODO: ログ適当＆整合性未チェック
         AddProfileFromYoutubeChannel::builder()
+            ->duplicateRename($force)
             ->addEvent('fetched', function ($e) {
                 $find = json_encode($e->fetchResponse);
                 $mes = "Scraping: {$find}";

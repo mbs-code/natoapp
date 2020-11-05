@@ -46,14 +46,6 @@
       :items="dbYoutubes"
       :error-messages="errors.youtubes"
     />
-
-    <VImageSelect
-      v-model="form.thumbnail_url"
-      label="サムネイル"
-      :size="100"
-      :image-urls="imageUrls"
-      :error-messages="errors.thumbnail_url"
-    />
   </v-form>
 </template>
 
@@ -61,11 +53,10 @@
 import IntierFormMixin from '@/Mixins/InertiaFormMixin'
 import DefaultLayout from '@/Layouts/DefaultLayout'
 import ContainerLayout from '@/Layouts/ContainerLayout'
-import VImageSelect from '@/Components/Forms/VImageSelect'
 import VTagCombobox from '@/Components/forms/VTagCombobox'
 
 export default {
-  components: { VImageSelect, VTagCombobox },
+  components: { VTagCombobox },
 
   mixins: [IntierFormMixin],
 
@@ -89,7 +80,6 @@ export default {
           name: profile.name,
           kana: profile.kana,
           description: profile.description,
-          thumbnail_url: profile.thumbnail_url,
           tags: profile.tags || [],
           twitters: profile.twitters || [],
           youtubes: profile.youtubes || [],
@@ -104,20 +94,6 @@ export default {
       dbTwitters: [],
       dbYoutubes: [],
     }
-  },
-
-  computed: {
-    imageUrls: function () {
-      const profile = this.item || {}
-
-      const urls = []
-      const twitters = (profile.twitters || []).map((e) => e.thumbnail_url)
-      urls.push(...twitters)
-
-      const youtubes = (profile.youtubes || []).map((e) => e.thumbnail_url)
-      urls.push(...youtubes)
-      return urls
-    },
   },
 
   mounted: async function () {
