@@ -12,7 +12,9 @@ use App\Enums\VideoType;
 use App\Helpers\Helper;
 use App\Lib\Tasks\AddProfileFromYoutubeChannel;
 use App\Lib\Tasks\AddYoutubePlaylist;
+use App\Models\Profile;
 use App\Models\Youtube;
+use Exception;
 use Illuminate\Support\Facades\Artisan;
 
 class Dev extends Command
@@ -69,19 +71,47 @@ class Dev extends Command
         // }));
 
 
-        Artisan::call(YoutubeVideo::class, [
-            '--all' => true,
-            '--before' => 24,
-            '--after' => 0,
-            // '--after' => 16,
-            '--dump' => true,
-            // '--before' => 2,
-            // '--range' => 1,
-            // '--type' => [VideoType::LIVE(), VideoType::UPCOMING()],
-            // '--skip' => true, // チャンネルが無かったらスキップ
-        ]);
-        $this->line(Artisan::output());
+        // Artisan::call(YoutubeVideo::class, [
+        //     '--all' => true,
+        //     '--before' => 24,
+        //     '--after' => 0,
+        //     // '--after' => 16,
+        //     '--dump' => true,
+        //     // '--before' => 2,
+        //     // '--range' => 1,
+        //     // '--type' => [VideoType::LIVE(), VideoType::UPCOMING()],
+        //     // '--skip' => true, // チャンネルが無かったらスキップ
+        // ]);
+        // $this->line(Artisan::output());
 
+        \DB::enableQueryLog();
+
+        // $profile = Profile::where('id', 23)
+        //     // ->with(['twitters', 'youtubes'])
+        //     ->get()
+        //     // ->append('published_at')
+        //     ->append('youtube_subscribers')
+        //     ->toArray();
+        // // $profile = Profile::where('id', 23)->get();
+        // dump($profile);
+
+        \DB::transaction(function () {
+            $profile = Profile::where('id', 23)->first();
+            dump($profile);
+
+            $profile->name = 'てすと';
+            $profile->save();
+
+            $profile->twitters()->sync([20, 23]);
+
+            $profile->cacheSync();
+            $profile->save();
+
+            echo('-------------------------------'.PHP_EOL);
+            dump($profile);
+            dump(Helper::parseQueryLog());
+            throw new Exception('stop');
+        });
         return 0;
     }
 }

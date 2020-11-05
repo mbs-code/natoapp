@@ -19,6 +19,17 @@ class Helper
     }
 
     /**
+     * query log の dump helper.
+     */
+    public static function dumpQueryLog()
+    {
+        $ary = collect(\DB::getQueryLog());
+        return $ary->map(function ($e) {
+            return $e['query'].' ('.json_encode($e['bindings'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES).')';
+        })->toArray();
+    }
+
+    /**
      * model sync 用の ID配列を作成する.
      *
      * [{ id: xx, name: asd }, zxc ] => [xx, <zxcID>]
