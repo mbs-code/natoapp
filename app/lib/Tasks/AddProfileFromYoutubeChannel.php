@@ -7,7 +7,7 @@ use App\Lib\Tasks\Bases\FetchArrayTask;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Helpers\Helper;
-use App\lib\TimeUtil;
+use App\Lib\TimeUtil;
 use App\Exceptions\DuplicateException;
 use App\Models\Profile;
 

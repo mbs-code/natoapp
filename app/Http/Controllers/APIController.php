@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\RequestQuerybuilder;
+use App\Helpers\RequestQueryBuilder;
 use Illuminate\Http\Request;
 use App\Models\ProfileTag;
 use App\Models\Twitter;
@@ -31,7 +31,7 @@ class APIController extends Controller
 
     public function videos(Request $request)
     {
-        $videos = RequestQuerybuilder::builder(Video::query(), $request)
+        $videos = RequestQueryBuilder::builder(Video::query(), $request)
             ->ifWhereEqualIn('type')
             ->ifWhereHasMorph('channel')
             ->ifOrderBy('sort', 'order')

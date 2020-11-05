@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Lib\Tasks\UpsertYoutubeVideo;
 use App\Lib\Tasks\Utils\GeneralEvents;
-use App\lib\TimeUtil;
+use App\Lib\TimeUtil;
 use App\Models\Video;
 
 class YoutubeVideo extends Command

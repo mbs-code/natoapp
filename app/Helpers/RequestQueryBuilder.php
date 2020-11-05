@@ -5,7 +5,7 @@ namespace App\Helpers;
 use \Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Http\Request;
 
-class RequestQuerybuilder
+class RequestQueryBuilder
 {
 
     protected $query = null;
