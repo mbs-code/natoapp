@@ -19,7 +19,6 @@ class CreateTagProfileTable extends Migration
             $table->unsignedBigInteger('profile_tag_id');
 
             $table->datetime('created_at')->nullable(); // system
-            // $table->datetime('updated_at')->nullable(); // system
         });
     }
 

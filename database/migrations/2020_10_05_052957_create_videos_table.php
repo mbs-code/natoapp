@@ -23,13 +23,13 @@ class CreateVideosTable extends Migration
             $table->string('title', 255);
             $table->text('description')->nullable();
             $table->string('thumbnail_url', 255)->nullable();
-            $table->enum('type', VideoType::keys()); // video, upcoming, live とか
-            $table->enum('status', VideoStatus::keys()); // puiblic, unlisted とか
-            $table->integer('duration')->unsigned(); // seconds
+            $table->enum('type', VideoType::keys())->nullable();; // video, upcoming, live とか
+            $table->enum('status', VideoStatus::keys())->nullable(); // puiblic, unlisted とか
+            $table->unsignedInteger('duration')->nullable(); // seconds
 
             $table->string('tags', 511)->nullable(); // csv array
             $table->unsignedInteger('max-viewers')->nullable();
-            $table->datetime('published_at'); // 作成日時
+            $table->datetime('published_at')->nullable(); // 作成日時
 
             $table->datetime('start_time')->nullable(); // 集計用 buffer
             $table->datetime('end_time')->nullable(); // 集計用 buffer

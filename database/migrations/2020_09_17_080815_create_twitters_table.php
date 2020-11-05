@@ -24,8 +24,8 @@ class CreateTwittersTable extends Migration
             $table->string('thumbnail_url', 255)->nullable();
             $table->string('banner_url', 255)->nullable();
 
-            $table->boolean('protected'); // 鍵の有無
-            $table->datetime('published_at'); // 作成日時 (api の created_at)
+            $table->boolean('protected')->nullable(); // 鍵の有無
+            $table->datetime('published_at')->nullable(); // 作成日時 (api の created_at)
 
             // start stat fields
             $table->unsignedInteger('followers')->nullable(); // フォロワー

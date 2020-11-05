@@ -19,7 +19,6 @@ class CreateProfilablesTable extends Migration
             $table->morphs('profilable');
 
             $table->datetime('created_at')->nullable(); // system
-            // $table->datetime('updated_at')->nullable(); // system
         });
     }
 

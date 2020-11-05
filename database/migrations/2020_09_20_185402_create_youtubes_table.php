@@ -23,7 +23,7 @@ class CreateYoutubesTable extends Migration
             $table->string('banner_url', 255)->nullable();
 
             $table->string('tags', 511)->nullable(); // csv array
-            $table->datetime('published_at'); // 作成日時
+            $table->datetime('published_at')->nullable(); // 作成日時
 
             // start stat fields
             $table->unsignedInteger('views')->nullable(); // 再生数
