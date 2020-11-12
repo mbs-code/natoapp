@@ -4,7 +4,6 @@ namespace App\Lib\TaskBuilder\Tests;
 
 use App\Lib\TaskBuilder\Task;
 use App\Lib\TaskBuilder\TaskBuilder;
-use Illuminate\Support\Collection;
 
 class FizzBuzzTask extends Task
 {
@@ -12,7 +11,7 @@ class FizzBuzzTask extends Task
     {
         // 配列を5つずつの塊にして、0以下は skip, 3の倍数は fizz, 5の倍数は buzz にする
         return $builder
-            ->process('chunk', $this->chunk(), true)
+            ->process('chunk', $this->chunk(5), true)
             ->loop('outer', function ($b) {
                 $b->loop('inner', function ($bb) {
                     $bb->process('judge', $this->fizzBuzz());
@@ -22,13 +21,6 @@ class FizzBuzzTask extends Task
     }
 
     ///
-
-    private function chunk()
-    {
-        return function(Collection $val) {
-            return $val->chunk(5);
-        };
-    }
 
     private function fizzBuzz()
     {
@@ -43,13 +35,6 @@ class FizzBuzzTask extends Task
                 return 'buzz';
             }
             return $val;
-        };
-    }
-
-    private function flatten()
-    {
-        return function(Collection $val) {
-            return $val->flatten(1);
         };
     }
 }
