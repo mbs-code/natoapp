@@ -7,23 +7,39 @@ use LogicException;
 
 trait TaskAttrTrait
 {
-    private $attr; // 現在の TaskAttr
+    private $attrs = []; // task attr stack
 
-    public function setEventAttr(BaseAttr $attr)
+    public function pushTaskAttr(BaseAttr $attr)
     {
-        $this->attr = $attr;
+        array_push($this->attrs, $attr);
     }
 
-    public function clearEventAttr()
+    public function popTaskAttr()
     {
-        $this->attr = null;
+        $attr = array_pop($this->attrs);
+        return $attr;
+    }
+
+    public function getTaskAttr()
+    {
+        // 現在のを取り出す
+        $last = array_key_last($this->attrs);
+        $attr = $this->attrs[$last];
+
+        if (!$attr) {
+            new LogicException('Event attr array is Empty. use pushEventAttr()');
+        }
+        return $attr;
     }
 
     public function getTaskName()
     {
-        if (!$this->attr) {
-            new LogicException('Use setEventAttr()');
-        }
-        return $this->attr->getName();
+        $attr = $this->getTaskAttr();
+        return $attr->getName();
+    }
+
+    public function getTaskNestLevel()
+    {
+        return count($this->attrs);
     }
 }

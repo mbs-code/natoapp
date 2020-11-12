@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Lib\TaskBuilder\Events\Traits;
-use App\Lib\TaskBuilder\Events\EventRecord;
+
+use App\Lib\TaskBuilder\Utils\EventRecord;
 
 trait CallEventTrait
 {

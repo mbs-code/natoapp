@@ -24,12 +24,11 @@ class LoopAttr extends BaseAttr
         $e->fireEvent('before loop', $items, $this);
 
         // ループの実行
-        $e->goDownNestLevel();
-        $res = $this->loop($e, $builder, $items);
-        $e->goUpNestLevel();
+        $res = $e->goDownLoopLevel(fn() => $this->loop($e, $builder, $items));
 
         // 後処理
         $e->fireEvent('after loop', $res, $this);
+        $e->clearRecords(['length', 'current', 'skip', 'success', 'throw']); // 統計を削除
 
         return $res;
     }
@@ -54,9 +53,8 @@ class LoopAttr extends BaseAttr
 
             // タスクの実行
             try {
-                $e->goDownNestLevel();
-                $res = $builder->exec($item, $e); // event を引き継ぐ
-                $e->goUpNestLevel();
+                // 子イベントの実行
+                $res = $e->goDownLoopLevel(fn() => $builder->exec($item, $e));
 
                 if ($res === false) {
                     // skip 扱い
@@ -71,9 +69,9 @@ class LoopAttr extends BaseAttr
             } catch (Exception $ex) {
                 // error
                 $e->incrementRecord('throw');
-                $e->fireEvent('throw', $res);
+                $e->fireEvent('throw', $ex);
                 // TODO: defaultException
-                throw $ex;
+                // throw $ex;
             }
 
             // 次へ
@@ -81,7 +79,7 @@ class LoopAttr extends BaseAttr
         }
 
         // 統計を削除
-        $e->clearRecords(['length', 'key', 'current', 'skip', 'success', 'throw']);
+        $e->clearRecords(['key']);
 
         return $buffer;
     }

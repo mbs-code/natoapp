@@ -23,10 +23,18 @@ abstract class BaseAttr {
 
     public function call(TaskEventer $e, $value)
     {
-        // event に自身の task を付与
-        $e->setEventAttr($this);
+        // eventer に自身の task を付与
+        $e->pushTaskAttr($this);
 
         // task 実行
-        return $this->handle($e, $value);
+        $res = null;
+        try {
+            $res = $this->handle($e, $value);
+        } finally {
+            // eventer から task を取り出す (必ず)
+            $e->popTaskAttr($this);
+        }
+
+        return $res;
     }
 }

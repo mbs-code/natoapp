@@ -2,17 +2,17 @@
 
 namespace App\Lib\TaskBuilder\Events;
 
-use App\Lib\TaskBuilder\Events\Traits\NestLevelTrait;
+use App\Lib\TaskBuilder\Events\Traits\LoopLevelTrait;
 use App\Lib\TaskBuilder\Events\Traits\TaskAttrTrait;
 use App\Lib\TaskBuilder\Events\Traits\CallEventTrait;
-use App\Lib\TaskBuilder\Events\EventRecord;
+use App\Lib\TaskBuilder\Utils\EventRecord;
 use Illuminate\Support\Str;
 
 class TaskEventer
 {
-    use NestLevelTrait;
     use TaskAttrTrait;
     use CallEventTrait;
+    use LoopLevelTrait;
 
     protected $record; // イベントの実行回数等の記録
 
@@ -23,10 +23,10 @@ class TaskEventer
 
     ///
 
-    public function fireEvent(string $key, $value)
+    public function fireEvent(string $shortKey, $value)
     {
         // event name を生成 (eventKey taskName の順序)
-        $eventName = $this->generateEventName($key, $this->getTaskName(), 1);
+        $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 1);
 
         // イベント実行回数を記録
         $this->record->increment($eventName);
@@ -38,10 +38,10 @@ class TaskEventer
 
     ///
 
-    public function incrementRecord(string $key)
+    public function incrementRecord(string $shortKey)
     {
         // event name を生成 (taskName eventKey の順序)
-        $eventName = $this->generateEventName($key, $this->getTaskName(), 0);
+        $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 0);
 
         // レコードを記録
         $this->record->increment($eventName);
@@ -49,10 +49,10 @@ class TaskEventer
         return $eventName;
     }
 
-    public function writeRecord(string $key, $value)
+    public function writeRecord(string $shortKey, $value)
     {
         // event name を生成 (taskName eventKey の順序)
-        $eventName = $this->generateEventName($key, $this->getTaskName(), 0);
+        $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 0);
 
         // レコードを記録
         $this->record->put($eventName, $value);
@@ -60,10 +60,10 @@ class TaskEventer
         return $eventName;
     }
 
-    public function clearRecords($keys)
+    public function clearRecords($shortKey)
     {
         // event name を生成　(taskName eventKey の順序)
-        $eventNames = collect($keys)
+        $eventNames = collect($shortKey)
             ->map(fn($key) => $this->generateEventName($key, $this->getTaskName(), 0));
 
         // レコードを削除
@@ -76,10 +76,10 @@ class TaskEventer
 
     ///
 
-    protected function generateEventName(string $key, string $taskName, int $taskNameIndex = 1)
+    protected function generateEventName(string $shortKey, string $taskName, int $taskNameIndex = 1)
     {
         // スペース区切り
-        $nameArray = Str::of($key)->explode(' ');
+        $nameArray = Str::of($shortKey)->explode(' ');
 
         // name を挿入する
         $nameArray->splice($taskNameIndex, 0, $taskName);

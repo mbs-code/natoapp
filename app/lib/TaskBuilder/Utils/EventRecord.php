@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Lib\TaskBuilder\Events;
+namespace App\Lib\TaskBuilder\Utils;
 
 use Illuminate\Support\Collection;
 
