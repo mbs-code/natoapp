@@ -4,6 +4,7 @@ namespace App\Lib\TaskBuilder;
 
 use App\Lib\TaskBuilder\Attrs\ProcessAttr;
 use App\Lib\TaskBuilder\Attrs\LoopAttr;
+use App\Lib\TaskBuilder\Attrs\MappingProcessAttr;
 use App\Lib\TaskBuilder\Events\TaskEventer;
 use Illuminate\Support\Collection;
 use LogicException;
@@ -11,8 +12,9 @@ use LogicException;
 class TaskBuilder
 {
     private const RESERVE_WORDS = [
-        'before', 'after', 'loop', 'length', 'key',
-        'current', 'success', 'skip', 'throw', 'exception',
+        'before', 'after', 'loop', 'length', 'key', // base event
+        'current', 'success', 'skip', 'throw', 'exception', // stats
+        'mapping', // other
     ];
 
     private $flow; // task flow
@@ -61,6 +63,16 @@ class TaskBuilder
         $this->checkTaskName($name);
 
         $attr = new ProcessAttr($name, $func, $intoArray);
+        $this->flow->push($attr);
+        return $this;
+    }
+
+    public function mappingProcess(string $name, callable $func, callable $keyOfItemFunc, bool $intoArray = false)
+    {
+        // 継承の関係上、引数の位置が異なる
+        $this->checkTaskName($name);
+
+        $attr = new MappingProcessAttr($name, $func, $intoArray, $keyOfItemFunc);
         $this->flow->push($attr);
         return $this;
     }
