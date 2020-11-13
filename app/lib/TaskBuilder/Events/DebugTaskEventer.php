@@ -17,7 +17,7 @@ class DebugTaskEventer extends TaskEventer
         SGR::COLOR_FG_PURPLE, SGR::COLOR_FG_GREEN, SGR::COLOR_FG_CYAN,
     ];
 
-    public $colorValue = SGR::COLOR_FG_WHITE;
+    public $colorValue = SGR::COLOR_FG_RESET;
     public $colorNullValue = SGR::COLOR_FG_YELLOW;
     public $colorExceptionValue = SGR::COLOR_FG_YELLOW;
 
