@@ -10,12 +10,25 @@ use Exception;
 
 class DebugTaskEventer extends TaskEventer
 {
-    public static $indent = '  ';
-    public static $length = 100;
+    public $indent = '  ';
+    public $length = 100;
 
-    public static $eventColors = [
+    public $colorEvents = [
         SGR::COLOR_FG_PURPLE, SGR::COLOR_FG_GREEN, SGR::COLOR_FG_CYAN,
     ];
+
+    public $colorValue = SGR::COLOR_FG_WHITE;
+    public $colorNullValue = SGR::COLOR_FG_YELLOW;
+    public $colorExceptionValue = SGR::COLOR_FG_YELLOW;
+
+    public $colorSynbolAddRecord = SGR::COLOR_FG_YELLOW;
+    public $colorSynbolRemoveRecord = SGR::COLOR_FG_RED;
+    public $colorRecord = SGR::COLOR_FG_BLACK_BRIGHT;
+
+    public $colorSymbolPushJob = SGR::COLOR_FG_BLACK_BRIGHT;
+    public $colorSymbolPopJob = SGR::COLOR_FG_BLACK_BRIGHT;
+    public $colorJob = SGR::COLOR_FG_BLACK_BRIGHT;
+    ///
 
     private $console; // color console
 
@@ -23,7 +36,7 @@ class DebugTaskEventer extends TaskEventer
     {
         parent::__construct();
         $this->console = new ConsoleColor();
-        $this->console->setLineLength(self::$length);
+        $this->console->setLineLength($this->length);
     }
 
     public function fireEvent(string $shortKey, $value, callable $defaultFireFunc = null)
@@ -31,7 +44,7 @@ class DebugTaskEventer extends TaskEventer
         $eventName = parent::fireEvent($shortKey, $value, $defaultFireFunc);
 
         // ダンプ
-        $padding = str_repeat(self::$indent, $this->getLoopLevel());
+        $padding = str_repeat($this->indent, $this->getLoopLevel());
         $count = $this->record->get($eventName);
         $this->console
             // ->color(SGR::COLOR_FG_CYAN)
@@ -40,12 +53,13 @@ class DebugTaskEventer extends TaskEventer
             ->reset();
 
         if ($value instanceof Exception) {
-            $this->console->color(SGR::COLOR_FG_RED);
+            $this->console->color($this->colorExceptionValue);
         } else if ($value === null) {
-            $this->console->color(SGR::COLOR_FG_YELLOW);
+            $this->console->color($this->colorNullValue);
         }
 
         $this->console
+            ->color($this->colorValue)
             ->print($value, true)
             ->br();
     }
@@ -57,12 +71,12 @@ class DebugTaskEventer extends TaskEventer
         $eventName = parent::incrementRecord($shortKey);
 
         // ダンプ
-        $padding = str_repeat(self::$indent, $this->getLoopLevel()); // スペース
+        $padding = str_repeat($this->indent, $this->getLoopLevel()); // スペース
         $count = $this->record->get($eventName);
         $this->console
-            ->color(SGR::COLOR_FG_YELLOW)
+            ->color($this->colorSynbolAddRecord)
             ->text("{$padding}=> ")
-            ->color(SGR::COLOR_FG_BLACK_BRIGHT)
+            ->color($this->colorRecord)
             ->text("{$eventName}: ")
             ->print($count)
             ->br();
@@ -75,11 +89,11 @@ class DebugTaskEventer extends TaskEventer
         $eventName = parent::writeRecord($shortKey, $value);
 
         // ダンプ
-        $padding = str_repeat(self::$indent, $this->getLoopLevel()); // スペース
+        $padding = str_repeat($this->indent, $this->getLoopLevel()); // スペース
         $this->console
-            ->color(SGR::COLOR_FG_YELLOW)
+            ->color($this->colorSynbolAddRecord)
             ->text("{$padding}=> ")
-            ->color(SGR::COLOR_FG_BLACK_BRIGHT)
+            ->color($this->colorRecord)
             ->text("{$eventName}: ")
             ->print($value, true)
             ->br();
@@ -92,11 +106,11 @@ class DebugTaskEventer extends TaskEventer
         $eventNames = parent::clearRecords($shortKey);
 
         // ダンプ
-        $padding = str_repeat(self::$indent, $this->getLoopLevel()); // スペース
+        $padding = str_repeat($this->indent, $this->getLoopLevel()); // スペース
         $this->console
-            ->color(SGR::COLOR_FG_RED)
+            ->color($this->colorSynbolRemoveRecord)
             ->text("{$padding}!! ")
-            ->color(SGR::COLOR_FG_BLACK_BRIGHT)
+            ->color($this->colorRecord)
             ->print($eventNames, true)
             ->br();
 
@@ -113,8 +127,9 @@ class DebugTaskEventer extends TaskEventer
         // ダンプ
         $jobName = $this->jobToName($job);
         $this->console
-            ->color(SGR::COLOR_FG_BLACK_BRIGHT)
+            ->color($this->colorSymbolPushJob)
             ->text(">> push({$this->getJobNestLevel()}): ")
+            ->color($this->colorJob)
             ->print($jobName, true)
             ->br();
     }
@@ -126,8 +141,9 @@ class DebugTaskEventer extends TaskEventer
         // ダンプ
         $jobName = $this->jobToName($job);
         $this->console
-            ->color(SGR::COLOR_FG_BLACK_BRIGHT)
+            ->color($this->colorSymbolPopJob)
             ->text(">> pull({$this->getJobNestLevel()}): ")
+            ->color($this->colorJob)
             ->print($jobName, true)
             ->br();
 
@@ -138,8 +154,8 @@ class DebugTaskEventer extends TaskEventer
 
     private function getEventColor(int $nest)
     {
-        $len = count(self::$eventColors);
-        return self::$eventColors[$nest % $len];
+        $len = count($this->colorEvents);
+        return $this->colorEvents[$nest % $len];
     }
 
     private function jobToName(BaseJob $job)
