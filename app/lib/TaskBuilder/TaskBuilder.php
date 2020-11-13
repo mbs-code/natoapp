@@ -75,12 +75,22 @@ class TaskBuilder
     }
 
     ///
+    // event 系
+
+    public function silent(bool $isMute = true)
+    {
+        $this->manager->isMute($isMute);
+        return $this;
+    }
 
     public function addEvent(string $name, callable $fireFunc)
     {
         $this->manager->addEvent($name, $fireFunc);
         return $this;
     }
+
+    ///
+    // job 系
 
     public function process(string $name, callable $func, bool $intoArray = false)
     {
