@@ -4,8 +4,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use App\Lib\Tasks\UpsertYoutubeChannel;
-use App\Lib\Tasks\Utils\GeneralEvents;
+use App\Tasks\UpsertYoutubeChannel;
+use App\Lib\TaskBuilder\Utils\EventRecord;
+use App\Lib\TaskBuilder\Utils\EventUtil;
 use App\Models\Youtube;
 
 class YoutubeChannel extends Command
@@ -64,9 +65,82 @@ class YoutubeChannel extends Command
         }
 
         UpsertYoutubeChannel::builder()
-            ->addEvents(GeneralEvents::arrayTaskEvents('Upsert youtube channels'))
+            ->addEvents($this->getEvents())
             ->exec($ids);
 
         return 0;
+    }
+
+    private function getEvents()
+    {
+        $events = [
+            'beforeTask' => function ($val, EventRecord $e) {
+                $length = EventUtil::allCount($val);
+                logger()->notice("Upsert Youtube Channel (length: {$length})");
+            },
+
+            'beforeChunkLoop' => function ($val, EventRecord $e) {
+                $length = EventUtil::allCount($val);
+                logger()->info("Before loop (length: {$length})");
+            },
+
+            ///
+
+            'beforeFetch' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk');
+                $length = EventUtil::allCount($val);
+                logger()->debug("{$pref}, Fetching... (length: {$length})");
+            },
+
+            'afterFetch' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk');
+                $length = EventUtil::allCount($val);
+                logger()->info("{$pref} Fetched! (length: {$length})");
+            },
+
+            ///
+
+            'beforeHandleLoop' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk');
+                $length = EventUtil::allCount($val);
+                logger()->info("{$pref} Handle loop (length: {$length})");
+            },
+
+            'successHandle' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk', 'handle');
+                $key = $e->getRecordValue('key', 'handle');
+                logger()->debug("{$pref} success: {$key} => {$val}");
+            },
+            'skipHandle' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk', 'handle');
+                $key = $e->getRecordValue('key', 'handle');
+                logger()->debug("{$pref} skip: {$key}");
+            },
+            'throwHandle' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk', 'handle');
+                $key = $e->getRecordValue('key', 'handle');
+                logger()->error("{$pref} throw: {$key}");
+                logger()->error($e->get('exception')); // 例外も吐いとく
+            },
+
+            'afterHandleLoop' => function ($val, EventRecord $e) {
+                $pref = EventUtil::prefString($e, 'chunk', );
+                $stat = EventUtil::statString($e, 'handle');
+                logger()->info("{$pref} Handle loop finish! ({$stat})");
+            },
+
+            ///
+
+            'afterChunkLoop' => function ($val, EventRecord $e) {
+                $stat = EventUtil::allStatString($e, 'handle');
+                logger()->info("Loop finish! ({$stat})");
+            },
+
+            'afterTask' => function ($val, EventRecord $e) {
+                $stat = EventUtil::allStatString($e, 'handle');
+                logger()->notice("Finish! Upsert youtube channel ({$stat})");
+            },
+        ];
+        return $events;
     }
 }
