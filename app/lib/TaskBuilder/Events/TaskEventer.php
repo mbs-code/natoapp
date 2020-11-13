@@ -3,14 +3,14 @@
 namespace App\Lib\TaskBuilder\Events;
 
 use App\Lib\TaskBuilder\Events\Traits\LoopLevelTrait;
-use App\Lib\TaskBuilder\Events\Traits\TaskAttrTrait;
+use App\Lib\TaskBuilder\Events\Traits\TaskJobTrait;
 use App\Lib\TaskBuilder\Utils\EventRecord;
 use App\Lib\TaskBuilder\Utils\EventManager;
 use Illuminate\Support\Str;
 
 class TaskEventer
 {
-    use TaskAttrTrait;
+    use TaskJobTrait;
     use LoopLevelTrait;
 
     protected EventRecord $record; // イベントの実行回数等の記録
@@ -36,7 +36,7 @@ class TaskEventer
     public function fireEvent(string $shortKey, $value, callable $defaultFireFunc = null)
     {
         // event name を生成 (eventKey taskName の順序)
-        $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 1);
+        $eventName = $this->generateEventName($shortKey, $this->getJobName(), 1);
 
         // イベント実行回数を記録
         $this->record->increment($eventName);
@@ -54,7 +54,7 @@ class TaskEventer
     public function incrementRecord(string $shortKey)
     {
         // event name を生成 (taskName eventKey の順序)
-        $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 0);
+        $eventName = $this->generateEventName($shortKey, $this->getJobName(), 0);
 
         // レコードを記録
         $this->record->increment($eventName);
@@ -65,7 +65,7 @@ class TaskEventer
     public function writeRecord(string $shortKey, $value)
     {
         // event name を生成 (taskName eventKey の順序)
-        $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 0);
+        $eventName = $this->generateEventName($shortKey, $this->getJobName(), 0);
 
         // レコードを記録
         $this->record->put($eventName, $value);
@@ -77,7 +77,7 @@ class TaskEventer
     {
         // event name を生成　(taskName eventKey の順序)
         $eventNames = collect($shortKey)
-            ->map(fn($key) => $this->generateEventName($key, $this->getTaskName(), 0));
+            ->map(fn($key) => $this->generateEventName($key, $this->getJobName(), 0));
 
         // レコードを削除
         foreach ($eventNames as $eventName) {
@@ -89,15 +89,15 @@ class TaskEventer
 
     ///
 
-    protected function generateEventName(string $shortKey, string $taskName = null, int $taskNameIndex = 1)
+    protected function generateEventName(string $shortKey, string $jobName = null, int $taskNameIndex = 1)
     {
-        // タスクがある時は結合する
-        if ($taskName) {
+        // ジョブがある時は結合する
+        if ($jobName) {
             // スペース区切り
             $nameArray = Str::of($shortKey)->explode(' ');
 
             // name を挿入する
-            $nameArray->splice($taskNameIndex, 0, $taskName);
+            $nameArray->splice($taskNameIndex, 0, $jobName);
 
             // snake case にして camel にする
             $snake = $nameArray->implode('_');

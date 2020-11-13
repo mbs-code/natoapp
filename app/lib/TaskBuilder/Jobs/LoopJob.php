@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Lib\TaskBuilder\Attrs;
+namespace App\Lib\TaskBuilder\Jobs;
 
 use App\Lib\TaskBuilder\Events\TaskEventer;
 use App\Lib\TaskBuilder\TaskBuilder;
 use Illuminate\Support\Collection;
 use Exception;
 
-class LoopAttr extends BaseAttr
+class LoopJob extends BaseJob
 {
     public function handle(TaskEventer $e, $value)
     {

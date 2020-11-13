@@ -3,7 +3,7 @@
 namespace App\Lib\TaskBuilder\Events;
 
 use App\Lib\TaskBuilder\Events\TaskEventer;
-use App\Lib\TaskBuilder\Attrs\BaseAttr;
+use App\Lib\TaskBuilder\Jobs\BaseJob;
 use App\Lib\TaskBuilder\Utils\ConsoleColor;
 use Bramus\Ansi\ControlSequences\EscapeSequences\Enums\SGR;
 use Exception;
@@ -35,7 +35,7 @@ class DebugTaskEventer extends TaskEventer
         $count = $this->record->get($eventName);
         $this->console
             // ->color(SGR::COLOR_FG_CYAN)
-            ->color($this->getEventColor($this->getTaskNestLevel()))
+            ->color($this->getEventColor($this->getJobNestLevel()))
             ->text("{$padding}[{$count}] <{$eventName}>: ")
             ->reset();
 
@@ -104,34 +104,34 @@ class DebugTaskEventer extends TaskEventer
     }
 
     ///
-    // TaskAttrTrait の拡張
+    // TaskJobTrait の拡張
 
-    public function pushEventAttr(BaseAttr $attr)
+    public function pushEventJob(BaseJob $job)
     {
-        parent::pushEventAttr($attr);
+        parent::pushEventJob($job);
 
         // ダンプ
-        $attrName = $this->attrToName($attr);
+        $jobName = $this->jobToName($job);
         $this->console
             ->color(SGR::COLOR_FG_BLACK_BRIGHT)
-            ->text(">> push({$this->getTaskNestLevel()}): ")
-            ->print($attrName, true)
+            ->text(">> push({$this->getJobNestLevel()}): ")
+            ->print($jobName, true)
             ->br();
     }
 
-    public function popEventAttr()
+    public function popEventJob()
     {
-        $attr = parent::popEventAttr();
+        $job = parent::popEventJob();
 
         // ダンプ
-        $attrName = $this->attrToName($attr);
+        $jobName = $this->jobToName($job);
         $this->console
             ->color(SGR::COLOR_FG_BLACK_BRIGHT)
-            ->text(">> pull({$this->getTaskNestLevel()}): ")
-            ->print($attrName, true)
+            ->text(">> pull({$this->getJobNestLevel()}): ")
+            ->print($jobName, true)
             ->br();
 
-        return $attr;
+        return $job;
     }
 
     ///
@@ -142,9 +142,9 @@ class DebugTaskEventer extends TaskEventer
         return self::$eventColors[$nest % $len];
     }
 
-    private function attrToName(BaseAttr $attr)
+    private function jobToName(BaseJob $job)
     {
-        return class_basename($attr).'@'.$attr->getName();
+        return class_basename($job).'@'.$job->getName();
     }
 
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Lib\TaskBuilder\Attrs;
+namespace App\Lib\TaskBuilder\Jobs;
 
 use App\Lib\TaskBuilder\Events\TaskEventer;
 use Illuminate\Support\Collection;
 
-class ProcessAttr extends BaseAttr
+class ProcessJob extends BaseJob
 {
     protected $intoArray; // 引数を強制的に配列にするか
 

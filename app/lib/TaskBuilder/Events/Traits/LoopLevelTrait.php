@@ -4,10 +4,10 @@ namespace App\Lib\TaskBuilder\Events\Traits;
 
 use LogicException;
 
-// ほぼ LoopAttr 用
+// ほぼ LoopJob 用
 trait LoopLevelTrait
 {
-    private $loopLevel = 0; // LoopAttr 1回につき 2 進む
+    private $loopLevel = 0; // LoopJob 1回につき 2 進む
 
     public function getLoopLevel()
     {

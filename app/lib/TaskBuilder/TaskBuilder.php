@@ -2,9 +2,9 @@
 
 namespace App\Lib\TaskBuilder;
 
-use App\Lib\TaskBuilder\Attrs\ProcessAttr;
-use App\Lib\TaskBuilder\Attrs\LoopAttr;
-use App\Lib\TaskBuilder\Attrs\MappingProcessAttr;
+use App\Lib\TaskBuilder\Jobs\ProcessJob;
+use App\Lib\TaskBuilder\Jobs\LoopJob;
+use App\Lib\TaskBuilder\Jobs\MappingProcessJob;
 use App\Lib\TaskBuilder\Events\TaskEventer;
 use App\Lib\TaskBuilder\Utils\EventManager;
 use App\Lib\TaskBuilder\Utils\TaskFlow;
@@ -86,8 +86,8 @@ class TaskBuilder
     {
         $this->checkTaskName($name);
 
-        $attr = new ProcessAttr($name, $func, $intoArray);
-        $this->flow->push($attr);
+        $job = new ProcessJob($name, $func, $intoArray);
+        $this->flow->push($job);
         return $this;
     }
 
@@ -96,8 +96,8 @@ class TaskBuilder
         // 継承の関係上、引数の位置が異なる
         $this->checkTaskName($name);
 
-        $attr = new MappingProcessAttr($name, $func, $intoArray, $keyOfItemFunc);
-        $this->flow->push($attr);
+        $job = new MappingProcessJob($name, $func, $intoArray, $keyOfItemFunc);
+        $this->flow->push($job);
         return $this;
     }
 
@@ -105,8 +105,8 @@ class TaskBuilder
     {
         $this->checkTaskName($name);
 
-        $attr = new LoopAttr($name, $func);
-        $this->flow->push($attr);
+        $job = new LoopJob($name, $func);
+        $this->flow->push($job);
         return $this;
     }
 

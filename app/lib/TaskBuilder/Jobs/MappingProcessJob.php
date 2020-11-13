@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Lib\TaskBuilder\Attrs;
+namespace App\Lib\TaskBuilder\Jobs;
 
 use App\Lib\TaskBuilder\Events\TaskEventer;
 
-class MappingProcessAttr extends ProcessAttr
+class MappingProcessJob extends ProcessJob
 {
     protected $keyOfItemFunc; // マップ用関数
 
