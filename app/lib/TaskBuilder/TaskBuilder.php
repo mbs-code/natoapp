@@ -46,7 +46,7 @@ class TaskBuilder
         // Task 実行
         $res = $this->handle($value, $e);
 
-        $e->fireEvent('after task', $value);
+        $e->fireEvent('after task', $res);
 
         return $res;
     }
