@@ -89,6 +89,18 @@ class TaskBuilder
         return $this;
     }
 
+    public function addEvents(iterable $events)
+    {
+        foreach ($events as $name => $func) {
+            // 単体でも配列でも処理可能
+            $fireFuncs = is_iterable($func) ? $func : [$func];
+            foreach ($fireFuncs as $fireFunc) {
+                $this->manager->addEvent($name, $fireFunc);
+            }
+        }
+        return $this;
+    }
+
     ///
     // job 系
 
