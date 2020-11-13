@@ -13,7 +13,7 @@ use LogicException;
 class TaskBuilder
 {
     private const RESERVE_WORDS = [
-        'before', 'after', 'loop', 'length', 'key', // base event
+        'before', 'after', 'task', 'loop', 'length', 'key', // base event
         'current', 'success', 'skip', 'throw', 'exception', // stats
         'mapping', // other
     ];
