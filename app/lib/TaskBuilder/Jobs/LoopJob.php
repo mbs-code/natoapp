@@ -48,6 +48,8 @@ class LoopJob extends BaseJob
         while ($it->valid()) {
             $key = $it->key(); // キー (default は index値)
             $item = $it->current(); // 現在値
+
+            $e->incrementRecord('index');
             $e->writeRecord('key', $key);
             $e->fireEvent('current', $item);
 
@@ -69,9 +71,10 @@ class LoopJob extends BaseJob
             } catch (Exception $ex) {
                 // error
                 $e->incrementRecord('throw');
-                $e->fireEvent('throw', $ex);
-                // TODO: defaultException
-                // throw $ex;
+                $e->write('exception', $ex); // 例外を記録
+                $e->fireEvent('throw', $ex, function() use ($ex) {
+                    throw $ex;
+                });
             }
 
             // 次へ
@@ -79,7 +82,7 @@ class LoopJob extends BaseJob
         }
 
         // 統計を削除
-        $e->clearRecords(['key']);
+        $e->clearRecords(['key', 'index']);
 
         return $buffer;
     }

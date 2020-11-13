@@ -14,7 +14,7 @@ class TaskBuilder
 {
     private const RESERVE_WORDS = [
         'before', 'after', 'task', 'loop', 'length', 'key', // base event
-        'current', 'success', 'skip', 'throw', 'exception', // stats
+        'index', 'current', 'success', 'skip', 'throw', 'exception', // stats
         'mapping', // other
     ];
 
