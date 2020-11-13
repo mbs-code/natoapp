@@ -78,7 +78,8 @@ class ConsoleColor extends Ansi
 
     private function strLimit($text)
     {
-        $limit = $this->limitLineLength - $this->length;
+        // -3 は ... の分
+        $limit = $this->limitLineLength - $this->length - 3;
         return Str::of($text)->limit($limit, '...');
     }
 
