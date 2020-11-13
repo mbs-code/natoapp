@@ -4,26 +4,36 @@ namespace App\Lib\TaskBuilder\Events;
 
 use App\Lib\TaskBuilder\Events\Traits\LoopLevelTrait;
 use App\Lib\TaskBuilder\Events\Traits\TaskAttrTrait;
-use App\Lib\TaskBuilder\Events\Traits\CallEventTrait;
 use App\Lib\TaskBuilder\Utils\EventRecord;
+use App\Lib\TaskBuilder\Utils\EventManager;
 use Illuminate\Support\Str;
 
 class TaskEventer
 {
     use TaskAttrTrait;
-    use CallEventTrait;
     use LoopLevelTrait;
 
-    protected $record; // イベントの実行回数等の記録
+    protected EventRecord $record; // イベントの実行回数等の記録
+    protected EventManager $manager; // イベント管理
 
     function __construct()
     {
         $this->record = new EventRecord();
     }
 
+    public function setEventManager(EventManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    public function getEventManager()
+    {
+        return $this->manager;
+    }
+
     ///
 
-    public function fireEvent(string $shortKey, $value)
+    public function fireEvent(string $shortKey, $value, callable $defaultFireFunc = null)
     {
         // event name を生成 (eventKey taskName の順序)
         $eventName = $this->generateEventName($shortKey, $this->getTaskName(), 1);
@@ -32,7 +42,10 @@ class TaskEventer
         $this->record->increment($eventName);
 
         // イベント呼び出し
-        $this->callEvent($eventName, $value, $this->record);
+        $manager = $this->manager;
+        if ($manager) {
+            $manager->callEvent($eventName, $value, $this->record, $defaultFireFunc);
+        }
         return $eventName;
     }
 
@@ -76,16 +89,22 @@ class TaskEventer
 
     ///
 
-    protected function generateEventName(string $shortKey, string $taskName, int $taskNameIndex = 1)
+    protected function generateEventName(string $shortKey, string $taskName = null, int $taskNameIndex = 1)
     {
-        // スペース区切り
-        $nameArray = Str::of($shortKey)->explode(' ');
+        // タスクがある時は結合する
+        if ($taskName) {
+            // スペース区切り
+            $nameArray = Str::of($shortKey)->explode(' ');
 
-        // name を挿入する
-        $nameArray->splice($taskNameIndex, 0, $taskName);
+            // name を挿入する
+            $nameArray->splice($taskNameIndex, 0, $taskName);
 
-        // snake case にして camel にする
-        $snake = $nameArray->implode('_');
+            // snake case にして camel にする
+            $snake = $nameArray->implode('_');
+        } else {
+            $snake = $shortKey;
+        }
+
         $camel = Str::camel($snake);
         return $camel;
     }

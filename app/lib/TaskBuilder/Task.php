@@ -8,14 +8,24 @@ use Illuminate\Support\Collection;
 
 abstract class Task
 {
-    private $builder;
+    private TaskBuilder $builder;
 
     protected abstract function taskFlow(TaskBuilder $builder): TaskBuilder;
+
+
+    private function __construct()
+    {/**/}
 
     public static function run($value, TaskEventer $e = null)
     {
         $instance = new static();
         return $instance->exec($value, $e);
+    }
+
+    public static function builder()
+    {
+        $instance = new static();
+        return $instance->getBuilder();
     }
 
     ///
@@ -32,6 +42,7 @@ abstract class Task
     }
 
     ///
+    // general tasks
 
     protected function collect()
     {

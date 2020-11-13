@@ -6,7 +6,8 @@ use App\Lib\TaskBuilder\Attrs\ProcessAttr;
 use App\Lib\TaskBuilder\Attrs\LoopAttr;
 use App\Lib\TaskBuilder\Attrs\MappingProcessAttr;
 use App\Lib\TaskBuilder\Events\TaskEventer;
-use Illuminate\Support\Collection;
+use App\Lib\TaskBuilder\Utils\EventManager;
+use App\Lib\TaskBuilder\Utils\TaskFlow;
 use LogicException;
 
 class TaskBuilder
@@ -17,25 +18,42 @@ class TaskBuilder
         'mapping', // other
     ];
 
-    private $flow; // task flow
+    private TaskFlow $flow;
+    private EventManager $manager;
 
-    function __construct()
+    function __construct(EventManager $manager = null)
     {
-        $this->flow = new Collection();
+        $this->flow = new TaskFlow();
+        $this->manager = $manager ?? new EventManager();
+        // $manager = null なら親要素
     }
 
-    public static function builder()
+    public static function builder(EventManager $manager = null)
     {
-        return new static();
+        return new static($manager);
     }
 
     ///
 
     public function exec($value, TaskEventer $e = null)
     {
-        // eventer の作成 or 引き継ぎ
+        // eventer の作成 or 引き継ぎ => manager を付与
         $e = $e ?? new TaskEventer();
+        $e->setEventManager($this->manager);
 
+        $e->fireEvent('before task', $value);
+
+        // Task 実行
+        $res = $this->handle($value, $e);
+
+        $e->fireEvent('after task', $value);
+
+        return $res;
+    }
+
+    public function handle($value, TaskEventer $e)
+    {
+        // !!! lib内部実行用 (Eventer を引き継ぐ)
         // iterator の取得
         $it = $this->flow->getIterator();
         $it->rewind();
@@ -57,6 +75,12 @@ class TaskBuilder
     }
 
     ///
+
+    public function addEvent(string $name, callable $fireFunc)
+    {
+        $this->manager->addEvent($name, $fireFunc);
+        return $this;
+    }
 
     public function process(string $name, callable $func, bool $intoArray = false)
     {

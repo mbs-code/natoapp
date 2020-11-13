@@ -14,20 +14,20 @@ class LoopAttr extends BaseAttr
         // loop 内の task を生成する
         // TODO: try catch
         // function (TaskBuilder $builder): TaskBuilder
-        $builder = TaskBuilder::builder();
+        $builder = TaskBuilder::builder($e->getEventManager());
         call_user_func($this->func, $builder);
 
         // 前処理 (引数を collection にする)
         $items = !($value instanceof Collection)
             ? collect($value)
             : $value;
-        $e->fireEvent('before loop', $items, $this);
+        $e->fireEvent('before loop', $items);
 
         // ループの実行
         $res = $e->goDownLoopLevel(fn() => $this->loop($e, $builder, $items));
 
         // 後処理
-        $e->fireEvent('after loop', $res, $this);
+        $e->fireEvent('after loop', $res);
         $e->clearRecords(['length', 'current', 'skip', 'success', 'throw']); // 統計を削除
 
         return $res;
@@ -54,7 +54,7 @@ class LoopAttr extends BaseAttr
             // タスクの実行
             try {
                 // 子イベントの実行
-                $res = $e->goDownLoopLevel(fn() => $builder->exec($item, $e));
+                $res = $e->goDownLoopLevel(fn() => $builder->handle($item, $e));
 
                 if ($res === false) {
                     // skip 扱い

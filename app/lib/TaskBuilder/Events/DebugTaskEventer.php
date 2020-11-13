@@ -26,16 +26,16 @@ class DebugTaskEventer extends TaskEventer
         $this->console->setLineLength(self::$length);
     }
 
-    public function fireEvent(string $shortKey, $value)
+    public function fireEvent(string $shortKey, $value, callable $defaultFireFunc = null)
     {
-        $eventName = parent::fireEvent($shortKey, $value);
+        $eventName = parent::fireEvent($shortKey, $value, $defaultFireFunc);
 
         // ダンプ
         $padding = str_repeat(self::$indent, $this->getLoopLevel());
         $count = $this->record->get($eventName);
         $this->console
             // ->color(SGR::COLOR_FG_CYAN)
-            ->color($this->getEventColor($this->getTaskNestLevel() - 1))
+            ->color($this->getEventColor($this->getTaskNestLevel()))
             ->text("{$padding}[{$count}] <{$eventName}>: ")
             ->reset();
 

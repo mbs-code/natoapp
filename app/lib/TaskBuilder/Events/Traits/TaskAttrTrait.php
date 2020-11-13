@@ -3,7 +3,6 @@
 namespace App\Lib\TaskBuilder\Events\Traits;
 
 use App\Lib\TaskBuilder\Attrs\BaseAttr;
-use LogicException;
 
 trait TaskAttrTrait
 {
@@ -24,18 +23,19 @@ trait TaskAttrTrait
     {
         // 現在のを取り出す
         $last = array_key_last($this->attrs);
-        $attr = $this->attrs[$last];
-
-        if (!$attr) {
-            new LogicException('Event attr array is Empty. use pushEventAttr()');
+        if ($last !== null) {
+            return $this->attrs[$last];
         }
-        return $attr;
+        return null;
     }
 
     public function getTaskName()
     {
         $attr = $this->getTaskAttr();
-        return $attr->getName();
+        if ($attr) {
+            return $attr->getName();
+        }
+        return null;
     }
 
     public function getTaskNestLevel()
