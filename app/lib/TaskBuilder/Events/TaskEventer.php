@@ -6,7 +6,6 @@ use App\Lib\TaskBuilder\Events\Traits\LoopLevelTrait;
 use App\Lib\TaskBuilder\Events\Traits\TaskJobTrait;
 use App\Lib\TaskBuilder\Utils\EventRecord;
 use App\Lib\TaskBuilder\Utils\EventManager;
-use Illuminate\Support\Str;
 
 class TaskEventer
 {
@@ -32,14 +31,12 @@ class TaskEventer
     }
 
     ///
+    // event 系
 
     public function fireEvent(string $shortKey, $value, callable $defaultFireFunc = null)
     {
-        // event name を生成 (eventKey taskName の順序)
-        $eventName = $this->generateEventName($shortKey, $this->getJobName(), 1);
-
         // イベント実行回数を記録
-        $this->record->increment($eventName);
+        $eventName = $this->record->incrementEventValue($shortKey, $this->getJobName());
 
         // イベント呼び出し
         $manager = $this->manager;
@@ -50,62 +47,37 @@ class TaskEventer
     }
 
     ///
+    // record 系
 
-    public function incrementRecord(string $shortKey)
+    public function write(string $name, $value)
     {
-        // event name を生成 (taskName eventKey の順序)
-        $eventName = $this->generateEventName($shortKey, $this->getJobName(), 0);
-
-        // レコードを記録
-        $this->record->increment($eventName);
-
-        return $eventName;
+        // 生値を記録
+        $this->record->put($name, $value);
+        return $name;
     }
 
     public function writeRecord(string $shortKey, $value)
     {
-        // event name を生成 (taskName eventKey の順序)
-        $eventName = $this->generateEventName($shortKey, $this->getJobName(), 0);
-
         // レコードを記録
-        $this->record->put($eventName, $value);
-
+        $eventName = $this->record->setRecordValue($shortKey, $this->getJobName(), $value);
         return $eventName;
     }
 
-    public function clearRecords($shortKey)
+    public function incrementRecord(string $shortKey)
     {
-        // event name を生成　(taskName eventKey の順序)
-        $eventNames = collect($shortKey)
-            ->map(fn($key) => $this->generateEventName($key, $this->getJobName(), 0));
-
-        // レコードを削除
-        foreach ($eventNames as $eventName) {
-            $this->record->unset($eventName);
-        }
-
-        return $eventNames;
+        // レコードを記録
+        $eventName = $this->record->incrementRecordValue($shortKey, $this->getJobname());
+        return $eventName;
     }
 
-    ///
-
-    protected function generateEventName(string $shortKey, string $jobName = null, int $taskNameIndex = 1)
+    public function clearRecords($shortKeys)
     {
-        // ジョブがある時は結合する
-        if ($jobName) {
-            // スペース区切り
-            $nameArray = Str::of($shortKey)->explode(' ');
+        // レコードを削除
+        $eventNames = collect($shortKeys)
+            ->map(function ($shortKey) {
+                return $this->record->clearRecordValue($shortKey, $this->getJobName());
+            });
 
-            // name を挿入する
-            $nameArray->splice($taskNameIndex, 0, $jobName);
-
-            // snake case にして camel にする
-            $snake = $nameArray->implode('_');
-        } else {
-            $snake = $shortKey;
-        }
-
-        $camel = Str::camel($snake);
-        return $camel;
+        return $eventNames;
     }
 }
