@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class ExecTaskBuilder extends TaskBuilder
 {
-    protected bool $doColorDump = false; // カラーダンプモード
+    protected bool $doDumpColor = false; // カラーダンプモード
     protected bool $doDump = false; // ログダンプモード
 
     public static function run($value)
@@ -31,7 +31,7 @@ class ExecTaskBuilder extends TaskBuilder
 
     protected function generateTaskEventer(): TaskEventer
     {
-        if ($this->doColorDump) {
+        if ($this->doDumpColor) {
             return new DebugTaskEventer();
         } else if ($this->doDump) {
             return new DebugBlackTaskEventer();
@@ -42,8 +42,8 @@ class ExecTaskBuilder extends TaskBuilder
     ///
     // extend builder
 
-    public function colorDump() {
-        $this->doColorDump = true;
+    public function dumpColor() {
+        $this->doDumpColor = true;
         return $this;
     }
 
