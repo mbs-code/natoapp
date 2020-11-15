@@ -2,14 +2,15 @@
 
 namespace App\Lib\TaskBuilder\Jobs;
 
-use App\Lib\TaskBuilder\Events\TaskEventer;
 use App\Lib\TaskBuilder\TaskBuilder;
+use App\Lib\TaskBuilder\Events\TaskEventer;
+use App\Lib\TaskBuilder\Utils\EventManager;
 use Illuminate\Support\Collection;
 use Exception;
 
 class LoopJob extends BaseJob
 {
-    public function handle(TaskEventer $e, $value)
+    public function handle($value, TaskEventer $e, $arg = null)
     {
         // loop 内の task を生成する
         // TODO: try catch
@@ -24,7 +25,7 @@ class LoopJob extends BaseJob
         $e->fireEvent('before loop', $items);
 
         // ループの実行
-        $res = $e->goDownLoopLevel(fn() => $this->loop($e, $builder, $items));
+        $res = $e->goDownLoopLevel(fn() => $this->loop($builder, $items, $e));
 
         // 後処理
         $e->fireEvent('after loop', $res);
@@ -33,7 +34,7 @@ class LoopJob extends BaseJob
         return $res;
     }
 
-    protected function loop(TaskEventer $e, TaskBuilder $builder, Collection $values)
+    protected function loop(TaskBuilder $builder, Collection $values, TaskEventer $e)
     {
         // イベント記録
         $length = $values->count();
@@ -56,7 +57,7 @@ class LoopJob extends BaseJob
             // タスクの実行
             try {
                 // 子イベントの実行
-                $res = $e->goDownLoopLevel(fn() => $builder->handle($item, $e));
+                $res = $e->goDownLoopLevel(fn() => $builder->handle($item, $e, $key));
 
                 if ($res === false) {
                     // skip 扱い

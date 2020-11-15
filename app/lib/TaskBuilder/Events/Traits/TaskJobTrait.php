@@ -19,19 +19,19 @@ trait TaskJobTrait
         return $job;
     }
 
-    public function getEventJob()
+    public function getEventJob(int $parent = 0)
     {
         // 現在のを取り出す
-        $last = array_key_last($this->jobs);
-        if ($last !== null) {
-            return $this->jobs[$last];
+        $key = count($this->jobs) - 1 - $parent;
+        if ($key > 0) {
+            return $this->jobs[$key];
         }
         return null;
     }
 
-    public function getJobName()
+    public function getJobName(int $parent = 0)
     {
-        $job = $this->getEventJob();
+        $job = $this->getEventJob($parent);
         if ($job) {
             return $job->getName();
         }

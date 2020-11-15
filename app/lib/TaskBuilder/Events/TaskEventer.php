@@ -80,4 +80,16 @@ class TaskEventer
 
         return $eventNames;
     }
+
+    ///
+
+    public function getEventValue(string $shortKey, string $jobName = null, $default = null)
+    {
+        return $this->record->getEventValue($shortKey, $jobName, $default);
+    }
+
+    public function getRecordValue(string $shortKey, string $jobName = null, $default = null)
+    {
+        return $this->record->getRecordValue($shortKey, $jobName, $default);
+    }
 }

@@ -14,9 +14,9 @@ class MappingProcessJob extends ProcessJob
         $this->keyOfItemFunc = $keyOfItemFunc;
     }
 
-    public function handle(TaskEventer $e, $value)
+    public function handle($value, TaskEventer $e, $arg = null)
     {
-        $res = parent::handle($e, $value);
+        $res = parent::handle($value, $e, $arg);
 
         // key に対して value を結びつける
         $mapRes = $this->mapping($value, $res);

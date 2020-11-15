@@ -15,7 +15,7 @@ class ProcessJob extends BaseJob
         $this->intoArray = $intoArray;
     }
 
-    public function handle(TaskEventer $e, $value)
+    public function handle($value, TaskEventer $e, $arg = null)
     {
         // 前処理 (引数を collection にする)
         $items = $this->intoArray && !($value instanceof Collection)
@@ -25,8 +25,9 @@ class ProcessJob extends BaseJob
 
         // タスクの実行
         // TODO: try catch
-        // function (mixed $items): mixed
-        $res = call_user_func($this->func, $items);
+        // function (mixed $items, TaskEventer $e, mixed $arg = null): mixed
+        // key は loop 時に使える
+        $res = call_user_func($this->func, $items, $e, $arg);
 
         // 後処理
         $e->fireEvent('after', $res);

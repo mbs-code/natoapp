@@ -2,66 +2,80 @@
 
 namespace App\Lib\TaskBuilder;
 
-use App\Lib\TaskBuilder\TaskBuilder;
 use App\Lib\TaskBuilder\Events\TaskEventer;
-use Illuminate\Support\Collection;
+use App\Lib\TaskBuilder\Utils\EventManager;
+use App\Lib\TaskBuilder\Utils\TaskFlow;
+use App\Lib\TaskBuilder\Jobs\BaseJob;
 
-abstract class Task
+class Task
 {
-    private TaskBuilder $builder;
 
-    protected abstract function taskFlow(TaskBuilder $builder): TaskBuilder;
+    private TaskFlow $flow;
+    private EventManager $event;
 
-
-    private function __construct()
-    {/**/}
-
-    public static function run($value, TaskEventer $e = null)
+    public function __construct(EventManager $manager = null)
     {
-        $instance = new static();
-        return $instance->exec($value, $e);
-    }
-
-    public static function builder()
-    {
-        $instance = new static();
-        return $instance->getBuilder();
+        // 親要素(root) は $manager = null、子要素は引き継ぐ
+        $this->event = $manager ?? new EventManager();
+        $this->flow = new TaskFlow();
     }
 
     ///
+    // 実行本体
 
     public function exec($value, TaskEventer $e = null)
     {
-        $builder = $this->getBuilder();
-        return $builder->exec($value, $e);
+        // // eventer の作成 => 記録用の manager を付与
+        $e = $e ?? new TaskEventer();
+        $e->setEventManager($this->event);
+
+        // Task 実行
+        $e->fireEvent('before task', $value);
+        $res = $this->handle($value, $e);
+        $e->fireEvent('after task', $res);
+
+        return $res;
     }
 
-    public function getBuilder()
+    // !!! lib内部実行用 (Eventer を引き継ぐ)
+    // key は loop のキーとかを入れる用
+    public function handle($value, TaskEventer $e, $arg = null)
     {
-        return $this->builder ?? $this->taskFlow(TaskBuilder::builder());
+        // iterator の取得
+        $it = $this->flow->getIterator();
+        $it->rewind();
+
+        // flow を順番に実行する
+        $buffer = $value; // コンテナ (置換)
+        while ($it->valid()) {
+            $job = $it->current();
+
+            // タスクの実行
+            $res = $job->call($buffer, $e, $arg);
+            $buffer = $res;
+
+            // 次へ
+            $it->next();
+        }
+
+        return $buffer;
     }
 
     ///
-    // general tasks
+    // builder function
 
-    protected function collect()
+    public function addJob(BaseJob $job)
     {
-        return function($val) {
-            return collect($val);
-        };
+        $this->flow->add($job);
     }
 
-    protected function chunk(int $size)
+    public function addEvent(string $name, callable $fireFunc)
     {
-        return function(Collection $val) use ($size) {
-            return $val->chunk($size);
-        };
+        $this->event->addEvent($name, $fireFunc);
     }
 
-    protected function flatten(int $depth = 1)
-    {
-        return function(Collection $val) use ($depth) {
-            return $val->flatten($depth);
-        };
+    public function isMute(bool $isMute = true) {
+        $this->event->isMute($isMute);
     }
+
 }
