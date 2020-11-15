@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\Tasks\UpsertTwitterUser;
-use App\Lib\Tasks\Utils\GeneralEvents;
+use App\Tasks\Twitters\UpsertTwitterUser;
+use App\Tasks\Utils\GeneralEvents;
 use App\Models\Twitter;
 
 class TwitterUser extends Command
@@ -53,7 +53,7 @@ class TwitterUser extends Command
         }
 
         UpsertTwitterUser::builder()
-            ->addEvents(GeneralEvents::arrayTaskEvents('Upsert twitter users'))
+            ->addEvents(GeneralEvents::apiEvents('Upsert twitter user'))
             ->exec($names);
 
         return 0;
