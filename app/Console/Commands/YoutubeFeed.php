@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\Tasks\CheckYoutubeFeed;
-use App\Lib\Tasks\Utils\GeneralEvents;
-use App\Models\Youtube;
 use Illuminate\Support\Facades\Artisan;
+use App\Tasks\Youtubes\CheckYoutubeFeed;
+use App\Tasks\Utils\GeneralEvents;
+use App\Models\Youtube;
 
 class YoutubeFeed extends Command
 {
@@ -58,11 +58,11 @@ class YoutubeFeed extends Command
 
         // feed から video id を取得
         $links = CheckYoutubeFeed::builder()
-            ->addEvents(GeneralEvents::seriesArrayTaskEvents('Check youtube feeds'))
+            ->addEvents(GeneralEvents::apiEvents('Check youtube feed'))
             ->exec($ids);
 
-        // video 処理 command へ渡す（追加されていないもののみ！）
-        logger()->notice('=> pipe');
+        // video 処理 command へ渡す
+        logger()->notice('== pipe =>');
         Artisan::call(YoutubeVideo::class, [
             'ids' => $links,
             '--force' => $this->option('force'),

@@ -14,10 +14,10 @@ class UpsertYoutubeChannel extends ExecTaskBuilder
     {
         return $builder
             ->process('chunk', $this->chunk(10), true)
-            ->loop('chunk', function ($builder) {
+            ->loop('chunk', function (TaskBuilder $builder) {
                 $builder
                     ->mappingProcess('fetch', $this->fetch(), $this->keyOfItem())
-                    ->loop('handle', function ($builder) {
+                    ->loop('handle', function (TaskBuilder $builder) {
                         $builder->process('insert', $this->insert());
                     });
             })
