@@ -2,10 +2,10 @@
 
 namespace App\Lib\TaskBuilder\Tests;
 
-use App\Lib\TaskBuilder\Task;
 use App\Lib\TaskBuilder\TaskBuilder;
+use App\Lib\TaskBuilder\ExecTaskBuilder;
 
-class FizzBuzzTask extends Task
+class FizzBuzzTask extends ExecTaskBuilder
 {
     protected function taskFlow(TaskBuilder $builder): TaskBuilder
     {
