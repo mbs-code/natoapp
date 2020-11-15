@@ -39,7 +39,7 @@ class UpsertYoutubeVideo extends ExecTaskBuilder
     {
         return $builder
             ->process('filter', $this->filter(), true)
-            ->process('chunk', $this->chunk(10), true)
+            ->process('chunk', $this->chunk(50), true)
             ->loop('chunk', function (TaskBuilder $builder) {
                 $builder
                     ->mappingProcess('fetch', $this->fetch(), $this->keyOfItem())

@@ -13,7 +13,7 @@ class UpsertYoutubeChannel extends ExecTaskBuilder
     protected function generateTaskflow(TaskBuilder $builder): TaskBuilder
     {
         return $builder
-            ->process('chunk', $this->chunk(10), true)
+            ->process('chunk', $this->chunk(50), true)
             ->loop('chunk', function (TaskBuilder $builder) {
                 $builder
                     ->mappingProcess('fetch', $this->fetch(), $this->keyOfItem())
