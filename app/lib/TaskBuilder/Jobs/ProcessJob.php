@@ -23,8 +23,10 @@ class ProcessJob extends BaseJob
             : $value;
 
         // 前処理
-        $key = is_countable($items) ? count($items) : $items;
-        $e->writeRecord('key', $key); // key に長さか値を突っ込んどく
+        $length = $items instanceof Collection ? $items->count() : null;
+        $key = is_scalar($items) ? $items : null;
+        $e->writeRecord('length', $length);
+        $e->writeRecord('key', $key);
         $e->fireEvent('before', $items);
 
         // タスクの実行
@@ -35,7 +37,7 @@ class ProcessJob extends BaseJob
 
         // 後処理
         $e->fireEvent('after', $res);
-        $e->clearRecords('key');
+        $e->clearRecords(['length', 'key']);
 
         return $res;
     }

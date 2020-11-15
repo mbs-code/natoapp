@@ -20,13 +20,13 @@ class GeneralEvents
             },
 
             'afterFilter' => function ($val, EventRecord $e) {
-                $before = $e->getRecordValue('key', 'filter');
+                $before = $e->getRecordValue('length', 'filter');
                 $after = EventUtil::allCount($val);
                 logger()->info("Filtered (length: {$before} => {$after})");
             },
 
             'afterChunk' => function ($val, EventRecord $e) {
-                $before = $e->getRecordValue('key', 'chunk');
+                $before = $e->getRecordValue('length', 'chunk');
                 $after = EventUtil::allCount($val);
                 logger()->info("Chunked (length: {$before} => {$after})");
             },
@@ -42,14 +42,21 @@ class GeneralEvents
 
             'beforeFetch' => function ($val, EventRecord $e) {
                 $pref = EventUtil::prefString($e, 'chunk');
-                $length = EventUtil::allCount($val);
-                logger()->debug("{$pref}, Fetching... (length: {$length})");
+
+                $length = $e->getRecordValue('length', 'fetch');
+                $key = $e->getRecordValue('key', 'fetch');
+                $suff = $key ? "key: {$key}" : "key: {$length} items";
+                logger()->debug("{$pref} Fetching... ({$suff})");
             },
 
             'afterFetch' => function ($val, EventRecord $e) {
                 $pref = EventUtil::prefString($e, 'chunk');
-                $length = EventUtil::allCount($val);
-                logger()->info("{$pref} Fetched! (length: {$length})");
+
+                $length = $e->getRecordValue('length', 'fetch');
+                $key = $e->getRecordValue('key', 'fetch');
+                $fetchLength = EventUtil::allCount($val);
+                $suff = $key ? "key: {$key}" : "key: {$length} items";
+                logger()->info("{$pref} Fetched! ({$suff}, get: {$fetchLength} items)");
             },
 
             ///
