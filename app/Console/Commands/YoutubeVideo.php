@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\Tasks\UpsertYoutubeVideo;
-use App\Lib\Tasks\Utils\GeneralEvents;
+use App\Tasks\Youtubes\UpsertYoutubeVideo;
+use App\Tasks\Utils\GeneralEvents;
 use App\Lib\TimeUtil;
 use App\Models\Video;
 
@@ -98,7 +98,7 @@ class YoutubeVideo extends Command
             ->createNewChannel($force)
             ->skipNewChannel($skip)
             ->skipExistVideo($nonexist)
-            ->addEvents(GeneralEvents::arrayTaskEvents('Upsert youtube videos'))
+            ->addEvents(GeneralEvents::apiEvents('Upsert youtube videos'))
             ->exec($ids);
 
         return 0;
