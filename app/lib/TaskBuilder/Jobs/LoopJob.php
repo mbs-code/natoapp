@@ -18,10 +18,14 @@ class LoopJob extends BaseJob
         // function (TaskBuilder $builder): TaskBuilder
         call_user_func($this->func, $builder);
 
-        // 前処理 (引数を collection にする)
+        // 引数を collection にする
         $items = !($value instanceof Collection)
             ? collect($value)
             : $value;
+
+        // 前処理
+        $length = $items->count();
+        $e->writeRecord('length', $length);
         $e->fireEvent('before loop', $items);
 
         // ループの実行
@@ -36,10 +40,6 @@ class LoopJob extends BaseJob
 
     protected function loop(TaskBuilder $builder, Collection $values, TaskEventer $e)
     {
-        // イベント記録
-        $length = $values->count();
-        $e->writeRecord('length', $length);
-
         // iterator の取得
         $it = $values->getIterator();
         $it->rewind();

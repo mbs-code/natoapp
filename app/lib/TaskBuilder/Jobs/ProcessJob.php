@@ -17,10 +17,14 @@ class ProcessJob extends BaseJob
 
     public function handle($value, TaskEventer $e, $arg = null)
     {
-        // 前処理 (引数を collection にする)
+        // 引数を collection にする
         $items = $this->intoArray && !($value instanceof Collection)
             ? collect($value)
             : $value;
+
+        // 前処理
+        $key = is_countable($items) ? count($items) : $items;
+        $e->writeRecord('key', $key); // key に長さか値を突っ込んどく
         $e->fireEvent('before', $items);
 
         // タスクの実行
@@ -31,6 +35,7 @@ class ProcessJob extends BaseJob
 
         // 後処理
         $e->fireEvent('after', $res);
+        $e->clearRecords('key');
 
         return $res;
     }
