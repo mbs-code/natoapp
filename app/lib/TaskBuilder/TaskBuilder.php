@@ -3,12 +3,10 @@
 namespace App\Lib\TaskBuilder;
 
 use App\Lib\TaskBuilder\Task;
-use App\Lib\TaskBuilder\Events\TaskEventer;
 use App\Lib\TaskBuilder\Utils\EventManager;
 use App\Lib\TaskBuilder\Jobs\ProcessJob;
 use App\Lib\TaskBuilder\Jobs\LoopJob;
 use App\Lib\TaskBuilder\Jobs\MappingProcessJob;
-use Illuminate\Support\Collection;
 
 class TaskBuilder
 {
@@ -28,13 +26,6 @@ class TaskBuilder
         return $inst;
     }
 
-    public static function run($value, TaskEventer $eventer = null)
-    {
-        $inst = static::builder();
-        $res = $inst->exec($value, $eventer);
-        return $res;
-    }
-
     ///
 
     protected function generateTaskflow(TaskBuilder $builder): TaskBuilder
@@ -42,20 +33,6 @@ class TaskBuilder
         // builder の初期値を設定
         // please override
         return $builder;
-    }
-
-    public function exec($value, TaskEventer $eventer = null)
-    {
-        $res = $this->task->exec($value, $eventer);
-        return $res;
-    }
-
-    // key は loop のキーとかを入れる用
-    // !!! lib内部実行用 (Eventer を引き継ぐ)
-    public function handle($value, TaskEventer $eventer, $key = null)
-    {
-        $res = $this->task->handle($value, $eventer, $key);
-        return $res;
     }
 
     ///
@@ -109,29 +86,5 @@ class TaskBuilder
     {
         $this->task->isMute($isMute);
         return $this;
-    }
-
-    ///
-    // general tasks
-
-    protected function collect()
-    {
-        return function($val) {
-            return new Collection($val);
-        };
-    }
-
-    protected function chunk(int $size)
-    {
-        return function(Collection $val) use ($size) {
-            return $val->chunk($size);
-        };
-    }
-
-    protected function flatten(int $depth = 1)
-    {
-        return function(Collection $val) use ($depth) {
-            return $val->flatten($depth);
-        };
     }
 }

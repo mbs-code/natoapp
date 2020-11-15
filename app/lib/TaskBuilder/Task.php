@@ -23,10 +23,10 @@ class Task
     ///
     // 実行本体
 
-    public function exec($value, TaskEventer $e = null)
+    // 外部実行用
+    public function exec($value, TaskEventer $e)
     {
-        // // eventer の作成 => 記録用の manager を付与
-        $e = $e ?? new TaskEventer();
+        // 記録用の manager を付与
         $e->setEventManager($this->event);
 
         // Task 実行
@@ -38,7 +38,7 @@ class Task
     }
 
     // !!! lib内部実行用 (Eventer を引き継ぐ)
-    // key は loop のキーとかを入れる用
+    // arg は loop のキーとかを入れる用
     public function handle($value, TaskEventer $e, $arg = null)
     {
         // iterator の取得

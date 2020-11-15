@@ -3,8 +3,8 @@
 namespace App\Lib\TaskBuilder\Jobs;
 
 use App\Lib\TaskBuilder\TaskBuilder;
+use App\Lib\TaskBuilder\HandleTaskBuilder;
 use App\Lib\TaskBuilder\Events\TaskEventer;
-use App\Lib\TaskBuilder\Utils\EventManager;
 use Illuminate\Support\Collection;
 use Exception;
 
@@ -13,9 +13,9 @@ class LoopJob extends BaseJob
     public function handle($value, TaskEventer $e, $arg = null)
     {
         // loop 内の task を生成する
+        $builder = HandleTaskBuilder::builder($e->getEventManager());
         // TODO: try catch
         // function (TaskBuilder $builder): TaskBuilder
-        $builder = TaskBuilder::builder($e->getEventManager());
         call_user_func($this->func, $builder);
 
         // 前処理 (引数を collection にする)
