@@ -22,9 +22,9 @@ trait TaskJobTrait
     public function getEventJob(int $parent = 0)
     {
         // 現在のを取り出す
-        $key = count($this->jobs) - 1 - $parent;
-        if ($key > 0) {
-            return $this->jobs[$key];
+        $lastIndex = count($this->jobs) - 1 - $parent;
+        if ($lastIndex >= 0) {
+            return $this->jobs[$lastIndex];
         }
         return null;
     }
