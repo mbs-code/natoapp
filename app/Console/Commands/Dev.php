@@ -5,17 +5,28 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Lib\Parsers\YoutubeVideoParser;
 use App\Lib\Tasks\UpsertTwitterUser;
-use App\Lib\Tasks\UpsertYoutubeChannel;
-use App\Lib\Tasks\UpsertYoutubeVideo;
+use App\Tasks\Youtubes\UpsertYoutubeVideo;
 use Alaouy\Youtube\Facades\Youtube as YoutubeAPI;
 use App\Enums\VideoType;
 use App\Helpers\Helper;
+use App\Lib\TaskBuilder\TaskBuilder;
+use App\Lib\TaskBuilder\Tests\FizzBuzzTask;
 use App\Lib\Tasks\AddProfileFromYoutubeChannel;
 use App\Lib\Tasks\AddYoutubePlaylist;
 use App\Models\Profile;
 use App\Models\Youtube;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Str;
+use App\Lib\TaskBuilder\Events\DebugTaskEventer;
+use App\Lib\TaskBuilder\Events\DebugBlackTaskEventer;
+use App\Lib\TaskBuilder\Utils\EventRecord;
+use App\Lib\TaskBuilder\Utils\EventUtil;
+use App\Tasks\Twitters\CheckTwitterTweet;
+use App\Tasks\Utils\GeneralEvents;
+use App\Tasks\Youtubes\CheckYoutubeFeed;
+use App\Tasks\Youtubes\UpsertYoutubeChannel;
 
 class Dev extends Command
 {
@@ -84,7 +95,7 @@ class Dev extends Command
         // ]);
         // $this->line(Artisan::output());
 
-        \DB::enableQueryLog();
+        // \DB::enableQueryLog();
 
         // $profile = Profile::where('id', 23)
         //     // ->with(['twitters', 'youtubes'])
@@ -95,23 +106,48 @@ class Dev extends Command
         // // $profile = Profile::where('id', 23)->get();
         // dump($profile);
 
-        \DB::transaction(function () {
-            $profile = Profile::where('id', 23)->first();
-            dump($profile);
+        // \DB::transaction(function () {
+        //     $profile = Profile::where('id', 23)->first();
+        //     dump($profile);
 
-            $profile->name = 'てすと';
-            $profile->save();
+        //     $profile->name = 'てすと';
+        //     $profile->save();
 
-            $profile->twitters()->sync([20, 23]);
+        //     $profile->twitters()->sync([20, 23]);
 
-            $profile->cacheSync();
-            $profile->save();
+        //     $profile->cacheSync();
+        //     $profile->save();
 
-            echo('-------------------------------'.PHP_EOL);
-            dump($profile);
-            dump(Helper::parseQueryLog());
-            throw new Exception('stop');
-        });
+        //     echo('-------------------------------'.PHP_EOL);
+        //     dump($profile->toArray());
+        //     dump(Helper::parseQueryLog());
+        //     throw new Exception('stop');
+        // });
+
+        // $cids = Youtube::select(['code'])->get()
+        //     ->pluck('code')
+        //     ->toArray();
+        $vids = ['gSnnGL2trao', '_vgQK5-1w6M'];
+        $cids = ['UCIdEIHpS0TdkqRkHL5OkLtA', 'UCP9ZgeIJ3Ri9En69R0kJc9Q'];
+        $tids = ['minatoaqua'];
+
+        // $res = UpsertYoutubeVideo::builder()
+            // ->addEvents($events)
+            // ->dumpColor()
+            // ->skipExistVideo()
+            // ->addEvents(GeneralEvents::apiEvents('Upsert youtube video'))
+            // ->exec($vids);
+            // ->exec($tcids, new DebugBlackTaskEventer());
+            // ->exec($cids);
+
+        $res = CheckTwitterTweet::builder()
+            ->addEvents(GeneralEvents::apiEvents('Check twitter tweet'))
+            ->exec($tids);
+
+        echo('---------'.PHP_EOL);
+        dump($res);
+        // echo(json_encode($res->toArray()).PHP_EOL);
+
         return 0;
     }
 }
