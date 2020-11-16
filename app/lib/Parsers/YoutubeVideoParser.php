@@ -36,6 +36,8 @@ class YoutubeVideoParser extends Parser
         return $vv;
     }
 
+    // TODO: 更新がないときに保存しないモード？
+    // public static function insert(object $item, bool $createNewChannel, bool $skipNewChannel, bool $noChangeQuiently)
     public static function insert(object $item, bool $createNewChannel, bool $skipNewChannel)
     {
         // channel の取得
@@ -84,6 +86,11 @@ class YoutubeVideoParser extends Parser
         $startEnd = self::calcStartEndTime($vv); // type 必須
         $vv->start_time = $startEnd['start'];
         $vv->end_time = $startEnd['end'];
+
+        // if ($noChangeQuiently) {
+            // もし type と status が変わってなければ history 更新をしない
+            // if ($vv->)
+        // }
 
         $vv->save();
         return $vv;
