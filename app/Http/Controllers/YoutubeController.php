@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Youtube;
-use App\Lib\Tasks\UpsertYoutubeChannel;
+use App\Tasks\Youtubes\UpsertYoutubeChannel;
 
 class YoutubeController extends Controller
 {

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Twitter;
-use App\Lib\Tasks\UpsertTwitterUser;
+use App\Tasks\Twitters\UpsertTwitterUser;
 
 class TwitterController extends Controller
 {

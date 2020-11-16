@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Helpers\Helper;
 use App\Models\Video;
-use App\Lib\Tasks\UpsertYoutubeVideo;
+use App\Tasks\Youtubes\UpsertYoutubeVideo;
 
 class VideoController extends Controller
 {
