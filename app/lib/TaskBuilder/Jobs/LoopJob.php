@@ -6,10 +6,18 @@ use App\Lib\TaskBuilder\TaskBuilder;
 use App\Lib\TaskBuilder\HandleTaskBuilder;
 use App\Lib\TaskBuilder\Events\TaskEventer;
 use Illuminate\Support\Collection;
+use Iterator;
 use Exception;
 
 class LoopJob extends BaseJob
 {
+    protected function canNext(TaskEventer $e, Iterator $it)
+    {
+        return true;
+    }
+
+    ///
+
     public function handle($value, TaskEventer $e, $arg = null)
     {
         // loop 内の task を生成する
@@ -79,7 +87,9 @@ class LoopJob extends BaseJob
             }
 
             // 次へ
-            $it->next();
+            if ($this->canNext($e, $it)) {
+                $it->next();
+            }
         }
 
         // 統計を削除

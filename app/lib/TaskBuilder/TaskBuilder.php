@@ -7,6 +7,7 @@ use App\Lib\TaskBuilder\Utils\EventManager;
 use App\Lib\TaskBuilder\Jobs\ProcessJob;
 use App\Lib\TaskBuilder\Jobs\LoopJob;
 use App\Lib\TaskBuilder\Jobs\MappingProcessJob;
+use App\Lib\TaskBuilder\Jobs\WhileLoopJob;
 
 class TaskBuilder
 {
@@ -56,6 +57,13 @@ class TaskBuilder
     public function loop(string $name, callable $func)
     {
         $job = new LoopJob($name, $func);
+        $this->task->addJob($job);
+        return $this;
+    }
+
+    public function whileLoop(string $name, callable $func, callable $goNextFunc)
+    {
+        $job = new WhileLoopJob($name, $func, $goNextFunc);
         $this->task->addJob($job);
         return $this;
     }
