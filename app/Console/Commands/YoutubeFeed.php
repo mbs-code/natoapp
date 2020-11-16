@@ -27,7 +27,7 @@ class YoutubeFeed extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Check youtube feed';
 
     /**
      * Create a new command instance.
@@ -57,14 +57,14 @@ class YoutubeFeed extends Command
         }
 
         // feed から video id を取得
-        $links = CheckYoutubeFeed::builder()
+        $items = CheckYoutubeFeed::builder()
             ->addEvents(GeneralEvents::apiEvents('Check youtube feed'))
             ->exec($ids);
 
         // video 処理 command へ渡す
         logger()->notice('== pipe =>');
         Artisan::call(YoutubeVideo::class, [
-            'ids' => $links,
+            'ids' => $items,
             '--force' => $this->option('force'),
             '--skip' => $this->option('skip'),
             '--nonexist' => $this->option('nonexist'),
