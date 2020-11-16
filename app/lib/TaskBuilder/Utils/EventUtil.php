@@ -18,6 +18,17 @@ class EventUtil
 
     ///
 
+    public static function durationString(EventRecord $e)
+    {
+        $start = $e->get('timestamp');
+        $now = microtime(true);
+        $sec = $start
+            ? number_format($now - $start, 2)
+            : '-.--';
+
+        return "{$sec}sec";
+    }
+
     public static function prefString(EventRecord $e, string ...$jobNames)
     {
         $text = '';
