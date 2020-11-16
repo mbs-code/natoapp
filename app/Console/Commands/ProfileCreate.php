@@ -3,7 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Lib\Tasks\AddProfileFromYoutubeChannel;
+use App\Tasks\Profiles\AddProfileFromYoutube;
+use App\Tasks\Utils\GeneralEvents;
 
 class ProfileCreate extends Command
 {
@@ -44,18 +45,9 @@ class ProfileCreate extends Command
         $force = $this->option('force'); // true で profile が重複してても作成する
 
         // TODO: ログ適当＆整合性未チェック
-        AddProfileFromYoutubeChannel::builder()
-            ->duplicateRename($force)
-            ->addEvent('fetched', function ($e) {
-                $find = json_encode($e->fetchResponse);
-                $mes = "Scraping: {$find}";
-                logger()->info($mes);
-            })
-            ->addEvent('beforeOuterLoop', function ($e) {
-                $total = count($e->execProps);
-                $mes = "Outer Loop (length: {$e->outerLength}, total: {$total})";
-                logger()->notice($mes);
-            })
+        AddProfileFromYoutube::builder()
+            ->renameWhenDuplicated($force)
+            ->addEvents(GeneralEvents::apiEvents('Add profile from youtube'))
             ->exec($ids);
 
         return 0;
