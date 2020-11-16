@@ -79,11 +79,11 @@ class Helper
             // echo('word: ['.$word.']'.PHP_EOL);
 
             if ($word) {
-                if ((mb_strpos($str2, $word) === false || $p >= $len)) {
+                if ((strpos($str2, $word) === false || $p >= $len)) {
                     // word が2つ目に存在しないなら word を初期化 (最大長到達でも)
                     // もし最大長ならバッファに記録
                     // echo(mb_strlen($wordBuf).' '.mb_strlen($mostLengthWord).PHP_EOL);
-                    if (mb_strlen($wordBuf) >= mb_strlen($mostLengthWord)) {
+                    if (strlen($wordBuf) >= strlen($mostLengthWord)) {
                         $mostLengthWord = $wordBuf;
                     }
                     $word = '';
