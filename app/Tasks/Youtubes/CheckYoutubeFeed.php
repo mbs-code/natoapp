@@ -17,7 +17,6 @@ class CheckYoutubeFeed extends ExecTaskBuilder
                     ->loop('handle', function (TaskBuilder $builder) {
                         $builder->process('parse', $this->parse());
                     });
-                // $builder->process('handle', $this->fetch());
             })
             ->process('flatten', $this->flatten());
     }
@@ -35,12 +34,9 @@ class CheckYoutubeFeed extends ExecTaskBuilder
             $xml = simplexml_load_string($contents);
 
             $ary = json_decode(json_encode($xml), true);
-            $entries = collect(data_get($ary, 'entry'));
-            // $videoIds = collect(data_get($ary, 'entry'))
-            //     ->map()
-            //     ->filter(fn($e) => $e);
+            $items = collect(data_get($ary, 'entry'));
 
-            return $entries;
+            return $items;
         };
     }
 
