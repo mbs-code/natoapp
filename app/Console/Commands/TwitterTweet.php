@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Lib\Tasks\CheckTwitterTweet;
-use App\Lib\Tasks\Utils\GeneralEvents;
 use Illuminate\Console\Command;
-use Thujohn\Twitter\Facades\Twitter as TwitterAPI;
+use App\Tasks\Twitters\CheckTwitterTweet;
+use App\Tasks\Utils\GeneralEvents;
+use App\Models\Twitter;
 
 class TwitterTweet extends Command
 {
@@ -46,29 +46,17 @@ class TwitterTweet extends Command
         $names = $this->argument('names') ?? []; // screen_name ids
 
         // ID が指定されていなければ DB 全てを対象とする
-        // if ($all) {
-        //     $names = Twitter::select(['screen_name'])->get()
-        //         ->pluck('screen_name')
-        //         ->toArray();
-        // }
+        if ($all) {
+            $names = Twitter::select(['screen_name'])->get()
+                ->pluck('screen_name')
+                ->toArray();
+        }
 
-        $names = ['sana_natori'];
         $links = CheckTwitterTweet::builder()
-            ->addEvents(GeneralEvents::seriesArrayTaskEvents('Check twitter tweets'))
+            ->addEvents(GeneralEvents::apiEvents('Check twitter tweet'))
             ->exec($names);
-        var_dump($links);
 
-        // $names = ['mochi8hiyoko'];
-
-        // $names = collect($names)->implode(',');
-        // $tweets = TwitterAPI::getUserTimeline([
-        //     'screen_name' => $names,
-        //     'count' => 2,
-        //     'format' => 'object',
-        //     'max_id' => '1318919644262977537',
-        // ]);
-        // echo(1318919644262977537 -1);
-        // var_dump(collect($tweets)->pluck('id_str', 'text')->toArray());
+        dump($links);
 
         return 0;
     }
