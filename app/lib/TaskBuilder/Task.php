@@ -28,6 +28,7 @@ class Task
     {
         // 記録用の manager を付与
         $e->setEventManager($this->event);
+        $e->write('timestamp', microtime(true));
 
         // Task 実行
         $e->fireEvent('before task', $value);

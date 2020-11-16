@@ -101,8 +101,9 @@ class GeneralEvents
             /// ////////////////////////////////////////
 
             'afterTask' => function ($val, EventRecord $e) use ($eventName) {
+                $duration = EventUtil::durationString($e);
                 $stat = EventUtil::allStatString($e, 'handle');
-                logger()->notice("Finish! {$eventName} ({$stat})");
+                logger()->notice("Finish! {$eventName} ({$duration}, {$stat})");
             },
         ];
         return $events;
