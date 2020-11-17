@@ -8,13 +8,14 @@ use \Illuminate\Http\Request;
 class RequestQueryBuilder
 {
 
-    protected $query = null;
-    protected $request = null;
+    protected Builder $query;
+    protected Request $request;
 
     public static function builder(Builder $query, Request $request = null)
     {
-        $class = get_called_class();
-        return new $class($query, $request);
+        // $class = get_called_class();
+        // return new $class($query, $request);
+        return new static($query, $request);
     }
 
     private function __construct(Builder $query, Request $request = null)
@@ -31,6 +32,17 @@ class RequestQueryBuilder
     public function first()
     {
         return $this->query->first();
+    }
+
+    public function count()
+    {
+        return $this->query->count();
+    }
+
+    public function paginate(string $perPageKey, $default = null)
+    {
+        $perPage = $this->q($perPageKey, $default);
+        return $this->query->paginate($perPage);
     }
 
     public function query()
@@ -115,17 +127,6 @@ class RequestQueryBuilder
         if ($sort = $this->q($sortKey)) {
             $order = $this->q($orderKey, 'asc');
             $this->query->orderBy($sort, $order);
-        }
-        return $this;
-    }
-
-    public function ifPagination(string $pageKey, string $limitKey)
-    {
-        if ($page = $this->q($pageKey, 1)) {
-            $limit = $this->q($limitKey, 10);
-            $this->query
-                ->skip(($page - 1) * $limit)
-                ->take($limit);
         }
         return $this;
     }

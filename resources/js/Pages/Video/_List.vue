@@ -3,9 +3,27 @@
   <v-data-table
     :headers="headers"
     :items="videos"
+    :options.sync="itemOptions"
+    :footer-props="footerProps"
+    :server-items-length="serverItemsLength"
+    class="app-table"
     item-key="id"
+    hide-default-footer
+    fixed-header
     mobile-breakpoint="1000"
+    :height="height"
+    :loading="loading"
   >
+    <template v-slot:top="{ pagination, options, updateOptions }">
+      <v-data-footer
+        :pagination="pagination"
+        :options="options"
+        :items-per-page-options="footerProps.itemsPerPageOptions"
+        items-per-page-text="$vuetify.dataTable.itemsPerPageText"
+        @update:options="updateOptions"
+      />
+    </template>
+
     <template v-slot:[`item.links`]="{ item }">
       <v-img
         class="ma-1"
@@ -75,22 +93,57 @@ export default {
       type: Array,
       default: () => [],
     },
+    serverItemsLength: {
+      type: Number,
+      default: 0,
+    },
+    height: {
+      type: Number,
+      default: 300,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  data: function () {
+    return {
+      itemOptions: {
+        page: 1,
+        itemsPerPage: 10,
+        sortBy: ['start_time'],
+        sortDesc: [true],
+      },
+      footerProps: {
+        itemsPerPageOptions: [10, 25, 50, 100],
+      },
+    }
   },
 
   computed: {
     headers: function () {
       return [
-        { text: '', value: 'links', sortable: false },
+        { text: 'サムネイル', value: 'links', sortable: false },
         { text: '動画ID', value: 'code' },
         { text: '名前', value: 'title' },
         { text: '種別', value: 'type' },
         { text: '状態', value: 'status' },
         { text: '長さ', value: 'duration' },
         { text: '再生数', value: 'views' },
-        { text: 'GOOD率', value: 'good_rate' },
+        { text: 'GOOD率', value: 'good_rate', sortable: false },
         { text: '開始日時', value: 'start_time' },
         { text: '', value: 'actions', sortable: false },
       ]
+    },
+  },
+
+  watch: {
+    itemOptions: {
+      handler() {
+        this.$emit('change', this.itemOptions)
+      },
+      deep: true,
     },
   },
 

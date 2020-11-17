@@ -35,8 +35,7 @@ class APIController extends Controller
             ->ifWhereEqualIn('type')
             ->ifWhereHasMorph('channel')
             ->ifOrderBy('sort', 'order')
-            ->ifPagination('page', 'limit')
-            ->get();
+            ->paginate('perPage');
 
         return $videos;
     }
