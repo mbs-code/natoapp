@@ -31,9 +31,9 @@ class APIController extends Controller
 
     public function videos(Request $request)
     {
-        $videos = RequestQueryBuilder::builder(Video::query(), $request)
+        $videos = RequestQueryBuilder::requestBuilder(Video::query(), $request)
             ->ifWhereEqualIn('type')
-            ->ifWhereHasMorph('channel')
+            ->ifWhereHasMorphs('channel', [Youtube::class])
             ->ifOrderBy('sort', 'order')
             ->paginate('perPage');
 

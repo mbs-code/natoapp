@@ -5,128 +5,74 @@ namespace App\Helpers;
 use \Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Http\Request;
 
-class RequestQueryBuilder
+class RequestQueryBuilder extends ModelQueryBuilder
 {
+    protected ?Request $request = null;
 
-    protected Builder $query;
-    protected Request $request;
-
-    public static function builder(Builder $query, Request $request = null)
+    public static function requestBuilder(Builder $query, Request $request)
     {
-        // $class = get_called_class();
-        // return new $class($query, $request);
-        return new static($query, $request);
+        $inst = new static($query, $request);
+        $inst->request = $request;
+        return $inst;
     }
 
-    private function __construct(Builder $query, Request $request = null)
+
+    protected function __construct(Builder $query)
     {
-        $this->query = $query;
-        $this->request = $request;
+        parent::__construct($query);
     }
 
-    public function get()
-    {
-        return $this->query->get();
-    }
+    ///
+    // inner helper
 
-    public function first()
+    protected function getQueryValue(string $queryKey, $default = null)
     {
-        return $this->query->first();
-    }
-
-    public function count()
-    {
-        return $this->query->count();
-    }
-
-    public function paginate(string $perPageKey, $default = null)
-    {
-        $perPage = $this->q($perPageKey, $default);
-        return $this->query->paginate($perPage);
-    }
-
-    public function query()
-    {
-        return $this->query;
+        $request = $this->request;
+        $value = $request
+            ? $request->query($queryKey, $default)
+            : null;
+        return $value;
     }
 
     /// ////////////////////////////////////////
 
-    protected function q(string $key, $default = null)
+    public function paginate($queryKey = null)
     {
-        $req = $this->request;
-        return $req ? $req->query($key, $default) : null;
+        $value = $this->getQueryValue($queryKey);
+        return parent::paginate($value);
     }
 
-    protected function qa(string $key, $default = null)
-    {
-        $val = $this->q($key, $default);
-        return $val ? (is_array($val) ? $val : [$val]) : null;
-    }
+    ///
 
-    /// ////////////////////////////////////////
-
-    /**
-     * $key が存在するなら、全てと一致するものを抽出.
-     */
-    public function ifWhereEqual(string $key, callable $translate = null)
+    public function ifWhereEqual(string $dbKey, $queryKey = null, callable $translate = null)
     {
-        if ($ary = $this->qa($key)) {
-            foreach ($ary as $x) {
-                $val = $translate ? $translate($x) : $x;
-                $this->query->where([$key => $val]);
-            }
-        }
+        $value = $this->getQueryValue($queryKey ?? $dbKey);
+        $this->whereEqual($dbKey, $value, $translate);
         return $this;
     }
 
-    /**
-     * $key が存在するなら、どれかに一致するものを抽出.
-     */
-    public function ifWhereEqualIn(string $key, callable $translate = null)
+    public function ifWhereEqualIn(string $dbKey, $queryKey = null, callable $translate = null)
     {
-        if ($ary = $this->qa($key)) {
-            $this->query->where(function ($query) use ($key, $ary, $translate) {
-                foreach ($ary as $x) {
-                    $val = $translate ? $translate($x) : $x;
-                    $query->orWhere([$key => $val]);
-                }
-            });
-        }
+        $value = $this->getQueryValue($queryKey ?? $dbKey);
+        $this->whereEqualIn($dbKey, $value, $translate);
         return $this;
     }
 
-    /// ////////////////////////////////////////
-
-    /**
-     * $key が存在するなら、どれかが morph に一致するものを抽出.
-     */
-    public function ifWhereHasMorph(string $key, callable $translate = null)
+    public function ifWhereHasMorphs(string $dbKey, array $morphs = [], $queryKey = null, callable $translate = null)
     {
-        if ($ary = $this->qa($key)) {
-            $this->query->whereHasMorph(
-                $key,
-                ['App\Models\Youtube'],
-                function (Builder $query) use ($key, $ary, $translate) {
-                    $query->where(function ($query) use ($key, $ary, $translate) {
-                        foreach ($ary as $x) {
-                            $val = $translate ? $translate($x) : $x;
-                            $query->orWhere(['id' => $val]);
-                        }
-                    });
-                }
-            );
-        }
+        $value = $this->getQueryValue($queryKey ?? $dbKey);
+        $this->whereHasMorphs($dbKey, $morphs, $value, $translate);
         return $this;
     }
 
-    /// ////////////////////////////////////////
+    ///
 
-    public function ifOrderBy(string $sortKey, string $orderKey)
+    public function ifOrderBy(string $sortDbKey = null, $orderKey = null)
     {
-        if ($sort = $this->q($sortKey)) {
-            $order = $this->q($orderKey, 'asc');
-            $this->query->orderBy($sort, $order);
+        $sort = $this->getQueryValue($sortDbKey);
+        $order = $this->getQueryValue($orderKey);
+        if ($sort) {
+            $this->orderBy($sort, $order);
         }
         return $this;
     }
